@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+  
+  
+  <link rel="stylesheet" media="all" href="/disshu.github.io/lib/Han/dist/han.min.css?v=3.3">
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/disshu.github.io/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|Lobster Two:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/disshu.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/disshu.github.io/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/disshu.github.io/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/disshu.github.io/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/disshu.github.io/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/disshu.github.io/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="对于维基利亚密码，其实最好的方式就是暴力破解，但是一旦明文超过一定的数量，那么破解将耗费大量的时间，那么就要用重合指数法，重合指数法一定要有大量的明文做支撑，下面附上python代码 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585">
+<meta property="og:type" content="article">
+<meta property="og:title" content="密码学-重合指数发">
+<meta property="og:url" content="http://yoursite.com/2019/12/10/密码学-重合指数法/index.html">
+<meta property="og:site_name" content="disshu">
+<meta property="og:description" content="对于维基利亚密码，其实最好的方式就是暴力破解，但是一旦明文超过一定的数量，那么破解将耗费大量的时间，那么就要用重合指数法，重合指数法一定要有大量的明文做支撑，下面附上python代码 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-12-09T12:48:39.296Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="密码学-重合指数发">
+<meta name="twitter:description" content="对于维基利亚密码，其实最好的方式就是暴力破解，但是一旦明文超过一定的数量，那么破解将耗费大量的时间，那么就要用重合指数法，重合指数法一定要有大量的明文做支撑，下面附上python代码 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/disshu.github.io/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/12/10/密码学-重合指数法/">
+
+
+
+
+
+  <title>密码学-重合指数发 | disshu</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+    
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/disshu.github.io/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">disshu</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/disshu.github.io/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/disshu.github.io/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/disshu.github.io/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/disshu.github.io/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/disshu.github.io/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-arechive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/disshu.github.io/2019/12/10/密码学-重合指数法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="disshu">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/disshu.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="disshu">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">密码学-重合指数发</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-10T09:36:31+08:00">
+                2019-12-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body han-init-context" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>对于维基利亚密码，其实最好的方式就是暴力破解，但是一旦明文超过一定的数量，那么破解将耗费大量的时间，那么就要用重合指数法，重合指数法一定要有大量的明文做支撑，下面附上python代码</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br></pre></td><td class="code"><pre><span class="line">from string import ascii_lowercase as lowercase</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#必须要大量的明文做支撑</span><br><span class="line">def VigenereDecrypto(output, key):</span><br><span class="line">    ptLen = len(output)</span><br><span class="line">    keyLen = len(key)</span><br><span class="line">    quotient = ptLen // keyLen</span><br><span class="line">    remainder = ptLen % keyLen</span><br><span class="line">    inp = &quot;&quot;</span><br><span class="line">    for i in range(0, quotient):</span><br><span class="line">        for j in range(0, keyLen):</span><br><span class="line">            c = int((ord(output[i * keyLen + j]) - ord(&apos;a&apos;) - (ord(key[j]) - ord(&apos;a&apos;))) % 26 + ord(&apos;a&apos;))</span><br><span class="line">            inp += chr(c)</span><br><span class="line">    for i in range(0, remainder):</span><br><span class="line">        c = int((ord(output[quotient * keyLen + i]) - ord(&apos;a&apos;) - (ord(key[i]) - ord(&apos;a&apos;))) % 26 + ord(&apos;a&apos;))</span><br><span class="line">        # global input</span><br><span class="line">        inp += chr(c)</span><br><span class="line">    return inp</span><br><span class="line">#获得纯文本</span><br><span class="line">def get_trim_text(text):</span><br><span class="line">    text = text.lower()</span><br><span class="line">    trim_text = &apos;&apos;</span><br><span class="line">    for l in text:</span><br><span class="line">        if lowercase.find(l) &gt;= 0:</span><br><span class="line">            trim_text += l</span><br><span class="line">    return trim_text</span><br><span class="line"></span><br><span class="line"># 计算重合指数</span><br><span class="line">def get_coincidence_index(text):</span><br><span class="line">    text = get_trim_text(text)</span><br><span class="line">    length = len(text)</span><br><span class="line">    letter_stats = []</span><br><span class="line">    for l in lowercase:</span><br><span class="line">        lt = &#123;&#125;</span><br><span class="line">        count = text.count(l)#计算text文本里的数目</span><br><span class="line">        lt[l] = count</span><br><span class="line">        letter_stats.append(lt)</span><br><span class="line"></span><br><span class="line">    index = 0</span><br><span class="line">    for d in letter_stats:</span><br><span class="line">        v = list(d.values())[0]</span><br><span class="line">        index += (float(v) / length) ** 2</span><br><span class="line"></span><br><span class="line">    return index</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 计算和0.067的差距大小</span><br><span class="line">def get_var(data, mean=0.065):</span><br><span class="line">    if not data:</span><br><span class="line">        return 0</span><br><span class="line">    var_sum = 0</span><br><span class="line">    for d in data:</span><br><span class="line">        var_sum += (d - mean) ** 2</span><br><span class="line"></span><br><span class="line">    return float(var_sum) / len(data)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 求秘钥长度</span><br><span class="line">def get_key_length(text):</span><br><span class="line">    # assume text length less than 26</span><br><span class="line">    text = get_trim_text(text)</span><br><span class="line">    group = []</span><br><span class="line">    for n in range(1, len(text) + 1):</span><br><span class="line">        group_str = [&apos;&apos; for i in range(n)]</span><br><span class="line">        for i in range(len(text)):</span><br><span class="line">            l = text[i]</span><br><span class="line">            for j in range(n):</span><br><span class="line">                if i % n == j:</span><br><span class="line">                    group_str[j] += l</span><br><span class="line">        group.append(group_str)</span><br><span class="line">       </span><br><span class="line"></span><br><span class="line">    var_list = []</span><br><span class="line">    length = 1</span><br><span class="line">    for tex in group:</span><br><span class="line">        data = []</span><br><span class="line">        for t in tex:</span><br><span class="line">            index = get_coincidence_index(t)</span><br><span class="line">            data.append(index)</span><br><span class="line">        var_list.append([length, get_var(data)])</span><br><span class="line">        length += 1</span><br><span class="line">    var_list = sorted(var_list, key=lambda x: x[1])#按照重合指数排序，差距最小的第一个</span><br><span class="line">   </span><br><span class="line">    return [v[0] for v in var_list[:int(n / 2) + 1]]  # var_list[0][0]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 统计字母频度，确定密钥长度后，分组的不同字母的频率</span><br><span class="line">def countList(lis):</span><br><span class="line">    li = []</span><br><span class="line">    alphabet = [chr(i) for i in range(97, 123)]</span><br><span class="line">    for c in alphabet:</span><br><span class="line">        count = 0</span><br><span class="line">        for ch in lis:</span><br><span class="line">            if ch == c:</span><br><span class="line">                count += 1</span><br><span class="line">        li.append(float(count) / len(lis))</span><br><span class="line">    return li</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 根据密钥长度将密文分组</span><br><span class="line">def textToList(text, length):</span><br><span class="line">    text = get_trim_text(text)</span><br><span class="line">    textMatrix = []</span><br><span class="line">    row = []</span><br><span class="line">    index = 0</span><br><span class="line">    for ch in text:</span><br><span class="line">        row.append(ch)</span><br><span class="line">        index += 1</span><br><span class="line">        if index % length == 0:</span><br><span class="line">            textMatrix.append(row)</span><br><span class="line">            row = []</span><br><span class="line">    textMatrix.append(row)</span><br><span class="line">    return textMatrix</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 获取密钥</span><br><span class="line">def getKey(text, length):</span><br><span class="line">    text = get_trim_text(text)</span><br><span class="line">    key = []  # 定义空白列表用来存密钥</span><br><span class="line">    alphaRate = [0.08167, 0.01492, 0.02782, 0.04253, 0.12705, 0.02228, 0.02015, 0.06094, \</span><br><span class="line">                 0.06996, 0.00153, 0.00772, 0.04025, 0.02406, 0.06749, 0.07507, 0.01929, \</span><br><span class="line">                 0.0009, 0.05987, 0.06327, 0.09056, 0.02758, 0.00978, 0.02360, 0.0015, 0.01974, 0.00074]#自然规律，书上有</span><br><span class="line">    matrix = textToList(text, length)</span><br><span class="line">    for i in range(length):</span><br><span class="line">        w = [row[i] for row in matrix if len(row) &gt; i]  # 获取每组密文</span><br><span class="line">        li = countList(w)</span><br><span class="line">        powLi = []  # 算乘积</span><br><span class="line">        for j in range(26):</span><br><span class="line">            Sum = 0.0</span><br><span class="line">            for k in range(26):</span><br><span class="line">                Sum += alphaRate[k] * li[k]</span><br><span class="line">            powLi.append(Sum)</span><br><span class="line">            li = li[1:] + li[:1]  # 循环移位</span><br><span class="line">        Abs = 100</span><br><span class="line">        ch = &apos;&apos;</span><br><span class="line">        for j in range(len(powLi)):</span><br><span class="line">            if abs(powLi[j] - 0.065546) &lt; Abs:  # 找出最接近英文字母重合指数的项</span><br><span class="line">                Abs = abs(powLi[j] - 0.065546)  # 保存最接近的距离，作为下次比较的基准</span><br><span class="line">                ch = chr(j + 97)</span><br><span class="line">        key.append(ch)</span><br><span class="line">    return key</span><br><span class="line"></span><br><span class="line">key_lengths = []</span><br><span class="line">c = input(&quot;please enter ciphertext: &quot;)</span><br><span class="line">key_lengths = get_key_length(c)</span><br><span class="line">print(key_lengths)</span><br><span class="line">for i in range(len(key_lengths)):</span><br><span class="line">    key = getKey(c,key_lengths[i])</span><br><span class="line">    print(&quot;明文%s, 密钥长度是 %d, 密钥是 %s&quot; \</span><br><span class="line">          % (VigenereDecrypto (c , key), key_lengths[i], key))</span><br></pre></td></tr></table></figure>
+
+<p>其中重合指数法破解一定要把维基利亚解密代码写出来</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/disshu.github.io/2019/12/10/密码学-反射密码破解/" rel="next" title="密码学-仿射密码破解">
+                <i class="fa fa-chevron-left"></i> 密码学-仿射密码破解
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">disshu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/disshu.github.io/archives/">
+              
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">disshu</span>
+
+  
+</div>
+
+
+  <div class="powered-by"> <a class="theme-link" target="_blank" href="#">disshu</a> 的专属</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/disshu.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/disshu.github.io/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/disshu.github.io/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/disshu.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/disshu.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/disshu.github.io/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/disshu.github.io/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/disshu.github.io/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/disshu.github.io/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/disshu.github.io/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/disshu.github.io/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/disshu.github.io/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/disshu.github.io/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

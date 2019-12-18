@@ -8,10 +8,10 @@
   <meta name="description" content>
   <meta name="author" content="disshu">
   <!-- Open Graph Data -->
-  <meta property="og:title" content="Vue项目开发(持续更新)">
+  <meta property="og:title" content="disshu">
   <meta property="og:description" content>
   <meta property="og:site_name" content="disshu">
-  <meta property="og:type" content="article">
+  <meta property="og:type" content="website">
   <meta property="og:image" content="http://yoursite.com">
   
     <link rel="alternate" href="/atom.xml" title="disshu" type="application/atom+xml">
@@ -35,7 +35,8 @@
 </head>
 
   <body>
-    <!-- Page Header -->
+    <!-- Archive Header -->
+<!-- Page Header -->
 
 
 <header class="site-header header-background" style="background-image: url(/disshu.github.io//img/default-banner-dark.jpg)">
@@ -43,7 +44,7 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         <div class="page-title with-background-image">
-          <p class="title">Vue项目开发(持续更新)</p>
+          <p class="title">Blog Archives</p>
           <p class="subtitle"></p>
         </div>
         <div class="site-menu with-background-image">
@@ -88,54 +89,34 @@
   </div>
 </header>
 
-<article>
-  <div class="container typo">
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        <div class="post-info text-muted">
-          
-            <!-- Author -->
-            <span class="author info">By disshu</span>
-          
-          <!-- Date -->
-          <span class="date-time info">On
-            <span class="date">2019-11-10</span>
-            <span class="time">10:15:17</span>
-          </span>
-          
-        </div>
-        <!-- Tags -->
-        
-        <!-- Post Main Content -->
-        <div class="post-content">
-          <a id="more"></a>
-<!-- more -->
-<h1 id="Vue感想"><a href="#Vue感想" class="headerlink" title="Vue感想"></a>Vue感想</h1><h3 id="最近在工作室接了一个学生管理系统项目，用Vue实现，最近踩了很多坑，跟大家分享一下！"><a href="#最近在工作室接了一个学生管理系统项目，用Vue实现，最近踩了很多坑，跟大家分享一下！" class="headerlink" title="最近在工作室接了一个学生管理系统项目，用Vue实现，最近踩了很多坑，跟大家分享一下！"></a>最近在工作室接了一个学生管理系统项目，用Vue实现，最近踩了很多坑，跟大家分享一下！</h3><h5 id="第一个dig"><a href="#第一个dig" class="headerlink" title="第一个dig"></a>第一个dig</h5><pre><code class="hljs bash"><span class="hljs-comment">#对于两个同步的方法</span>
-<span class="hljs-function"><span class="hljs-title">serach</span></span>()&#123;<span class="hljs-comment">#搜索按钮</span>
-	<span class="hljs-built_in">let</span> flag=1
-&#125;
-<span class="hljs-function"><span class="hljs-title">mounted</span></span>()&#123;<span class="hljs-comment">#筛选按钮</span>
-	<span class="hljs-built_in">let</span> flag=2
-&#125;
-<span class="hljs-comment">#可以分别在两个函数中设置个flag，标志字段</span>
-<span class="hljs-function"><span class="hljs-title">pageIndex</span></span>()&#123;
-	<span class="hljs-comment">#分页导航</span>
-	<span class="hljs-keyword">if</span>(flag==1)
-	&#123;
-		this.<span class="hljs-variable">$http</span>.get(url1)
-	&#125;
-	<span class="hljs-keyword">if</span>(flag==2)
-	&#123;
-		this.<span class="hljs-variable">$http</span>.get(url2)
-	&#125;
-&#125;<span class="hljs-comment">#这样就做到了 搜索和筛选可以并发进行</span></code></pre>
+<!-- Archive List -->
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+      
+        <div class="archive-item">
+  <a href="/disshu.github.io/2019/12/08/网络安全随记/" class="post-title">
+    网络安全随记(持续更新)
+  </a>
+  <div class="date text-muted">Posted on 2019-12-07 20:10:32</div>
+</div>
 
+      
 
-        </div>
-      </div>
     </div>
   </div>
-</article>
+</div>
+<!-- Pagination -->
+<div class="container">
+  <div class="row">
+    <div class="col-lg-10 col-md-10 col-md-offset-1">
+      <ul class="pagination">
+          
+          
+      </ul>
+    </div>
+  </div>
+</div>
 
 
 

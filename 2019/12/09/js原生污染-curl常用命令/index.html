@@ -1,540 +1,214 @@
 <!DOCTYPE html>
-<html lang="zh-Hans">
-<head><meta name="generator" content="Hexo 3.9.0">
-
-    <!--[if lt IE 9]>
-        <style>body {display: none; background: none !important} </style>
-        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
-    <![endif]-->
-
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="format-detection" content="telephone=no">
-<meta name="author" content="disshu">
-
-
-
-<meta name="description" content="js原生污染js的原生属性prototype可以修改一个函数的属性而当我们用函数创建一个对象时object.proto的属性指向 function.prototype例如 下面代码可以看出person1的proto指向person.prototype  1234567function person(fullName, age) &amp;#123;    this.age = age;    this.f">
-<meta property="og:type" content="article">
-<meta property="og:title" content="js原生污染+curl常用命令">
-<meta property="og:url" content="http://yoursite.com/2019/12/09/js原生污染-curl常用命令/index.html">
-<meta property="og:site_name" content="disshu">
-<meta property="og:description" content="js原生污染js的原生属性prototype可以修改一个函数的属性而当我们用函数创建一个对象时object.proto的属性指向 function.prototype例如 下面代码可以看出person1的proto指向person.prototype  1234567function person(fullName, age) &amp;#123;    this.age = age;    this.f">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-08T11:26:58.172Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="js原生污染+curl常用命令">
-<meta name="twitter:description" content="js原生污染js的原生属性prototype可以修改一个函数的属性而当我们用函数创建一个对象时object.proto的属性指向 function.prototype例如 下面代码可以看出person1的proto指向person.prototype  1234567function person(fullName, age) &amp;#123;    this.age = age;    this.f">
-
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-
-
+<html>
+  <!-- Html Head Tag-->
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content>
+  <meta name="author" content="disshu">
+  <!-- Open Graph Data -->
+  <meta property="og:title" content="js原生污染+curl常用命令">
+  <meta property="og:description" content>
+  <meta property="og:site_name" content="disshu">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="http://yoursite.com">
+  
     <link rel="alternate" href="/atom.xml" title="disshu" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+  <!-- Site Title -->
+  <title>disshu</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="/disshu.github.io/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  
+  <link rel="stylesheet" href="/disshu.github.io/css/style.dark.css">
+
+  <!-- Google Analytics -->
+  
+
+</head>
+
+  <body>
+    <!-- Page Header -->
 
 
-
-    <link rel="shortcut icon" href="/favicon.png">
-
-
-
-    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
-
-
-
-    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
-
-
-
-    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
-    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
-
-
-<link rel="stylesheet" href="/disshu.github.io/css/style.css">
-
-
-
-<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
-
-
-<title>js原生污染+curl常用命令 | disshu</title>
-
-<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
-<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
-
-<script>
-    var yiliaConfig = {
-        fancybox: true,
-        animate: true,
-        isHome: false,
-        isPost: true,
-        isArchive: false,
-        isTag: false,
-        isCategory: false,
-        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
-        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
-        search: 
-    }
-</script>
-
-
-    <script> yiliaConfig.jquery_ui = [false]; </script>
-
-
-
-    <script> yiliaConfig.rootUrl = "\/";</script>
-
-
-
-
-
-
-</head></html>
-<body>
-  <div id="container">
-    <div class="left-col">
-    <div class="overlay"></div>
-<div class="intrude-less">
-    <header id="header" class="inner">
-        <a href="/disshu.github.io/" class="profilepic">
-            <img src="/img/avatar.png" class="animated zoomIn">
-        </a>
-        <hgroup>
-          <h1 class="header-author"><a href="/disshu.github.io/">disshu</a></h1>
-        </hgroup>
-
-        
-
-        
-
-
-        
-            <div id="switch-btn" class="switch-btn">
-                <div class="icon">
-                    <div class="icon-ctn">
-                        <div class="icon-wrap icon-house" data-idx="0">
-                            <div class="birdhouse"></div>
-                            <div class="birdhouse_holes"></div>
-                        </div>
-                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
-                            <div class="ribbon"></div>
-                        </div>
-                        
-                        <div class="icon-wrap icon-link hide" data-idx="2">
-                            <div class="loopback_l"></div>
-                            <div class="loopback_r"></div>
-                        </div>
-                        
-                        
-                        <div class="icon-wrap icon-me hide" data-idx="3">
-                            <div class="user"></div>
-                            <div class="shoulder"></div>
-                        </div>
-                        
-                    </div>
-                    
-                </div>
-                <div class="tips-box hide">
-                    <div class="tips-arrow"></div>
-                    <ul class="tips-inner">
-                        <li>菜单</li>
-                        <li>标签</li>
-                        
-                        <li>友情链接</li>
-                        
-                        
-                        <li>关于我</li>
-                        
-                    </ul>
-                </div>
-            </div>
-        
-
-        <div id="switch-area" class="switch-area">
-            <div class="switch-wrap">
-                <section class="switch-part switch-part1">
-                    <nav class="header-menu">
-                        <ul>
-                        
-                            <li><a href="/disshu.github.io/">主页</a></li>
-                        
-                            <li><a href="/disshu.github.io/archives/">所有文章</a></li>
-                        
-                            <li><a href="/disshu.github.io/tags/">标签云</a></li>
-                        
-                            <li><a href="/disshu.github.io/about/">关于我</a></li>
-                        
-                        </ul>
-                    </nav>
-                    <nav class="header-nav">
-                        <ul class="social">
-                            
-                                <a class="fa Email" href="mailto:123@123.com" title="Email"></a>
-                            
-                                <a class="fa GitHub" href="#" title="GitHub"></a>
-                            
-                                <a class="fa RSS" href="/disshu.github.io/atom.xml" title="RSS"></a>
-                            
-                        </ul>
-                    </nav>
-                </section>
-                
-                
-                <section class="switch-part switch-part2">
-                    <div class="widget tagcloud" id="js-tagcloud">
-                        
-                    </div>
-                </section>
-                
-                
-                
-                <section class="switch-part switch-part3">
-                    <div id="js-friends">
-                    
-                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
-                    
-                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
-                    
-                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
-                    
-                    </div>
-                </section>
-                
-
-                
-                
-                <section class="switch-part switch-part4">
-                
-                    <div id="js-aboutme">专注于前端</div>
-                </section>
-                
-            </div>
+<header class="site-header header-background" style="background-image: url(/disshu.github.io//img/default-banner-dark.jpg)">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="page-title with-background-image">
+          <p class="title">js原生污染+curl常用命令</p>
+          <p class="subtitle"></p>
         </div>
-    </header>                
-</div>
-    </div>
-    <div class="mid-col">
-      <nav id="mobile-nav">
-      <div class="overlay">
-          <div class="slider-trigger"></div>
-          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">disshu</a></h1>
-      </div>
-    <div class="intrude-less">
-        <header id="header" class="inner">
-            <a href="/disshu.github.io/" class="profilepic">
-                <img src="/img/avatar.png" class="animated zoomIn">
-            </a>
-            <hgroup>
-              <h1 class="header-author"><a href="/disshu.github.io/" title="回到主页">disshu</a></h1>
-            </hgroup>
+        <div class="site-menu with-background-image">
+          <ul>
             
-            <nav class="header-menu">
-                <ul>
-                
-                    <li><a href="/disshu.github.io/">主页</a></li>
-                
-                    <li><a href="/disshu.github.io/archives/">所有文章</a></li>
-                
-                    <li><a href="/disshu.github.io/tags/">标签云</a></li>
-                
-                    <li><a href="/disshu.github.io/about/">关于我</a></li>
-                
-                <div class="clearfix"></div>
-                </ul>
-            </nav>
-            <nav class="header-nav">
-                        <ul class="social">
-                            
-                                <a class="fa Email" target="_blank" href="mailto:123@123.com" title="Email"></a>
-                            
-                                <a class="fa GitHub" target="_blank" href="#" title="GitHub"></a>
-                            
-                                <a class="fa RSS" target="_blank" href="/disshu.github.io/atom.xml" title="RSS"></a>
-                            
-                        </ul>
-            </nav>
-        </header>                
-    </div>
-    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
-</nav>
-      <div class="body-wrap"><article id="post-js原生污染-curl常用命令" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/disshu.github.io/2019/12/09/js原生污染-curl常用命令/" class="article-date">
-      <time datetime="2019-12-08T21:58:05.000Z" itemprop="datePublished">2019-12-08</time>
-</a>
-
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      js原生污染+curl常用命令
-    </h1>
-  
-
-      </header>
-      
-      <div class="article-info article-info-post">
-        
-
-        
-        <div class="clearfix"></div>
+              <li>
+                <a href="/disshu.github.io/">
+                  
+                  Home
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="/disshu.github.io/archives">
+                  
+                  Archives
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="https://github.com/<your-github-username>">
+                  
+                  Github
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="mailto:<your-email-address>">
+                  
+                  Email
+                  
+                </a>
+              </li>
+            
+          </ul>
+        </div>
       </div>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
+    </div>
+  </div>
+</header>
+
+<article>
+  <div class="container typo">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-info text-muted">
           
-        <h2 id="js原生污染"><a href="#js原生污染" class="headerlink" title="js原生污染"></a>js原生污染</h2><p><strong>js的原生属性prototype可以修改一个函数的属性</strong><br><strong>而当我们用函数创建一个对象时object.<strong>proto</strong>的属性指向 function.prototype</strong><br>例如 下面代码<br>可以看出person1的<strong>proto</strong>指向person.prototype </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">function person(fullName, age) &#123;</span><br><span class="line">    this.age = age;</span><br><span class="line">    this.fullName = fullName;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">var person1 = new person(&quot;Anirudh&quot;, 25);</span><br><span class="line">var person2 = new person(&quot;Anand&quot;, 45);</span><br></pre></td></tr></table></figure>
+            <!-- Author -->
+            <span class="author info">By disshu</span>
+          
+          <!-- Date -->
+          <span class="date-time info">On
+            <span class="date">2019-12-08</span>
+            <span class="time">08:00:49</span>
+          </span>
+          
+        </div>
+        <!-- Tags -->
+        
+        <!-- Post Main Content -->
+        <div class="post-content">
+          <h2 id="js原生污染"><a href="#js原生污染" class="headerlink" title="js原生污染"></a>js原生污染</h2><p><strong>js的原生属性prototype可以修改一个函数的属性</strong><br><strong>而当我们用函数创建一个对象时object.<strong>proto</strong>的属性指向 function.prototype</strong><br>例如 下面代码<br>可以看出person1的<strong>proto</strong>指向person.prototype </p>
+<pre><code class="hljs undefined"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">person</span></span>(fullName, age) &#123;
+    <span class="hljs-built_in">this</span>.age = age;
+    <span class="hljs-built_in">this</span>.fullName = fullName;
+&#125;
+ 
+<span class="hljs-keyword">var</span> person1 = <span class="hljs-keyword">new</span> <span class="hljs-type">person</span>(<span class="hljs-string">"Anirudh"</span>, <span class="hljs-number">25</span>);
+<span class="hljs-keyword">var</span> person2 = <span class="hljs-keyword">new</span> <span class="hljs-type">person</span>(<span class="hljs-string">"Anand"</span>, <span class="hljs-number">45</span>);</code></pre>
 
 <p>但其实这些都是js一些基本属性，不存在安全问题，但是如果我们通过修改一个对象进而修改了原声函数会怎么样</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var person3 = new person(&quot;test&quot;, 55);</span><br><span class="line"> </span><br><span class="line">person3.constructor;  // prints the function &quot;person&quot; itself</span><br><span class="line">//person3.constructor的属性指向person本身，而修改person3.constructor.prototype可以修改//person的属性，从而影响其他指向person的对象</span><br><span class="line"> </span><br><span class="line">person3.constructor.constructor; // prints ƒ Function() &#123; [native code] &#125;    &lt;- Global Function constructor</span><br><span class="line"> </span><br><span class="line">person3.constructor.constructor(&quot;return 1&quot;);</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs undefined"><span class="hljs-keyword">var</span> person3 = <span class="hljs-keyword">new</span> person(<span class="hljs-string">"test"</span>, <span class="hljs-number">55</span>);
+ 
+person3.constructor;  <span class="hljs-comment">// prints the function "person" itself</span>
+<span class="hljs-comment">//person3.constructor的属性指向person本身，而修改person3.constructor.prototype可以修改//person的属性，从而影响其他指向person的对象</span>
+ 
+person3.constructor.<span class="hljs-keyword">constructor</span>; // prints ƒ Function(<span class="hljs-params"></span>) &#123; [native code] &#125;    &lt;- Global <span class="hljs-built_in">Function</span> <span class="hljs-keyword">constructor</span>
+ 
+person3.<span class="hljs-keyword">constructor</span>.<span class="hljs-keyword">constructor</span>(<span class="hljs-params">"<span class="hljs-keyword">return</span> 1"</span>);</code></pre>
 
 <p>我们以一道ctf题为例子</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">const isObject = obj =&gt; obj &amp;&amp; obj.constructor &amp;&amp; obj.constructor === Object;</span><br><span class="line"> </span><br><span class="line">function merge(a, b) &#123;</span><br><span class="line">    console.log(b); // prints &#123; __proto__: &#123; admin: 1 &#125; &#125;</span><br><span class="line">    for (var attr in b) &#123;</span><br><span class="line">        console.log(&quot;Current attribute: &quot; + attr); // prints Current attribute: __proto__       </span><br><span class="line">        if (isObject(a[attr]) &amp;&amp; isObject(b[attr])) &#123;</span><br><span class="line">            merge(a[attr], b[attr]);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            a[attr] = b[attr];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return a</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs undefined"><span class="hljs-keyword">const</span> isObject = <span class="hljs-function"><span class="hljs-params">obj</span> =&gt;</span> obj &amp;&amp; obj.constructor &amp;&amp; obj.constructor === <span class="hljs-built_in">Object</span>;
+ 
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">merge</span>(<span class="hljs-params">a, b</span>) </span>&#123;
+    <span class="hljs-built_in">console</span>.log(b); <span class="hljs-comment">// prints &#123; __proto__: &#123; admin: 1 &#125; &#125;</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> attr <span class="hljs-keyword">in</span> b) &#123;
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Current attribute: "</span> + attr); <span class="hljs-comment">// prints Current attribute: __proto__       </span>
+        <span class="hljs-keyword">if</span> (isObject(a[attr]) &amp;&amp; isObject(b[attr])) &#123;
+            merge(a[attr], b[attr]);
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            a[attr] = b[attr];
+        &#125;
+    &#125;
+    <span class="hljs-keyword">return</span> a
+&#125;</code></pre>
 
 <p><strong>这个函数完美的诠释了原型污染<br>我们在b里定义一个属性 {<strong>proto</strong>:{admin:1}}<br>调用merge(a,b),因为<strong>proto</strong>的属性一直是对象</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if (isObject(a[attr]) &amp;&amp; isObject(b[attr]))一直为true</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs undefined"><span class="hljs-keyword">if</span> (isObject(<span class="hljs-selector-tag">a</span>[attr]) &amp;&amp; isObject(<span class="hljs-selector-tag">b</span>[attr]))一直为true</code></pre>
 
 <p>那么接下来就知道，最后递归结束的时候b的属性赋给了a的属性，并且返回a,那么此时a就拥有了b的属性<br>有些ctf题以此为条件出题，会出现flag</p>
 <hr>
 <p>##curl常用命令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl 网址</span><br><span class="line">-o 保存网页源代码</span><br><span class="line">-L 跳转到新网址</span><br><span class="line">-i 显示头部信息</span><br><span class="line">-v 显示全部信息</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs undefined">curl 网址
+<span class="hljs-deletion">-o 保存网页源代码</span>
+<span class="hljs-deletion">-L 跳转到新网址</span>
+<span class="hljs-deletion">-i 显示头部信息</span>
+<span class="hljs-deletion">-v 显示全部信息</span></code></pre>
 
 <ul>
 <li><p>做题常用命令</p>
 <pre><code>**GET 提交**
-**POST 提交**</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ curl example.com/form.cgi?data=xxx//get</span><br><span class="line">$ curl -X POST --data &quot;data=xxx&quot; example.com/form.cgi//post</span><br><span class="line">//如果要对信息编码</span><br><span class="line">$ curl -X POST--data-urlencode &quot;date=April 1&quot; example.com/form.cgi</span><br></pre></td></tr></table></figure>
+**POST 提交**</code></pre><pre><code class="hljs undefined">$ curl example.com/<span class="hljs-keyword">form</span>.cgi?data=xxx<span class="hljs-comment">//get</span>
+$ curl -X <span class="hljs-keyword">POST</span> --data <span class="hljs-string">"data=xxx"</span> example.com/<span class="hljs-keyword">form</span>.cgi<span class="hljs-comment">//post</span>
+<span class="hljs-comment">//如果要对信息编码</span>
+$ curl -X <span class="hljs-keyword">POST</span>--data-urlencode <span class="hljs-string">"date=April 1"</span> example.com/<span class="hljs-keyword">form</span>.cgi</code></pre>
 </li>
 <li><p>使用cookie参数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl --cookie &quot;name=xxx&quot; www.example.com</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs undefined">$ curl --cookie <span class="hljs-string">"name=xxx"</span> www<span class="hljs-selector-class">.example</span><span class="hljs-selector-class">.com</span></code></pre>
 </li>
 <li><p>-F参数用来向服务器上传二进制文件。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -F &apos;file=@photo.png&apos; https://google.com/profile//@符号不要忘记</span><br></pre></td></tr></table></figure>
+<pre><code class="hljs undefined"><span class="hljs-variable">$ </span>curl -F <span class="hljs-string">'file=@photo.png'</span> <span class="hljs-symbol">https:</span>/<span class="hljs-regexp">/google.com/profile</span><span class="hljs-regexp">//</span>@符号不要忘记</code></pre>
 
 </li>
 </ul>
 <p>##参考链接<br>    * <a href="https://www.e-learn.cn/content/qita/2667536" target="_blank" rel="noopener">https://www.e-learn.cn/content/qita/2667536</a><br>    * <a href="http://www.ruanyifeng.com/blog/2019/09/curl-reference.html" target="_blank" rel="noopener">http://www.ruanyifeng.com/blog/2019/09/curl-reference.html</a></p>
 
-      
+        </div>
+      </div>
     </div>
-    
   </div>
-  
-    
-    <div class="copyright">
-        <p><span>本文标题:</span><a href="/disshu.github.io/2019/12/09/js原生污染-curl常用命令/">js原生污染+curl常用命令</a></p>
-        <p><span>文章作者:</span><a href="/" title="回到主页">disshu</a></p>
-        <p><span>发布时间:</span>2019-12-08, 16:58:05</p>
-        <p><span>最后更新:</span>2019-12-08, 19:26:58</p>
-        <p>
-            <span>原始链接:</span><a class="post-url" href="/disshu.github.io/2019/12/09/js原生污染-curl常用命令/" title="js原生污染+curl常用命令">http://yoursite.com/2019/12/09/js原生污染-curl常用命令/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2019/12/09/js原生污染-curl常用命令/　　作者: disshu" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
-            <script> var clipboard = new Clipboard('.copy-path'); </script>
-        </p>
-        <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
-        </p>
-    </div>
-
-
-
-    <nav id="article-nav">
-        
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/disshu.github.io/2019/12/09/xml攻击/">
-                    xml攻击
-                </a>
-            </div>
-        
-        
-            <div id="article-nav-older" class="article-nav-title">
-                <a href="/disshu.github.io/2019/12/08/网络安全随记/">
-                    网络安全随记(持续更新)
-                </a>
-            </div>
-        
-    </nav>
-
-  
 </article>
 
-    <div id="toc" class="toc-article">
-        <strong class="toc-title">文章目录</strong>
-        
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#js原生污染"><span class="toc-number">1.</span> <span class="toc-text">js原生污染</span></a></li></ol>
-        
+
+
+    <!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <p class="copyright text-muted">
+          Theme By <a target="_blank" href="https://github.com/levblanc">Levblanc.</a>
+          Inspired By <a target="_blank" href="https://github.com/klugjo/hexo-theme-clean-blog">Clean Blog.</a>
+        <p class="copyright text-muted">
+          Powered By <a target="_blank" href="https://hexo.io/">Hexo.</a>
+        </p>
+      </div>
     </div>
-    <style>
-        .left-col .switch-btn,
-        .left-col .switch-area {
-            display: none;
-        }
-        .toc-level-3 i,
-        .toc-level-3 ol {
-            display: none !important;
-        }
-    </style>
-
-    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
-
-    <script>
-        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
-    </script>
-
-
-
-    
-<div class="share">
-    
-        <div class="bdsharebuttonbox">
-            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
-            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
-            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
-            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
-            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
-            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
-            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
-        </div>
-        <script>
-            window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"js原生污染+curl常用命令　| disshu　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
-        </script>
-    
-
-    
-</div>
-
-
-
-
-
-
-
-    
-
-
-
-
-    <div class="scroll" id="post-nav-button">
-        
-            <a href="/disshu.github.io/2019/12/09/xml攻击/" title="上一篇: xml攻击">
-                <i class="fa fa-angle-left"></i>
-            </a>
-        
-
-        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
-
-        
-            <a href="/disshu.github.io/2019/12/08/网络安全随记/" title="下一篇: 网络安全随记(持续更新)">
-                <i class="fa fa-angle-right"></i>
-            </a>
-        
-    </div>
-
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/19/区块链/">区块链</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/17/php序列化和反序列化/">php序列化和反序列化</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/17/php弱比较/">php弱比较</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/13/密码学-DESCBC/">密码学-DESCBC</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/11/密码学-DES/">密码学-DES</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/10/第五空间/">第五空间</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/10/密码学-重合指数法/">密码学-重合指数法</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/10/密码学-反射密码破解/">密码学-仿射密码破解</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/10/密码学-线性反馈移位寄存器/">密码学-线性反馈移位寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/09/xml攻击/">xml攻击</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/09/js原生污染-curl常用命令/">js原生污染+curl常用命令</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/08/网络安全随记/">网络安全随记(持续更新)</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/08/计划/">计划/2019</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/11/10/Vue感想(持续更新)/">Vue项目开发(持续更新)</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2018/10/16/CTF比赛随记/">CTF比赛随记(持续更新)</a></li></ul>
-
-
-
-
-    <script>
-        
-    </script>
-</div>
-      <footer id="footer">
-    <div class="outer">
-        <div id="footer-info">
-            <div class="footer-left">
-                <i class="fa fa-copyright"></i> 
-                2016-2019 disshu
-            </div>
-            <div class="footer-right">
-                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
-            </div>
-        </div>
-        
-            <div class="visit">
-                
-                    <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
-                        </span>
-                    </span>
-                
-                
-                    <span>| </span>
-                
-                
-                    <span id="busuanzi_container_page_pv" style='display:none'>
-                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
-                        </span>
-                    </span>
-                
-            </div>
-        
-    </div>
-</footer>
-    </div>
-    
-<script data-main="/disshu.github.io/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            var iPad = window.navigator.userAgent.indexOf('iPad');
-            if (iPad > -1 || $(".left-col").css("display") === "none") {
-                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
-                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
-                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
-            }
-            else {
-                var backgroundnum = 5;
-                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
-                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
-            }
-        })
-    </script>
-
-
-
-
-
-<div class="scroll" id="scroll">
-    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
-    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
-    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
-</div>
-<script>
-    // Open in New Window
-    
-        var oOpenInNew = {
-            
-            
-            
-            
-            
-            
-             archives: ".archive-article-title", 
-             miniArchives: "a.post-list-link", 
-            
-             friends: "#js-friends a", 
-             socail: ".social a" 
-        }
-        for (var x in oOpenInNew) {
-            $(oOpenInNew[x]).attr("target", "_blank");
-        }
-    
-</script>
-
-<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-</script>
   </div>
-</body>
+</footer>
+
+
+    <!-- After Footer Scripts -->
+<script src="/disshu.github.io/js/highlight.pack.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    var codeBlocks = Array.prototype.slice.call(document.getElementsByTagName('pre'))
+    codeBlocks.forEach(function(block, index) {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+  </body>
 </html>
+

@@ -1,513 +1,304 @@
 <!DOCTYPE html>
-<html lang="zh-Hans">
-<head><meta name="generator" content="Hexo 3.9.0">
-
-    <!--[if lt IE 9]>
-        <style>body {display: none; background: none !important} </style>
-        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
-    <![endif]-->
-
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="format-detection" content="telephone=no">
-<meta name="author" content="disshu">
-
-
-
-<meta name="description" content="对于维基利亚密码，其实最好的方式就是暴力破解，但是一旦明文超过一定的数量，那么破解将耗费大量的时间，那么就要用重合指数法，重合指数法一定要有大量的明文做支撑，下面附上python代码 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585">
-<meta property="og:type" content="article">
-<meta property="og:title" content="密码学-重合指数法">
-<meta property="og:url" content="http://yoursite.com/2019/12/10/密码学-重合指数法/index.html">
-<meta property="og:site_name" content="disshu">
-<meta property="og:description" content="对于维基利亚密码，其实最好的方式就是暴力破解，但是一旦明文超过一定的数量，那么破解将耗费大量的时间，那么就要用重合指数法，重合指数法一定要有大量的明文做支撑，下面附上python代码 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-09T12:53:09.503Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="密码学-重合指数法">
-<meta name="twitter:description" content="对于维基利亚密码，其实最好的方式就是暴力破解，但是一旦明文超过一定的数量，那么破解将耗费大量的时间，那么就要用重合指数法，重合指数法一定要有大量的明文做支撑，下面附上python代码 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585">
-
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-
-
+<html>
+  <!-- Html Head Tag-->
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content>
+  <meta name="author" content="disshu">
+  <!-- Open Graph Data -->
+  <meta property="og:title" content="密码学-重合指数法">
+  <meta property="og:description" content>
+  <meta property="og:site_name" content="disshu">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="http://yoursite.com">
+  
     <link rel="alternate" href="/atom.xml" title="disshu" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+  <!-- Site Title -->
+  <title>disshu</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="/disshu.github.io/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  
+  <link rel="stylesheet" href="/disshu.github.io/css/style.dark.css">
+
+  <!-- Google Analytics -->
+  
+
+</head>
+
+  <body>
+    <!-- Page Header -->
 
 
-
-    <link rel="shortcut icon" href="/favicon.png">
-
-
-
-    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
-
-
-
-    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
-
-
-
-    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
-    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
-
-
-<link rel="stylesheet" href="/disshu.github.io/css/style.css">
-
-
-
-<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
-
-
-<title>密码学-重合指数法 | disshu</title>
-
-<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
-<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
-
-<script>
-    var yiliaConfig = {
-        fancybox: true,
-        animate: true,
-        isHome: false,
-        isPost: true,
-        isArchive: false,
-        isTag: false,
-        isCategory: false,
-        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
-        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
-        search: 
-    }
-</script>
-
-
-    <script> yiliaConfig.jquery_ui = [false]; </script>
-
-
-
-    <script> yiliaConfig.rootUrl = "\/";</script>
-
-
-
-
-
-
-</head></html>
-<body>
-  <div id="container">
-    <div class="left-col">
-    <div class="overlay"></div>
-<div class="intrude-less">
-    <header id="header" class="inner">
-        <a href="/disshu.github.io/" class="profilepic">
-            <img src="/img/avatar.png" class="animated zoomIn">
-        </a>
-        <hgroup>
-          <h1 class="header-author"><a href="/disshu.github.io/">disshu</a></h1>
-        </hgroup>
-
-        
-
-        
-
-
-        
-            <div id="switch-btn" class="switch-btn">
-                <div class="icon">
-                    <div class="icon-ctn">
-                        <div class="icon-wrap icon-house" data-idx="0">
-                            <div class="birdhouse"></div>
-                            <div class="birdhouse_holes"></div>
-                        </div>
-                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
-                            <div class="ribbon"></div>
-                        </div>
-                        
-                        <div class="icon-wrap icon-link hide" data-idx="2">
-                            <div class="loopback_l"></div>
-                            <div class="loopback_r"></div>
-                        </div>
-                        
-                        
-                        <div class="icon-wrap icon-me hide" data-idx="3">
-                            <div class="user"></div>
-                            <div class="shoulder"></div>
-                        </div>
-                        
-                    </div>
-                    
-                </div>
-                <div class="tips-box hide">
-                    <div class="tips-arrow"></div>
-                    <ul class="tips-inner">
-                        <li>菜单</li>
-                        <li>标签</li>
-                        
-                        <li>友情链接</li>
-                        
-                        
-                        <li>关于我</li>
-                        
-                    </ul>
-                </div>
-            </div>
-        
-
-        <div id="switch-area" class="switch-area">
-            <div class="switch-wrap">
-                <section class="switch-part switch-part1">
-                    <nav class="header-menu">
-                        <ul>
-                        
-                            <li><a href="/disshu.github.io/">主页</a></li>
-                        
-                            <li><a href="/disshu.github.io/archives/">所有文章</a></li>
-                        
-                            <li><a href="/disshu.github.io/tags/">标签云</a></li>
-                        
-                            <li><a href="/disshu.github.io/about/">关于我</a></li>
-                        
-                        </ul>
-                    </nav>
-                    <nav class="header-nav">
-                        <ul class="social">
-                            
-                                <a class="fa Email" href="mailto:123@123.com" title="Email"></a>
-                            
-                                <a class="fa GitHub" href="#" title="GitHub"></a>
-                            
-                                <a class="fa RSS" href="/disshu.github.io/atom.xml" title="RSS"></a>
-                            
-                        </ul>
-                    </nav>
-                </section>
-                
-                
-                <section class="switch-part switch-part2">
-                    <div class="widget tagcloud" id="js-tagcloud">
-                        
-                    </div>
-                </section>
-                
-                
-                
-                <section class="switch-part switch-part3">
-                    <div id="js-friends">
-                    
-                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
-                    
-                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
-                    
-                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
-                    
-                    </div>
-                </section>
-                
-
-                
-                
-                <section class="switch-part switch-part4">
-                
-                    <div id="js-aboutme">专注于前端</div>
-                </section>
-                
-            </div>
+<header class="site-header header-background" style="background-image: url(/disshu.github.io//img/default-banner-dark.jpg)">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="page-title with-background-image">
+          <p class="title">密码学-重合指数法</p>
+          <p class="subtitle"></p>
         </div>
-    </header>                
-</div>
-    </div>
-    <div class="mid-col">
-      <nav id="mobile-nav">
-      <div class="overlay">
-          <div class="slider-trigger"></div>
-          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">disshu</a></h1>
-      </div>
-    <div class="intrude-less">
-        <header id="header" class="inner">
-            <a href="/disshu.github.io/" class="profilepic">
-                <img src="/img/avatar.png" class="animated zoomIn">
-            </a>
-            <hgroup>
-              <h1 class="header-author"><a href="/disshu.github.io/" title="回到主页">disshu</a></h1>
-            </hgroup>
+        <div class="site-menu with-background-image">
+          <ul>
             
-            <nav class="header-menu">
-                <ul>
-                
-                    <li><a href="/disshu.github.io/">主页</a></li>
-                
-                    <li><a href="/disshu.github.io/archives/">所有文章</a></li>
-                
-                    <li><a href="/disshu.github.io/tags/">标签云</a></li>
-                
-                    <li><a href="/disshu.github.io/about/">关于我</a></li>
-                
-                <div class="clearfix"></div>
-                </ul>
-            </nav>
-            <nav class="header-nav">
-                        <ul class="social">
-                            
-                                <a class="fa Email" target="_blank" href="mailto:123@123.com" title="Email"></a>
-                            
-                                <a class="fa GitHub" target="_blank" href="#" title="GitHub"></a>
-                            
-                                <a class="fa RSS" target="_blank" href="/disshu.github.io/atom.xml" title="RSS"></a>
-                            
-                        </ul>
-            </nav>
-        </header>                
-    </div>
-    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
-</nav>
-      <div class="body-wrap"><article id="post-密码学-重合指数法" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/disshu.github.io/2019/12/10/密码学-重合指数法/" class="article-date">
-      <time datetime="2019-12-10T01:36:31.000Z" itemprop="datePublished">2019-12-09</time>
-</a>
-
-
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      密码学-重合指数法
-    </h1>
-  
-
-      </header>
-      
-      <div class="article-info article-info-post">
-        
-
-        
-        <div class="clearfix"></div>
+              <li>
+                <a href="/disshu.github.io/">
+                  
+                  Home
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="/disshu.github.io/archives">
+                  
+                  Archives
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="https://github.com/<your-github-username>">
+                  
+                  Github
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="mailto:<your-email-address>">
+                  
+                  Email
+                  
+                </a>
+              </li>
+            
+          </ul>
+        </div>
       </div>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
+    </div>
+  </div>
+</header>
+
+<article>
+  <div class="container typo">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-info text-muted">
           
-        <p><strong>对于维基利亚密码，其实最好的方式就是暴力破解，但是一旦明文超过一定的数量，那么破解将耗费大量的时间，那么就要用重合指数法，重合指数法一定要有大量的明文做支撑，下面附上python代码</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br></pre></td><td class="code"><pre><span class="line">from string import ascii_lowercase as lowercase</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#必须要大量的明文做支撑</span><br><span class="line">def VigenereDecrypto(output, key):</span><br><span class="line">    ptLen = len(output)</span><br><span class="line">    keyLen = len(key)</span><br><span class="line">    quotient = ptLen // keyLen</span><br><span class="line">    remainder = ptLen % keyLen</span><br><span class="line">    inp = &quot;&quot;</span><br><span class="line">    for i in range(0, quotient):</span><br><span class="line">        for j in range(0, keyLen):</span><br><span class="line">            c = int((ord(output[i * keyLen + j]) - ord(&apos;a&apos;) - (ord(key[j]) - ord(&apos;a&apos;))) % 26 + ord(&apos;a&apos;))</span><br><span class="line">            inp += chr(c)</span><br><span class="line">    for i in range(0, remainder):</span><br><span class="line">        c = int((ord(output[quotient * keyLen + i]) - ord(&apos;a&apos;) - (ord(key[i]) - ord(&apos;a&apos;))) % 26 + ord(&apos;a&apos;))</span><br><span class="line">        # global input</span><br><span class="line">        inp += chr(c)</span><br><span class="line">    return inp</span><br><span class="line">#获得纯文本</span><br><span class="line">def get_trim_text(text):</span><br><span class="line">    text = text.lower()</span><br><span class="line">    trim_text = &apos;&apos;</span><br><span class="line">    for l in text:</span><br><span class="line">        if lowercase.find(l) &gt;= 0:</span><br><span class="line">            trim_text += l</span><br><span class="line">    return trim_text</span><br><span class="line"></span><br><span class="line"># 计算重合指数</span><br><span class="line">def get_coincidence_index(text):</span><br><span class="line">    text = get_trim_text(text)</span><br><span class="line">    length = len(text)</span><br><span class="line">    letter_stats = []</span><br><span class="line">    for l in lowercase:</span><br><span class="line">        lt = &#123;&#125;</span><br><span class="line">        count = text.count(l)#计算text文本里的数目</span><br><span class="line">        lt[l] = count</span><br><span class="line">        letter_stats.append(lt)</span><br><span class="line"></span><br><span class="line">    index = 0</span><br><span class="line">    for d in letter_stats:</span><br><span class="line">        v = list(d.values())[0]</span><br><span class="line">        index += (float(v) / length) ** 2</span><br><span class="line"></span><br><span class="line">    return index</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 计算和0.067的差距大小</span><br><span class="line">def get_var(data, mean=0.065):</span><br><span class="line">    if not data:</span><br><span class="line">        return 0</span><br><span class="line">    var_sum = 0</span><br><span class="line">    for d in data:</span><br><span class="line">        var_sum += (d - mean) ** 2</span><br><span class="line"></span><br><span class="line">    return float(var_sum) / len(data)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 求秘钥长度</span><br><span class="line">def get_key_length(text):</span><br><span class="line">    # assume text length less than 26</span><br><span class="line">    text = get_trim_text(text)</span><br><span class="line">    group = []</span><br><span class="line">    for n in range(1, len(text) + 1):</span><br><span class="line">        group_str = [&apos;&apos; for i in range(n)]</span><br><span class="line">        for i in range(len(text)):</span><br><span class="line">            l = text[i]</span><br><span class="line">            for j in range(n):</span><br><span class="line">                if i % n == j:</span><br><span class="line">                    group_str[j] += l</span><br><span class="line">        group.append(group_str)</span><br><span class="line">       </span><br><span class="line"></span><br><span class="line">    var_list = []</span><br><span class="line">    length = 1</span><br><span class="line">    for tex in group:</span><br><span class="line">        data = []</span><br><span class="line">        for t in tex:</span><br><span class="line">            index = get_coincidence_index(t)</span><br><span class="line">            data.append(index)</span><br><span class="line">        var_list.append([length, get_var(data)])</span><br><span class="line">        length += 1</span><br><span class="line">    var_list = sorted(var_list, key=lambda x: x[1])#按照重合指数排序，差距最小的第一个</span><br><span class="line">   </span><br><span class="line">    return [v[0] for v in var_list[:int(n / 2) + 1]]  # var_list[0][0]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 统计字母频度，确定密钥长度后，分组的不同字母的频率</span><br><span class="line">def countList(lis):</span><br><span class="line">    li = []</span><br><span class="line">    alphabet = [chr(i) for i in range(97, 123)]</span><br><span class="line">    for c in alphabet:</span><br><span class="line">        count = 0</span><br><span class="line">        for ch in lis:</span><br><span class="line">            if ch == c:</span><br><span class="line">                count += 1</span><br><span class="line">        li.append(float(count) / len(lis))</span><br><span class="line">    return li</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 根据密钥长度将密文分组</span><br><span class="line">def textToList(text, length):</span><br><span class="line">    text = get_trim_text(text)</span><br><span class="line">    textMatrix = []</span><br><span class="line">    row = []</span><br><span class="line">    index = 0</span><br><span class="line">    for ch in text:</span><br><span class="line">        row.append(ch)</span><br><span class="line">        index += 1</span><br><span class="line">        if index % length == 0:</span><br><span class="line">            textMatrix.append(row)</span><br><span class="line">            row = []</span><br><span class="line">    textMatrix.append(row)</span><br><span class="line">    return textMatrix</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># 获取密钥</span><br><span class="line">def getKey(text, length):</span><br><span class="line">    text = get_trim_text(text)</span><br><span class="line">    key = []  # 定义空白列表用来存密钥</span><br><span class="line">    alphaRate = [0.08167, 0.01492, 0.02782, 0.04253, 0.12705, 0.02228, 0.02015, 0.06094, \</span><br><span class="line">                 0.06996, 0.00153, 0.00772, 0.04025, 0.02406, 0.06749, 0.07507, 0.01929, \</span><br><span class="line">                 0.0009, 0.05987, 0.06327, 0.09056, 0.02758, 0.00978, 0.02360, 0.0015, 0.01974, 0.00074]#自然规律，书上有</span><br><span class="line">    matrix = textToList(text, length)</span><br><span class="line">    for i in range(length):</span><br><span class="line">        w = [row[i] for row in matrix if len(row) &gt; i]  # 获取每组密文</span><br><span class="line">        li = countList(w)</span><br><span class="line">        powLi = []  # 算乘积</span><br><span class="line">        for j in range(26):</span><br><span class="line">            Sum = 0.0</span><br><span class="line">            for k in range(26):</span><br><span class="line">                Sum += alphaRate[k] * li[k]</span><br><span class="line">            powLi.append(Sum)</span><br><span class="line">            li = li[1:] + li[:1]  # 循环移位</span><br><span class="line">        Abs = 100</span><br><span class="line">        ch = &apos;&apos;</span><br><span class="line">        for j in range(len(powLi)):</span><br><span class="line">            if abs(powLi[j] - 0.065546) &lt; Abs:  # 找出最接近英文字母重合指数的项</span><br><span class="line">                Abs = abs(powLi[j] - 0.065546)  # 保存最接近的距离，作为下次比较的基准</span><br><span class="line">                ch = chr(j + 97)</span><br><span class="line">        key.append(ch)</span><br><span class="line">    return key</span><br><span class="line"></span><br><span class="line">key_lengths = []</span><br><span class="line">c = input(&quot;please enter ciphertext: &quot;)</span><br><span class="line">key_lengths = get_key_length(c)</span><br><span class="line">print(key_lengths)</span><br><span class="line">for i in range(len(key_lengths)):</span><br><span class="line">    key = getKey(c,key_lengths[i])</span><br><span class="line">    print(&quot;明文%s, 密钥长度是 %d, 密钥是 %s&quot; \</span><br><span class="line">          % (VigenereDecrypto (c , key), key_lengths[i], key))</span><br></pre></td></tr></table></figure>
+            <!-- Author -->
+            <span class="author info">By disshu</span>
+          
+          <!-- Date -->
+          <span class="date-time info">On
+            <span class="date">2019-12-09</span>
+            <span class="time">08:00:49</span>
+          </span>
+          
+        </div>
+        <!-- Tags -->
+        
+        <!-- Post Main Content -->
+        <div class="post-content">
+          <p><strong>对于维基利亚密码，其实最好的方式就是暴力破解，但是一旦明文超过一定的数量，那么破解将耗费大量的时间，那么就要用重合指数法，重合指数法一定要有大量的明文做支撑，下面附上python代码</strong></p>
+<pre><code class="hljs undefined">from <span class="hljs-built_in">string</span> import ascii_lowercase as lowercase
+
+
+#必须要大量的明文做支撑
+def VigenereDecrypto(output, <span class="hljs-built_in">key</span>):
+    ptLen = len(output)
+    keyLen = len(<span class="hljs-built_in">key</span>)
+    <span class="hljs-built_in">quotient</span> = ptLen // keyLen
+    <span class="hljs-built_in">remainder</span> = ptLen <span class="hljs-symbol">%</span> keyLen
+    inp = <span class="hljs-string">""</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, <span class="hljs-built_in">quotient</span>):
+        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, keyLen):
+            c = int((ord(output[i * keyLen + j]) - ord('a') - (ord(<span class="hljs-built_in">key</span>[j]) - ord('a'))) <span class="hljs-symbol">%</span> <span class="hljs-number">26</span> + ord('a'))
+            inp += chr(c)
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, <span class="hljs-built_in">remainder</span>):
+        c = int((ord(output[<span class="hljs-built_in">quotient</span> * keyLen + i]) - ord('a') - (ord(<span class="hljs-built_in">key</span>[i]) - ord('a'))) <span class="hljs-symbol">%</span> <span class="hljs-number">26</span> + ord('a'))
+        # global input
+        inp += chr(c)
+    <span class="hljs-built_in">return</span> inp
+#获得纯文本
+def get_trim_text(text):
+    text = text.lower()
+    trim_text = ''
+    <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> text:
+        <span class="hljs-keyword">if</span> lowercase.find(l) &gt;= <span class="hljs-number">0</span>:
+            trim_text += l
+    <span class="hljs-built_in">return</span> trim_text
+
+# 计算重合指数
+def get_coincidence_index(text):
+    text = get_trim_text(text)
+    <span class="hljs-built_in">length</span> = len(text)
+    letter_stats = []
+    <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> lowercase:
+        lt = &#123;&#125;
+        count = text.count(l)#计算text文本里的数目
+        lt[l] = count
+        letter_stats.<span class="hljs-built_in">append</span>(lt)
+
+    index = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> letter_stats:
+        v = list(d.<span class="hljs-built_in">values</span>())[<span class="hljs-number">0</span>]
+        index += (<span class="hljs-built_in">float</span>(v) / <span class="hljs-built_in">length</span>) ** <span class="hljs-number">2</span>
+
+    <span class="hljs-built_in">return</span> index
+
+
+# 计算和<span class="hljs-number">0.067</span>的差距大小
+def get_var(data, <span class="hljs-built_in">mean</span>=<span class="hljs-number">0.065</span>):
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> data:
+        <span class="hljs-built_in">return</span> <span class="hljs-number">0</span>
+    var_sum = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> data:
+        var_sum += (d - <span class="hljs-built_in">mean</span>) ** <span class="hljs-number">2</span>
+
+    <span class="hljs-built_in">return</span> <span class="hljs-built_in">float</span>(var_sum) / len(data)
+
+
+# 求秘钥长度
+def get_key_length(text):
+    # <span class="hljs-built_in">assume</span> text <span class="hljs-built_in">length</span> less than <span class="hljs-number">26</span>
+    text = get_trim_text(text)
+    group = []
+    <span class="hljs-keyword">for</span> n <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, len(text) + <span class="hljs-number">1</span>):
+        group_str = ['' <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n)]
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(len(text)):
+            l = text[i]
+            <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):
+                <span class="hljs-keyword">if</span> i <span class="hljs-symbol">%</span> n == j:
+                    group_str[j] += l
+        group.<span class="hljs-built_in">append</span>(group_str)
+       
+
+    var_list = []
+    <span class="hljs-built_in">length</span> = <span class="hljs-number">1</span>
+    <span class="hljs-keyword">for</span> <span class="hljs-built_in">tex</span> <span class="hljs-keyword">in</span> group:
+        data = []
+        <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> <span class="hljs-built_in">tex</span>:
+            index = get_coincidence_index(t)
+            data.<span class="hljs-built_in">append</span>(index)
+        var_list.<span class="hljs-built_in">append</span>([<span class="hljs-built_in">length</span>, get_var(data)])
+        <span class="hljs-built_in">length</span> += <span class="hljs-number">1</span>
+    var_list = sorted(var_list, <span class="hljs-built_in">key</span>=<span class="hljs-built_in">lambda</span> x: x[<span class="hljs-number">1</span>])#按照重合指数排序，差距最小的第一个
+   
+    <span class="hljs-built_in">return</span> [v[<span class="hljs-number">0</span>] <span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> var_list[:int(n / <span class="hljs-number">2</span>) + <span class="hljs-number">1</span>]]  # var_list[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>]
+
+
+# 统计字母频度，确定密钥长度后，分组的不同字母的频率
+def countList(lis):
+    <span class="hljs-built_in">li</span> = []
+    alphabet = [chr(i) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">97</span>, <span class="hljs-number">123</span>)]
+    <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> alphabet:
+        count = <span class="hljs-number">0</span>
+        <span class="hljs-keyword">for</span> ch <span class="hljs-keyword">in</span> lis:
+            <span class="hljs-keyword">if</span> ch == c:
+                count += <span class="hljs-number">1</span>
+        <span class="hljs-built_in">li</span>.<span class="hljs-built_in">append</span>(<span class="hljs-built_in">float</span>(count) / len(lis))
+    <span class="hljs-built_in">return</span> <span class="hljs-built_in">li</span>
+
+
+# 根据密钥长度将密文分组
+def textToList(text, <span class="hljs-built_in">length</span>):
+    text = get_trim_text(text)
+    textMatrix = []
+    <span class="hljs-built_in">row</span> = []
+    index = <span class="hljs-number">0</span>
+    <span class="hljs-keyword">for</span> ch <span class="hljs-keyword">in</span> text:
+        <span class="hljs-built_in">row</span>.<span class="hljs-built_in">append</span>(ch)
+        index += <span class="hljs-number">1</span>
+        <span class="hljs-keyword">if</span> index <span class="hljs-symbol">%</span> <span class="hljs-built_in">length</span> == <span class="hljs-number">0</span>:
+            textMatrix.<span class="hljs-built_in">append</span>(<span class="hljs-built_in">row</span>)
+            <span class="hljs-built_in">row</span> = []
+    textMatrix.<span class="hljs-built_in">append</span>(<span class="hljs-built_in">row</span>)
+    <span class="hljs-built_in">return</span> textMatrix
+
+
+# 获取密钥
+def getKey(text, <span class="hljs-built_in">length</span>):
+    text = get_trim_text(text)
+    <span class="hljs-built_in">key</span> = []  # 定义空白列表用来存密钥
+    alphaRate = [<span class="hljs-number">0.08167</span>, <span class="hljs-number">0.01492</span>, <span class="hljs-number">0.02782</span>, <span class="hljs-number">0.04253</span>, <span class="hljs-number">0.12705</span>, <span class="hljs-number">0.02228</span>, <span class="hljs-number">0.02015</span>, <span class="hljs-number">0.06094</span>, \
+                 <span class="hljs-number">0.06996</span>, <span class="hljs-number">0.00153</span>, <span class="hljs-number">0.00772</span>, <span class="hljs-number">0.04025</span>, <span class="hljs-number">0.02406</span>, <span class="hljs-number">0.06749</span>, <span class="hljs-number">0.07507</span>, <span class="hljs-number">0.01929</span>, \
+                 <span class="hljs-number">0.0009</span>, <span class="hljs-number">0.05987</span>, <span class="hljs-number">0.06327</span>, <span class="hljs-number">0.09056</span>, <span class="hljs-number">0.02758</span>, <span class="hljs-number">0.00978</span>, <span class="hljs-number">0.02360</span>, <span class="hljs-number">0.0015</span>, <span class="hljs-number">0.01974</span>, <span class="hljs-number">0.00074</span>]#自然规律，书上有
+    <span class="hljs-built_in">matrix</span> = textToList(text, <span class="hljs-built_in">length</span>)
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">length</span>):
+        w = [<span class="hljs-built_in">row</span>[i] <span class="hljs-keyword">for</span> <span class="hljs-built_in">row</span> <span class="hljs-keyword">in</span> <span class="hljs-built_in">matrix</span> <span class="hljs-keyword">if</span> len(<span class="hljs-built_in">row</span>) &gt; i]  # 获取每组密文
+        <span class="hljs-built_in">li</span> = countList(w)
+        powLi = []  # 算乘积
+        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">26</span>):
+            Sum = <span class="hljs-number">0.0</span>
+            <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">26</span>):
+                Sum += alphaRate[k] * <span class="hljs-built_in">li</span>[k]
+            powLi.<span class="hljs-built_in">append</span>(Sum)
+            <span class="hljs-built_in">li</span> = <span class="hljs-built_in">li</span>[<span class="hljs-number">1</span>:] + <span class="hljs-built_in">li</span>[:<span class="hljs-number">1</span>]  # 循环移位
+        Abs = <span class="hljs-number">100</span>
+        ch = ''
+        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(len(powLi)):
+            <span class="hljs-keyword">if</span> <span class="hljs-built_in">abs</span>(powLi[j] - <span class="hljs-number">0.065546</span>) &lt; Abs:  # 找出最接近英文字母重合指数的项
+                Abs = <span class="hljs-built_in">abs</span>(powLi[j] - <span class="hljs-number">0.065546</span>)  # 保存最接近的距离，作为下次比较的基准
+                ch = chr(j + <span class="hljs-number">97</span>)
+        <span class="hljs-built_in">key</span>.<span class="hljs-built_in">append</span>(ch)
+    <span class="hljs-built_in">return</span> <span class="hljs-built_in">key</span>
+
+key_lengths = []
+c = input(<span class="hljs-string">"please enter ciphertext: "</span>)
+key_lengths = get_key_length(c)
+<span class="hljs-built_in">print</span>(key_lengths)
+<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(len(key_lengths)):
+    <span class="hljs-built_in">key</span> = getKey(c,key_lengths[i])
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">"明文%s, 密钥长度是 %d, 密钥是 %s"</span> \
+          <span class="hljs-symbol">%</span> (VigenereDecrypto (c , <span class="hljs-built_in">key</span>), key_lengths[i], <span class="hljs-built_in">key</span>))</code></pre>
 
 <p>其中重合指数法破解一定要把维基利亚解密代码写出来</p>
 
-      
+        </div>
+      </div>
     </div>
-    
   </div>
-  
-    
-    <div class="copyright">
-        <p><span>本文标题:</span><a href="/disshu.github.io/2019/12/10/密码学-重合指数法/">密码学-重合指数法</a></p>
-        <p><span>文章作者:</span><a href="/" title="回到主页">disshu</a></p>
-        <p><span>发布时间:</span>2019-12-09, 20:36:31</p>
-        <p><span>最后更新:</span>2019-12-09, 20:53:09</p>
-        <p>
-            <span>原始链接:</span><a class="post-url" href="/disshu.github.io/2019/12/10/密码学-重合指数法/" title="密码学-重合指数法">http://yoursite.com/2019/12/10/密码学-重合指数法/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://yoursite.com/2019/12/10/密码学-重合指数法/　　作者: disshu" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
-            <script> var clipboard = new Clipboard('.copy-path'); </script>
-        </p>
-        <p>
-            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
-        </p>
-    </div>
-
-
-
-    <nav id="article-nav">
-        
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/disshu.github.io/2019/12/10/第五空间/">
-                    第五空间
-                </a>
-            </div>
-        
-        
-            <div id="article-nav-older" class="article-nav-title">
-                <a href="/disshu.github.io/2019/12/10/密码学-反射密码破解/">
-                    密码学-仿射密码破解
-                </a>
-            </div>
-        
-    </nav>
-
-  
 </article>
 
-    <div id="toc" class="toc-article">
-        <strong class="toc-title">文章目录</strong>
-        
-            
-        
+
+
+    <!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <p class="copyright text-muted">
+          Theme By <a target="_blank" href="https://github.com/levblanc">Levblanc.</a>
+          Inspired By <a target="_blank" href="https://github.com/klugjo/hexo-theme-clean-blog">Clean Blog.</a>
+        <p class="copyright text-muted">
+          Powered By <a target="_blank" href="https://hexo.io/">Hexo.</a>
+        </p>
+      </div>
     </div>
-    <style>
-        .left-col .switch-btn,
-        .left-col .switch-area {
-            display: none;
-        }
-        .toc-level-3 i,
-        .toc-level-3 ol {
-            display: none !important;
-        }
-    </style>
-
-    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
-
-    <script>
-        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
-    </script>
-
-
-
-    
-<div class="share">
-    
-        <div class="bdsharebuttonbox">
-            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
-            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
-            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
-            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
-            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
-            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
-            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
-        </div>
-        <script>
-            window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"密码学-重合指数法　| disshu　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
-        </script>
-    
-
-    
-</div>
-
-
-
-
-
-
-
-    
-
-
-
-
-    <div class="scroll" id="post-nav-button">
-        
-            <a href="/disshu.github.io/2019/12/10/第五空间/" title="上一篇: 第五空间">
-                <i class="fa fa-angle-left"></i>
-            </a>
-        
-
-        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
-
-        
-            <a href="/disshu.github.io/2019/12/10/密码学-反射密码破解/" title="下一篇: 密码学-仿射密码破解">
-                <i class="fa fa-angle-right"></i>
-            </a>
-        
-    </div>
-
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/19/区块链/">区块链</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/17/php序列化和反序列化/">php序列化和反序列化</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/17/php弱比较/">php弱比较</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/13/密码学-DESCBC/">密码学-DESCBC</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/11/密码学-DES/">密码学-DES</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/10/第五空间/">第五空间</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/10/密码学-重合指数法/">密码学-重合指数法</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/10/密码学-反射密码破解/">密码学-仿射密码破解</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/10/密码学-线性反馈移位寄存器/">密码学-线性反馈移位寄存器</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/09/xml攻击/">xml攻击</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/09/js原生污染-curl常用命令/">js原生污染+curl常用命令</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/08/网络安全随记/">网络安全随记(持续更新)</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/12/08/计划/">计划/2019</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2019/11/10/Vue感想(持续更新)/">Vue项目开发(持续更新)</a></li><li class="post-list-item"><a class="post-list-link" href="/disshu.github.io/2018/10/16/CTF比赛随记/">CTF比赛随记(持续更新)</a></li></ul>
-
-
-
-
-    <script>
-        
-    </script>
-</div>
-      <footer id="footer">
-    <div class="outer">
-        <div id="footer-info">
-            <div class="footer-left">
-                <i class="fa fa-copyright"></i> 
-                2016-2019 disshu
-            </div>
-            <div class="footer-right">
-                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
-            </div>
-        </div>
-        
-            <div class="visit">
-                
-                    <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
-                        </span>
-                    </span>
-                
-                
-                    <span>| </span>
-                
-                
-                    <span id="busuanzi_container_page_pv" style='display:none'>
-                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
-                        </span>
-                    </span>
-                
-            </div>
-        
-    </div>
-</footer>
-    </div>
-    
-<script data-main="/disshu.github.io/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            var iPad = window.navigator.userAgent.indexOf('iPad');
-            if (iPad > -1 || $(".left-col").css("display") === "none") {
-                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
-                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
-                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
-            }
-            else {
-                var backgroundnum = 5;
-                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
-                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
-            }
-        })
-    </script>
-
-
-
-
-
-<div class="scroll" id="scroll">
-    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
-    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
-    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
-</div>
-<script>
-    // Open in New Window
-    
-        var oOpenInNew = {
-            
-            
-            
-            
-            
-            
-             archives: ".archive-article-title", 
-             miniArchives: "a.post-list-link", 
-            
-             friends: "#js-friends a", 
-             socail: ".social a" 
-        }
-        for (var x in oOpenInNew) {
-            $(oOpenInNew[x]).attr("target", "_blank");
-        }
-    
-</script>
-
-<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-</script>
   </div>
-</body>
+</footer>
+
+
+    <!-- After Footer Scripts -->
+<script src="/disshu.github.io/js/highlight.pack.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    var codeBlocks = Array.prototype.slice.call(document.getElementsByTagName('pre'))
+    codeBlocks.forEach(function(block, index) {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+  </body>
 </html>
+

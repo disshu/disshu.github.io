@@ -38,7 +38,7 @@
     <!-- Page Header -->
 
 
-<header class="site-header header-background" style="background-image: url(/disshu.github.io//img/default-banner-dark.jpg)">
+<header class="site-header header-background" style="background-image: url(/disshu.github.io//img/cumt.png)">
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -100,16 +100,32 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2019-12-09</span>
-            <span class="time">10:15:17</span>
+            <span class="time">10:20:57</span>
           </span>
+          
+          <!--  Categories  -->
+            <span class="categories info">Under 
+
+<a href="/disshu.github.io/categories/赛题/">赛题</a>
+</span>
           
         </div>
         <!-- Tags -->
         
+          <div class="post-tags text-muted">
+            Tags: 
+
+<a class="tag" href="/disshu.github.io/tags/CTF/">#CTF</a>
+
+
+          </div>
+        
         <!-- Post Main Content -->
         <div class="post-content">
-          <h1 id="空相"><a href="#空相" class="headerlink" title="空相"></a>空相</h1><p>一进题目发现给个提示要求你输入 id：）,所以就在地址栏后先猜想传入？Id=1:)果然出现了<br><img src="img/picture1.png" alt="avatar1"><br>果断访问 php 发现出现一堆乱码，所以抓包试试看，这里我直接用的检查者工具，发现响应中说传入个 token 试试，官方之前说过<br>Token 存在本地 cookie 里 所以二话不说把 login-token 的内容传进参数里，最后得到flag</p>
-<h1 id="五叶"><a href="#五叶" class="headerlink" title="五叶"></a>五叶</h1><p><img src="img/picture2.png" alt="avatar2"><br>一开始用 bp 抓包后看到这里，想到会跟解码有关，做了一会儿，发现丝毫不对，后来问了大佬才知道这题和 sql 注入有关，所以首先用了万能密码</p>
+          <p>第五空间CTF竞赛</p>
+<a id="more"></a>
+<h1 id="空相"><a href="#空相" class="headerlink" title="空相"></a>空相</h1><p>一进题目发现给个提示要求你输入 id：）,所以就在地址栏后先猜想传入？Id=1:)果然出现了<br><img src="https://img-blog.csdnimg.cn/20191218165903714.png" alt="访问php!"><br>果断访问 php 发现出现一堆乱码，所以抓包试试看，这里我直接用的检查者工具，发现响应中说传入个 token 试试，官方之前说过<br>Token 存在本地 cookie 里 所以二话不说把 login-token 的内容传进参数里，最后得到flag</p>
+<h1 id="五叶"><a href="#五叶" class="headerlink" title="五叶"></a>五叶</h1><p><img src="https://img-blog.csdnimg.cn/20191218170013545.png" alt="avar"><br>一开始用 bp 抓包后看到这里，想到会跟解码有关，做了一会儿，发现丝毫不对，后来问了大佬才知道这题和 sql 注入有关，所以首先用了万能密码</p>
 <p>Admin’ or ‘1’=’1</p>
 <p>然而发现不对，可能有过滤 把 or 换成||并找到和 admin 有关的那一条信息</p>
 <p><code>user=admin&amp;password=1&#39;)||username like &#39;admin&#39;-- -</code></p>

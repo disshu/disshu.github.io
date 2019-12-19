@@ -38,7 +38,7 @@
     <!-- Page Header -->
 
 
-<header class="site-header header-background" style="background-image: url(/disshu.github.io//img/default-banner-dark.jpg)">
+<header class="site-header header-background" style="background-image: url(/disshu.github.io//img/cumt.png)">
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -100,15 +100,32 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2018-10-15</span>
-            <span class="time">10:15:17</span>
+            <span class="time">10:20:57</span>
           </span>
+          
+          <!--  Categories  -->
+            <span class="categories info">Under 
+
+<a href="/disshu.github.io/categories/随记/">随记</a>
+</span>
           
         </div>
         <!-- Tags -->
         
+          <div class="post-tags text-muted">
+            Tags: 
+
+<a class="tag" href="/disshu.github.io/tags/CTF/">#CTF</a>
+
+
+          </div>
+        
         <!-- Post Main Content -->
         <div class="post-content">
-          <p><strong>新手区(攻防世界)</strong><br>1.X-Forwarded-For:发送的真实的ip地址<br>2.referer:返回来源地址<br>3.X-Forwarded-For:简称XFF头，它代表客户端，也就是HTTP的请求端真实的IP，只有在通过了HTTP 代理或者负载均衡服务器时才会添加该项<br>4.HTTP Referer是header的一部分，当浏览器向web服务器发送请求的时候，一般会带上Referer，告诉服务器我是从哪个页面链接过来的<br>遇到编码unicode，先用python脚本解开试试<br>5.find / -name flag.txt<br>使用find按文件名来查找语法：find / -name 文件名;<br><strong>cat(攻防世界)</strong><br>总结<br>1.如果对于正常表达式，结果无效的话，就出现了过滤<br>这时候我们就可以用fuzzing测试来判断过滤了哪些字符，常用办法就是用bp构造字典，来进行爆破<br>2.宽字节报错，其实我们在构造字典的时候放几个宽字节,有可能php或django后台的编码有问题，会报错<br>3.curl命令处理，curl命令是以file=@文件的格式上传，这道题就利用了文件包含漏洞去读取，读取的时候前面要加上@<br>4.flag一般都在对方的数据库，所以我们读取文件不知道怎么下手的时候一定要尽量找到对方的数据库文件<br>ice-05(攻防世界)<br>1.用dirsearch.py扫描目录，找到有漏洞的网站<br>2.php://filter/read=convert.base64-encode/resource=xxxxx.php(文件包含漏洞专用)<br>3./e 修正符使 preg_replace() 将 replacement 参数当作 PHP 代码(在适当的逆向引用替换完之后)。提示：要确保 replacement 构成一个合法的 PHP 代码字符串，否则 PHP 会在报告在包含 preg_replace() 的行中出现语法解析错误。</p>
+          <p>做题积累日常</p>
+<a id="more"></a>
+<p><strong>新手区(攻防世界)</strong></p>
+<p>1.X-Forwarded-For:发送的真实的ip地址<br>2.referer:返回来源地址<br>3.X-Forwarded-For:简称XFF头，它代表客户端，也就是HTTP的请求端真实的IP，只有在通过了HTTP 代理或者负载均衡服务器时才会添加该项<br>4.HTTP Referer是header的一部分，当浏览器向web服务器发送请求的时候，一般会带上Referer，告诉服务器我是从哪个页面链接过来的<br>遇到编码unicode，先用python脚本解开试试<br>5.find / -name flag.txt<br>使用find按文件名来查找语法：find / -name 文件名;<br><strong>cat(攻防世界)</strong><br>总结<br>1.如果对于正常表达式，结果无效的话，就出现了过滤<br>这时候我们就可以用fuzzing测试来判断过滤了哪些字符，常用办法就是用bp构造字典，来进行爆破<br>2.宽字节报错，其实我们在构造字典的时候放几个宽字节,有可能php或django后台的编码有问题，会报错<br>3.curl命令处理，curl命令是以file=@文件的格式上传，这道题就利用了文件包含漏洞去读取，读取的时候前面要加上@<br>4.flag一般都在对方的数据库，所以我们读取文件不知道怎么下手的时候一定要尽量找到对方的数据库文件<br>ice-05(攻防世界)<br>1.用dirsearch.py扫描目录，找到有漏洞的网站<br>2.php://filter/read=convert.base64-encode/resource=xxxxx.php(文件包含漏洞专用)<br>3./e 修正符使 preg_replace() 将 replacement 参数当作 PHP 代码(在适当的逆向引用替换完之后)。提示：要确保 replacement 构成一个合法的 PHP 代码字符串，否则 PHP 会在报告在包含 preg_replace() 的行中出现语法解析错误。</p>
 <pre><code class="hljs undefined"><span class="hljs-keyword">if</span> ($_SERVER[<span class="hljs-string">'HTTP_X_FORWARDED_FOR'</span>] === <span class="hljs-string">'127.0.0.1'</span>) &#123;
 
     echo <span class="hljs-string">"&lt;br &gt;Welcome My Admin ! &lt;br &gt;"</span>;

@@ -38,7 +38,7 @@
     <!-- Page Header -->
 
 
-<header class="site-header header-background" style="background-image: url(/disshu.github.io//img/default-banner-dark.jpg)">
+<header class="site-header header-background" style="background-image: url(/disshu.github.io//img/cumt.png)">
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -100,15 +100,32 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2019-12-08</span>
-            <span class="time">10:15:17</span>
+            <span class="time">10:20:57</span>
           </span>
+          
+          <!--  Categories  -->
+            <span class="categories info">Under 
+
+<a href="/disshu.github.io/categories/技术/">技术</a>
+</span>
           
         </div>
         <!-- Tags -->
         
+          <div class="post-tags text-muted">
+            Tags: 
+
+<a class="tag" href="/disshu.github.io/tags/前端安全/">#前端安全</a>
+
+
+          </div>
+        
         <!-- Post Main Content -->
         <div class="post-content">
-          <h2 id="js原生污染"><a href="#js原生污染" class="headerlink" title="js原生污染"></a>js原生污染</h2><p><strong>js的原生属性prototype可以修改一个函数的属性</strong><br><strong>而当我们用函数创建一个对象时object.<strong>proto</strong>的属性指向 function.prototype</strong><br>例如 下面代码<br>可以看出person1的<strong>proto</strong>指向person.prototype </p>
+          <p>CTF的一些做题经验</p>
+<a id="more"></a>
+<h2 id="js原生污染"><a href="#js原生污染" class="headerlink" title="js原生污染"></a>js原生污染</h2><p><strong>js的原生属性prototype可以修改一个函数的属性</strong></p>
+<p><strong>而当我们用函数创建一个对象时object.<strong>proto</strong>的属性指向 function.prototype</strong><br>例如 下面代码<br>可以看出person1的<strong>proto</strong>指向person.prototype </p>
 <pre><code class="hljs undefined"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">person</span></span>(fullName, age) &#123;
     <span class="hljs-built_in">this</span>.age = age;
     <span class="hljs-built_in">this</span>.fullName = fullName;

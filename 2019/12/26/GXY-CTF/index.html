@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2019-12-25</span>
-            <span class="time">20:25:21</span>
+            <span class="time">22:48:25</span>
           </span>
           
         </div>
@@ -108,7 +108,11 @@
         
         <!-- Post Main Content -->
         <div class="post-content">
-          <p>#佛系青年<br>说下感悟，这道题的txt文本是损坏的，所以正常的解法是用16进制软件打开，然后吧txt里的内容另存为。<br>但是以前一次偶然的机会，我在电脑里安装了一种解压软件–解压专家，用其打开，可以恢复破损的文件，所以直接就能打开，hhhhhhh~<br><img src="https://img-blog.csdnimg.cn/20191226081351362.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="txt文本"><br>然后看到一段佛文，一开始不知道是啥，百度得知，这是个加密的方式，在线解密就好<br><img src="https://img-blog.csdnimg.cn/20191226081433641.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="解密"><br>#checkln<br>首先打开文件，得到一堆base64(dikqTCpfRjA8fUBIMD5GNDkwMjNARkUwI0BFTg==)<br><img src="https://img-blog.csdnimg.cn/20191226090253551.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="打开文件"><br>解密后得到一大串乱码(v)L_F0&lt;}@H0&gt;F49023@FE0#@EN)<br><img src="https://img-blog.csdnimg.cn/20191226090309417.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="base64"><br>再转ROT47即可得到flag:GXY{Y0u_kNow_much_about_Rot}<br><img src="https://img-blog.csdnimg.cn/20191226090319959.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="rot47"><br>#BabySqli v1.0<br>这题进去之后会给你个提示是用hash加密的，最近在学密码学，所以最先考虑的是md5，而且这题考查的是sql注入，所以想到了以前的一道题</p>
+          <p>这次是北京工业大学的比赛，题目很基础，自己也比较菜😂</p>
+<a id="more"></a>
+<h1 id="佛系青年"><a href="#佛系青年" class="headerlink" title="佛系青年"></a>佛系青年</h1><p>说下感悟，这道题的txt文本是损坏的，所以正常的解法是用16进制软件打开，然后吧txt里的内容另存为。<br>但是以前一次偶然的机会，我在电脑里安装了一种解压软件–解压专家，用其打开，可以恢复破损的文件，所以直接就能打开，hhhhhhh~<br><img src="https://img-blog.csdnimg.cn/20191226081351362.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="txt文本"><br>然后看到一段佛文，一开始不知道是啥，百度得知，这是个加密的方式，在线解密就好<br><img src="https://img-blog.csdnimg.cn/20191226081433641.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="解密"></p>
+<h1 id="checkln"><a href="#checkln" class="headerlink" title="checkln"></a>checkln</h1><p>首先打开文件，得到一堆base64(dikqTCpfRjA8fUBIMD5GNDkwMjNARkUwI0BFTg==)<br><img src="https://img-blog.csdnimg.cn/20191226090253551.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="打开文件"><br>解密后得到一大串乱码(v)L_F0&lt;}@H0&gt;F49023@FE0#@EN)<br><img src="https://img-blog.csdnimg.cn/20191226090309417.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="base64"><br>再转ROT47即可得到flag:GXY{Y0u_kNow_much_about_Rot}<br><img src="https://img-blog.csdnimg.cn/20191226090319959.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="rot47"></p>
+<h1 id="BabySqli-v1-0"><a href="#BabySqli-v1-0" class="headerlink" title="BabySqli v1.0"></a>BabySqli v1.0</h1><p>这题进去之后会给你个提示是用hash加密的，最近在学密码学，所以最先考虑的是md5，而且这题考查的是sql注入，所以想到了以前的一道题</p>
 <pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span>
 <span class="hljs-keyword">if</span>($_POST[<span class="hljs-string">"user"</span>] &amp;&amp; $_POST[<span class="hljs-string">"pass"</span>]) &#123;
 	$mysqli = <span class="hljs-keyword">new</span> mysqli(<span class="hljs-string">"localhost"</span>, <span class="hljs-string">"root"</span>, <span class="hljs-string">"2wsx3edctf"</span>, <span class="hljs-string">"challenges"</span>);  
@@ -134,8 +138,13 @@
 &#125;
 <span class="hljs-meta">?&gt;</span></span></code></pre>
 
-<p>大致的意思就是我们我们传入的会通过md5加密，和数据库的md5比较，如果成功就得到flag.但我们并不知道数据库中的md5所以只能我们自己构造值传到php<br>构造如下语句<br><code>name=ad&#39;union select &#39;1&#39;,&#39;admin&#39;,&#39;3f898d258f71099c3164a570cc27bd8d&#39;&amp;pw=disshu</code><br>首先找到个注入点，这个不多说。但是我们怎么知道回显的列数是三个呢，这里是用sqlmap实现的，得到3列<br><img src="https://img-blog.csdnimg.cn/20191226090329744.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="babysqli 1"><br>#ping ping ping<br>首先我们输入127.0.0.1;ls会发现里面的有flag.php index.php<br><img src="https://img-blog.csdnimg.cn/20191226092319490.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="index"><br>下面介绍两种方法,首先用$IFS$9的方式过滤空格，这个过滤方法百试不厌，;cat$IFS$9index.php<br><img src="https://img-blog.csdnimg.cn/20191226092305995.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="index.php"><br>发现正则匹配用的(.*)所以我们可以对flag绕过<br><code>;b=g;cat$IFS$9fla$b.php</code><br><img src="https://img-blog.csdnimg.cn/20191226092328409.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="flag"><br>第二种是v&amp;n的师傅的思路，直接<br><code>cat$IFS$9</code>ls``</p>
+<p>大致的意思就是我们我们传入的会通过md5加密，和数据库的md5比较，如果成功就得到flag.但我们并不知道数据库中的md5所以只能我们自己构造值传到php<br>构造如下语句<br><code>name=ad&#39;union select &#39;1&#39;,&#39;admin&#39;,&#39;3f898d258f71099c3164a570cc27bd8d&#39;&amp;pw=disshu</code><br>首先找到个注入点，这个不多说。但是我们怎么知道回显的列数是三个呢，这里是用sqlmap实现的，得到3列<br><img src="https://img-blog.csdnimg.cn/20191226090329744.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="babysqli 1"></p>
+<h1 id="ping-ping-ping"><a href="#ping-ping-ping" class="headerlink" title="ping ping ping"></a>ping ping ping</h1><p>首先我们输入127.0.0.1;ls会发现里面的有flag.php index.php<br><img src="https://img-blog.csdnimg.cn/20191226092319490.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="index"><br>下面介绍两种方法,首先用$IFS$9的方式过滤空格，这个过滤方法百试不厌，;cat$IFS$9index.php<br><img src="https://img-blog.csdnimg.cn/20191226092305995.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="index.php"><br>发现正则匹配用的(.*)所以我们可以对flag绕过</p>
+<pre><code class="hljs ;b">![flag](https://img-blog.csdnimg.cn/20191226092328409.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70)
+第二种是v&amp;n的师傅的思路，直接</code></pre>
 
+<p>cat$IFS$9<code>ls</code></p>
+<pre><code></code></pre>
         </div>
       </div>
     </div>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <!-- Html Head Tag-->
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content>
+  <meta name="author" content="disshu">
+  <!-- Open Graph Data -->
+  <meta property="og:title" content="密码学-通信全过程">
+  <meta property="og:description" content>
+  <meta property="og:site_name" content="disshu">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="http://yoursite.com">
+  
+    <link rel="alternate" href="/atom.xml" title="disshu" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+  <!-- Site Title -->
+  <title>disshu</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="/disshu.github.io/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  
+  <link rel="stylesheet" href="/disshu.github.io/css/style.dark.css">
+
+  <!-- Google Analytics -->
+  
+
+</head>
+
+  <body>
+    <!-- Page Header -->
+
+
+<header class="site-header header-background" style="background-image: url(/disshu.github.io//img/cumt.png)">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="page-title with-background-image">
+          <p class="title">密码学-通信全过程</p>
+          <p class="subtitle"></p>
+        </div>
+        <div class="site-menu with-background-image">
+          <ul>
+            
+              <li>
+                <a href="/disshu.github.io/">
+                  
+                  Home
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="/disshu.github.io/archives">
+                  
+                  Archives
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="https://github.com/disshu">
+                  
+                  Github
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="mailto:15695257867@163.com">
+                  
+                  Email
+                  
+                </a>
+              </li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<article>
+  <div class="container typo">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-info text-muted">
+          
+            <!-- Author -->
+            <span class="author info">By disshu</span>
+          
+          <!-- Date -->
+          <span class="date-time info">On
+            <span class="date">2020-01-10</span>
+            <span class="time">00:38:51</span>
+          </span>
+          
+        </div>
+        <!-- Tags -->
+        
+        <!-- Post Main Content -->
+        <div class="post-content">
+          <p>密码学课设的最后一个大实验，决定将源码献上！</p>
+<a id="more"></a>
+<p>首先说明这里需要调用MD5,RSA,DES包，我这里调用的是我自己写的，python也有现成的包</p>
+<h1 id="设计要求"><a href="#设计要求" class="headerlink" title="设计要求"></a>设计要求</h1><p>Alice想通过公共信道给Bob传输一份秘密文件（文件非常大），又知道，很多人和机构想得到这份文件。如果你是Alice，你应该怎样做？请设计一个方案。并编程实现</p>
+<h1 id="实验流程"><a href="#实验流程" class="headerlink" title="实验流程"></a>实验流程</h1><p>首先构造基本思路:<br>用Socket套接字实现一个服务端和一个客户端实现通信，客户端负责传密文，服务端负责接受密文并且解密。下列演示用S表示服务端,C表示客户端，因为文件过大,所以我这里使用了对不同的分组进行不同的密钥进行加密<br>大致流程如下<br>1.C输入一定的盐值，防止重放攻击，与明文一起hash<br>2.C给S用签名验证，S接受签名认证<br>3.C给明文和盐值一起用密钥DES加密，发送给S,并且发送密钥，让其解密<br>下面首先说一下密钥的生成，这里我使用了RC4算法<br>RC4算法的特点是算法简单，运行速度快，而且密钥长度是可变的，可变范围为1-256字节(8-2048比特)，在如今技术支持的前提下，当密钥长度为128比特时，用暴力法搜索密钥已经不太可行，所以可以预见RC4的密钥范围任然可以在今后相当长的时间里抵御暴力搜索密钥的攻击。实际上，如今也没有找到对于128bit密钥长度的RC4加密算法的有效攻击方法。<br>RC4的原理<br>1.初始化S和T<br>2.初始排列S<br>3.产生密钥流<br>所以我们只要构造一个种子密钥即可</p>
+<pre><code class="hljs undefined"><span class="hljs-number">1.</span>def ex_encrypt(<span class="hljs-meta">box</span>,k):  
+<span class="hljs-number">2.</span>    <span class="hljs-string">"""  
+3.    利用PRGA生成秘钥流  
+4.    """</span>  
+<span class="hljs-number">5.</span>    a = []  
+<span class="hljs-number">6.</span>    i = j =<span class="hljs-number">0</span>  
+<span class="hljs-number">7.</span>    <span class="hljs-keyword">for</span> s <span class="hljs-keyword">in</span> range(k):  
+<span class="hljs-number">8.</span>        i = (i + <span class="hljs-number">1</span>) %<span class="hljs-number">256</span>  
+<span class="hljs-number">9.</span>        j = (j + <span class="hljs-meta">box</span>[i]) %<span class="hljs-number">256</span>  
+<span class="hljs-number">10.</span>        <span class="hljs-meta">box</span>[i], <span class="hljs-meta">box</span>[j] = <span class="hljs-meta">box</span>[j], <span class="hljs-meta">box</span>[i]  
+<span class="hljs-number">11.</span>        t = (<span class="hljs-meta">box</span>[i] + <span class="hljs-meta">box</span>[j])% <span class="hljs-number">256</span>  
+<span class="hljs-number">12.</span>        k = <span class="hljs-meta">box</span>[t]  
+<span class="hljs-number">13.</span>        a.append(k)</code></pre>
+
+<p>下面先从客户端说起<br>客户端首先要生成自己的公钥私钥，这里我用RSA算法实现</p>
+<pre><code class="hljs undefined">1.<span class="hljs-attribute">p</span>=makePrime()  
+2.    <span class="hljs-attribute">q</span>=makePrime()  
+3.    <span class="hljs-builtin-name">print</span>(<span class="hljs-string">"p="</span>+str(p))  
+4.    <span class="hljs-builtin-name">print</span>(<span class="hljs-string">"q="</span>+str(q))  
+5.    <span class="hljs-attribute">n</span>=p*q  
+6.    <span class="hljs-builtin-name">print</span>(<span class="hljs-string">"n="</span>+str(n))  
+7.    bign=(p-1)*(q-1)  
+8.    <span class="hljs-builtin-name">print</span>(<span class="hljs-string">"\n生成公钥过程中...."</span>)  
+9.    <span class="hljs-attribute">e</span>=makE(bign)  
+10.    <span class="hljs-builtin-name">print</span>(<span class="hljs-string">"e="</span>+str(e))  
+11.    <span class="hljs-builtin-name">print</span>(<span class="hljs-string">"\n生成私钥过程中...."</span>)  
+12.    d = Euclidean(e,bign)</code></pre>
+
+<p>然后来一个while true的循环，表示一直向对方发送信息，直到输入exit为止<br>1.输入的内容为明文和盐值，然后首先用md5进行加密生成hash值、message=input(“请发送加密的消息:”)</p>
+<pre><code class="hljs undefined">2.        <span class="hljs-attribute">salt</span>=input("请输入加盐值:")  
+3.        <span class="hljs-attribute">message</span>=salt+message  
+4.        m = MD5(message)#hash值  
+我们就可以在之后的数字签名用到这个hash值，然后我们用CBC模式下的DES进行加密，因为用到了流密码，所以生成了不同的密钥，我这里根据明文的长度而定，256位个明文一个单位，生成8*len(明文)/256个密钥
+1.<span class="hljs-attribute">Ciphertext_length</span>=len(message)  
+2.        <span class="hljs-attribute">Ciphertext_deal_length</span>=int(Ciphertext_length/256)#64个字符一组加密，密钥为种子密钥生成的64位  
+3.        <span class="hljs-keyword">if</span>(int(Ciphertext_length%256)!=0):  
+4.            Ciphertext_deal_length+=1  
+5.        <span class="hljs-builtin-name">print</span>(Ciphertext_deal_length)  
+6.        <span class="hljs-attribute">key</span>=get_mode(key,8*Ciphertext_deal_length)  
+7.        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> key:  
+8.           strkey+=bin2str(bin(i))</code></pre>
+
+<p>然后我们就可以通过不同的分组对不同的密钥进行CBC-MD5进行分组加密</p>
+<pre><code class="hljs undefined">1.<span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(Ciphertext_deal_length):#64<span class="hljs-number">*8</span>  
+2.            <span class="hljs-attribute">i</span>=i*256  
+3.            <span class="hljs-attribute">j</span>=0  
+4.            sm.append(cbc_all_message_encrypt(message[i:i+256],strkey[j:j+8]))  
+5.            j+=8  
+6.        <span class="hljs-builtin-name">print</span>(sm)</code></pre>
+
+<p>接着我们要发送对之前hash的值进行签名，以及得到的流密钥进行RSA加密，原理用服务端的公钥进行加密，传递过去后，对方用自己的私钥进行解密</p>
+<pre><code class="hljs undefined"><span class="hljs-number">1.</span>print(<span class="hljs-string">"---------------------------开始签名-------------------------------"</span>)  
+<span class="hljs-number">2.</span>        Ciphertext_message = RSAEncrypt(m,n,d)  
+<span class="hljs-number">3.</span>        Ciphertext_key = RSAEncrypt(strkey,n,d)
+```  
+接下来开始向服务端发送数据，这个在最初的时候遇到了一个很大的坑，就是socket的send他的发送不是单个数据进行发送，而是将数据整合在一起进行发送，所以一开始得到的数据是堆在一起的二进制，后来使用了sleep()方法，让客户端发送数据有一定的缓冲时间</code></pre>
+
+<p>1.s.send(“\n\t我是签名:\n”.encode())<br>2.        time.sleep(0.2)<br>3.        s.send(str(Ciphertext_message).encode())<br>4.        time.sleep(0.2)<br>5.        s.send(“\n\t我是密钥:\n”.encode())<br>6.        time.sleep(0.2)<br>7.        s.send(str(Ciphertext_key).encode())<br>8.        time.sleep(0.2)</p>
+<pre><code class="hljs undefined">这样服务端就接受到了数据，下面开始讲解服务端的原理
+首先 服务端也要构造自己的公钥和密钥，具体方法与客户端一致，并且发送给客户端</code></pre>
+
+<p>1.d1=Euclidean(e1,bign1)<br>2.    sock.send(str(e1).encode())<br>3.    print(“我已发送我的公钥!”)<br>初始化一个message_list列表和s列表分别用来存放消息和密钥，最后构造一个<br>空字符串用来拼接最后的明文，下面开始接受客户端发来的数据<br>1.Ciphertext=message_list[1]<br>2.            key=message_list[3]<br>3.            n=message_list[5]<br>4.            e=message_list[7]<br>5.            out_mess=message_list[9]<br>6.            m=message_list[11]<br>7.            salt=message_list[13]<br>8.            Ciphertext_deal_length=message_list[15]<br>9.            print(out_mess.encode().decode())</p>
+<pre><code class="hljs undefined">下面开始运用RSA对收到的签名进行验证</code></pre>
+
+<p>1.print(“———————–验证一致性(接受者)———————————“)<br>2.            Plaintext = RSADecrypt(int(Ciphertext),int(e),int(n))<br>3.            if(Plaintext.decode()==m.encode().decode()):<br>4.                print(“接受者说:我解密后的值为\n:”,Plaintext.decode())<br>5.                print(“接受者说:验证成功!~”)<br>6.            else:<br>7.                print(“接受者说:are you kidding me?”)</p>
+<pre><code class="hljs undefined">验证成功后,对不同的密文也进行分组解密，原理也是和加密一样，运用CBC模式，解密成功后，我们需要把盐值的部分去掉</code></pre>
+
+<p>1.for i in range(int(Ciphertext_deal_length)):#64<em>8<br>2.                i=i</em>256<br>3.                j=0<br>4.                s.append(cbc_all_message_decrypt(out_mess[i:i+256],strkey[j:j+8]))<br>5.                j+=8<br>6.            for i in s:<br>7.                ans+=i<br>8.            print(ans[len(salt):])  </p>
+<pre><code></code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+    <!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <p class="copyright text-muted">
+          Theme By <a target="_blank" href="https://github.com/levblanc">Levblanc.</a>
+          Inspired By <a target="_blank" href="https://github.com/klugjo/hexo-theme-clean-blog">Clean Blog.</a>
+        <p class="copyright text-muted">
+          Powered By <a target="_blank" href="https://hexo.io/">Hexo.</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <!-- After Footer Scripts -->
+<script src="/disshu.github.io/js/highlight.pack.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    var codeBlocks = Array.prototype.slice.call(document.getElementsByTagName('pre'))
+    codeBlocks.forEach(function(block, index) {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+  </body>
+</html>
+

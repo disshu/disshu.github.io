@@ -8,10 +8,10 @@
   <meta name="description" content>
   <meta name="author" content="disshu">
   <!-- Open Graph Data -->
-  <meta property="og:title" content="disshu">
+  <meta property="og:title" content="安恒月赛">
   <meta property="og:description" content>
   <meta property="og:site_name" content="disshu">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="article">
   <meta property="og:image" content="http://yoursite.com">
   
     <link rel="alternate" href="/atom.xml" title="disshu" type="application/atom+xml">
@@ -35,8 +35,7 @@
 </head>
 
   <body>
-    <!-- Archive Header -->
-<!-- Page Header -->
+    <!-- Page Header -->
 
 
 <header class="site-header header-background" style="background-image: url(/disshu.github.io//img/cumt.png)">
@@ -44,7 +43,7 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         <div class="page-title with-background-image">
-          <p class="title">Blog Archives</p>
+          <p class="title">安恒月赛</p>
           <p class="subtitle"></p>
         </div>
         <div class="site-menu with-background-image">
@@ -89,113 +88,50 @@
   </div>
 </header>
 
-<!-- Archive List -->
-<div class="container">
-  <div class="row">
-    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-      
-        <div class="archive-item">
-  <a href="/disshu.github.io/2020/01/11/安恒月赛/" class="post-title">
-    安恒月赛
-  </a>
-  <div class="date text-muted">Posted on 2020-01-10 13:04:11</div>
-</div>
+<article>
+  <div class="container typo">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-info text-muted">
+          
+            <!-- Author -->
+            <span class="author info">By disshu</span>
+          
+          <!-- Date -->
+          <span class="date-time info">On
+            <span class="date">2020-01-10</span>
+            <span class="time">00:38:51</span>
+          </span>
+          
+          <!--  Categories  -->
+            <span class="categories info">Under 
 
-      
-        <div class="archive-item">
-  <a href="/disshu.github.io/2019/12/26/GXY-CTF/" class="post-title">
-    GXY_CTF
-  </a>
-  <div class="date text-muted">Posted on 2019-12-25 21:55:30</div>
-</div>
+<a href="/disshu.github.io/categories/技术/">技术</a>
+</span>
+          
+        </div>
+        <!-- Tags -->
+        
+          <div class="post-tags text-muted">
+            Tags: 
 
-      
-        <div class="archive-item">
-  <a href="/disshu.github.io/2019/12/19/区块链/" class="post-title">
-    区块链
-  </a>
-  <div class="date text-muted">Posted on 2019-12-18 14:56:56</div>
-</div>
+<a class="tag" href="/disshu.github.io/tags/CTF/">#CTF</a>
 
-      
-        <div class="archive-item">
-  <a href="/disshu.github.io/2019/12/17/php序列化和反序列化/" class="post-title">
-    php序列化和反序列化
-  </a>
-  <div class="date text-muted">Posted on 2019-12-16 22:51:22</div>
-</div>
 
-      
-        <div class="archive-item">
-  <a href="/disshu.github.io/2019/12/17/php弱比较/" class="post-title">
-    php弱比较
-  </a>
-  <div class="date text-muted">Posted on 2019-12-16 22:50:43</div>
-</div>
+          </div>
+        
+        <!-- Post Main Content -->
+        <div class="post-content">
+          <p>在准备期末考试的时候做了安恒的月赛的web题，一共就两个web题，很基础</p>
+<a id="more"></a>
+<h1 id="攻打小行星"><a href="#攻打小行星" class="headerlink" title="攻打小行星"></a>攻打小行星</h1><p>这道题很像贪吃蛇的游戏，所以我们首先访问index.js.发现能访问到。看到了核心代码，子弹加分。但有点长，我们这时候用bp抓包试试<br><img src alt="抓包"><br>发现有record关键字，我们将他修改。改到10000，发现出现了flag<br><img src alt="flag1"></p>
+<h1 id="工控系统"><a href="#工控系统" class="headerlink" title="工控系统"></a>工控系统</h1><p>首先直接扫目录，扫到了index.php/login<br><img src alt="扫目录"><br>挨个点击尝试，发现有个page参数，遇到这个参数就说明有文件包含漏洞。尝试../发现没有回显，一致尝试../../../flag。得到flag<br><img src alt="flag2"></p>
 
-      
-        <div class="archive-item">
-  <a href="/disshu.github.io/2019/12/13/密码学-DESCBC/" class="post-title">
-    密码学-DESCBC
-  </a>
-  <div class="date text-muted">Posted on 2019-12-12 22:44:10</div>
-</div>
-
-      
-        <div class="archive-item">
-  <a href="/disshu.github.io/2019/12/11/密码学-DES/" class="post-title">
-    密码学-DES
-  </a>
-  <div class="date text-muted">Posted on 2019-12-10 23:22:38</div>
-</div>
-
-      
-        <div class="archive-item">
-  <a href="/disshu.github.io/2019/12/10/密码学-重合指数法/" class="post-title">
-    密码学-重合指数法
-  </a>
-  <div class="date text-muted">Posted on 2019-12-09 20:36:31</div>
-</div>
-
-      
-        <div class="archive-item">
-  <a href="/disshu.github.io/2019/12/10/密码学-反射密码破解/" class="post-title">
-    密码学-仿射密码破解
-  </a>
-  <div class="date text-muted">Posted on 2019-12-09 20:36:19</div>
-</div>
-
-      
-        <div class="archive-item">
-  <a href="/disshu.github.io/2019/12/10/密码学-线性反馈移位寄存器/" class="post-title">
-    密码学-线性反馈移位寄存器
-  </a>
-  <div class="date text-muted">Posted on 2019-12-09 20:27:37</div>
-</div>
-
-      
-
+        </div>
+      </div>
     </div>
   </div>
-</div>
-<!-- Pagination -->
-<div class="container">
-  <div class="row">
-    <div class="col-lg-10 col-md-10 col-md-offset-1">
-      <ul class="pagination">
-          
-          
-            <li class="next">
-              <a href="/disshu.github.io/categories/技术/page/2/">
-                <span>下一页</span>
-                <span class="symbol-right">&gt;</span>
-              </a>
-            </li>
-          
-      </ul>
-    </div>
-  </div>
-</div>
+</article>
 
 
 

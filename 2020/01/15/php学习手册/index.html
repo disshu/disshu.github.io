@@ -8,7 +8,7 @@
   <meta name="description" content>
   <meta name="author" content="disshu">
   <!-- Open Graph Data -->
-  <meta property="og:title" content="tages">
+  <meta property="og:title" content="php学习手册">
   <meta property="og:description" content>
   <meta property="og:site_name" content="disshu">
   <meta property="og:type" content="article">
@@ -43,7 +43,7 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         <div class="page-title with-background-image">
-          <p class="title">tages</p>
+          <p class="title">php学习手册</p>
           <p class="subtitle"></p>
         </div>
         <div class="site-menu with-background-image">
@@ -99,8 +99,8 @@
           
           <!-- Date -->
           <span class="date-time info">On
-            <span class="date">2019-10-04</span>
-            <span class="time">08:10:12</span>
+            <span class="date">2020-01-14</span>
+            <span class="time">08:10:13</span>
           </span>
           
         </div>
@@ -108,7 +108,40 @@
         
         <!-- Post Main Content -->
         <div class="post-content">
-          
+          <p>php所在文件在usr/local/var/www/<br>启动:sudo nginx<br>重启:sudo nginx -s reload<br>打开php-fpm:sudo php-fpm<br>结合sudo su</p>
+<h1 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h1><p>$变量名称=值;<br>echo 输出内容;<br>unset($变量名称);</p>
+<pre><code class="hljs <?php">    $x = &quot;abc&quot;;  
+    $$x = 200;  
+    echo $x.&quot;&lt;br/&gt;&quot;;  
+    echo $$x.&quot;&lt;br/&gt;&quot;;  
+    echo $abc;  
+?&gt;</code></pre>
+
+<p>输出abc,200,200因为 $$x=$abc;<br>$a=100;<br>$b=&amp;$a;<br>$b=20;<br>把$a和$b绑定起来,b改变a也改变。<br>在双引号字符串里引用变量名要加{}<br>单引号不用</p>
+<pre><code class="hljs undefined"><span class="hljs-meta"><span class="hljs-meta-keyword">$b</span>=&lt;&lt;&lt;www</span>
+sgdsdjshsdsds
+www;</code></pre>
+
+<p><code>&lt;&lt;&lt;xxx 字符串 xxx;</code>定界符</p>
+<h1 id="html跳转页面与php结合"><a href="#html跳转页面与php结合" class="headerlink" title="html跳转页面与php结合"></a>html跳转页面与php结合</h1><pre><code class="hljs undefined">&lt;meta <span class="hljs-attribute">http-equiv</span>=<span class="hljs-string">"refresh"</span> <span class="hljs-attribute">content</span>=<span class="hljs-string">"3;URL=&lt;?php echo <span class="hljs-variable">$_GET</span>['url']?&gt;"</span>/&gt;&lt;title&gt;&lt;/title&gt;</code></pre>
+
+<p>通过传参数url跳转页面<br>session开启和消除</p>
+<pre><code class="hljs undefined">session_start();
+$_SESSION[<span class="hljs-string">'name'</span>] = <span class="hljs-string">'jobs'</span>;
+$_SESSION[<span class="hljs-string">'time'</span>] = time();
+<span class="hljs-keyword">unset</span>($_SESSION);
+session_destroy(); 
+var_dump($_SESSION); <span class="hljs-comment">//此时已为空</span></code></pre>
+
+<p>cookie创建和消除</p>
+<pre><code class="hljs undefined"><span class="hljs-selector-tag">setcookie</span>(<span class="hljs-string">'名字'</span>,<span class="hljs-string">'value'</span>,time()时间);
+<span class="hljs-selector-tag">setcookie</span>(<span class="hljs-string">'名字'</span>,<span class="hljs-string">'value'</span>,time()-<span class="hljs-number">1</span>);<span class="hljs-comment">//销毁</span></code></pre>
+
+<h1 id="mysql"><a href="#mysql" class="headerlink" title="mysql"></a>mysql</h1><p>开启 mysql -uroot -p<br>查看数据库列表<br>show databases;<br>create database 库名;<br>create table 表名;</p>
+<h1 id="php中使用mysql"><a href="#php中使用mysql" class="headerlink" title="php中使用mysql"></a>php中使用mysql</h1><pre><code class="hljs undefined">$mysqli = <span class="hljs-keyword">new</span> <span class="hljs-type">mysqli</span>(<span class="hljs-string">'127.0.0.1'</span>,<span class="hljs-string">'表名'</span>,<span class="hljs-string">'xxxxxxx'</span>,<span class="hljs-string">'库名'</span>);</code></pre>
+
+<p>获取表单中基本元素,通过这个完成js部分<br>document.forms[0]</p>
+
         </div>
       </div>
     </div>

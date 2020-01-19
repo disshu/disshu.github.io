@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2018-10-15</span>
-            <span class="time">08:10:13</span>
+            <span class="time">06:20:23</span>
           </span>
           
           <!--  Categories  -->
@@ -178,7 +178,18 @@ in_array 中的 <span class="hljs-variable">_page</span> 为 <span class="hljs-b
 <pre><code class="hljs undefined">$sql = <span class="hljs-string">"select "</span>.$post[<span class="hljs-string">'query'</span>].<span class="hljs-string">"||flag from Flag"</span><span class="hljs-comment">;</span>
         mysqli_multi_query($MysqlLink,$sql)<span class="hljs-comment">;</span></code></pre>
 
-<p>我们可以通过<br><code>1;set sql_mode=PIPES_AS_CONCAT;select 1</code><br>使得||变成&amp;&amp;,就可以查询<br>非预期解<br>*，1<br><code>变成了select *,1||flag from Flag</code></p>
+<p>我们可以通过<br><code>1;set sql_mode=PIPES_AS_CONCAT;select 1</code><br>使得||变成&amp;&amp;,就可以查询<br>非预期解<br><code>*，1</code><br><code>变成了select *,1||flag from Flag</code></p>
+<h1 id="hctf-admin"><a href="#hctf-admin" class="headerlink" title="hctf admin"></a>hctf admin</h1><p>unicode欺骗</p>
+<pre><code class="hljs undefined">ᴀ -&gt; A -&gt; a
+ᴀdmin -&gt; Admin -&gt; admin</code></pre>
+
+<p>首先看到代码<br><code>nodeprep.prepare</code><br>在twisted中版本过低有unicode编码漏洞,所以我们可以注册ᴀdmin并且修改密码,拿到真正的admin</p>
+<h1 id="clac计算"><a href="#clac计算" class="headerlink" title="clac计算"></a>clac计算</h1><p>这是别人对PHP字符串解析漏洞的理解，<br>我们知道PHP将查询字符串（在URL或正文中）转换为内部$_GET或的关联数组$_POST。例如：/?foo=bar变成Array([foo] =&gt; “bar”)。值得注意的是，查询字符串在解析的过程中会将某些字符删除或用下划线代替。例如，/?%20news[id%00=42会转换为Array([news_id] =&gt; 42)。如果一个IDS/IPS或WAF中有一条规则是当news_id参数的值是一个非数字的值则拦截，那么我们就可以用以下语句绕过：</p>
+<pre><code class="hljs undefined">/news.php?%20news[id%00=<span class="hljs-number">42</span><span class="hljs-string">"+AND+1=0–
+
+上述PHP语句的参数%20news[id%00的值将存储到$_GET[“news_id”]中。</span></code></pre>
+
+<p>当我们给定一个参数时,num会有waf,所以我可以在num前面加个空格,解析时是一样的,然后可以在后面执行系统语句<br>当执行到当前目录时,有的会绕过所以我们可以用acsii码绕过<br>scandir(“/“),但是“/”被过滤了，所以我们用chr(“47”)绕过,发现flagg文件</p>
 
         </div>
       </div>

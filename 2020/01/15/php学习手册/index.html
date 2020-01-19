@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2020-01-14</span>
-            <span class="time">08:10:13</span>
+            <span class="time">06:20:23</span>
           </span>
           
         </div>
@@ -109,7 +109,7 @@
         <!-- Post Main Content -->
         <div class="post-content">
           <p>php所在文件在usr/local/var/www/<br>启动:sudo nginx<br>重启:sudo nginx -s reload<br>打开php-fpm:sudo php-fpm<br>结合sudo su</p>
-<h1 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h1><p>$变量名称=值;<br>echo 输出内容;<br>unset($变量名称);</p>
+<h1 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h1><p>输出:<br>echo print_r var_dump<br>$变量名称=值;<br>echo 输出内容;<br>unset($变量名称);</p>
 <pre><code class="hljs <?php">    $x = &quot;abc&quot;;  
     $$x = 200;  
     echo $x.&quot;&lt;br/&gt;&quot;;  
@@ -122,7 +122,7 @@
 sgdsdjshsdsds
 www;</code></pre>
 
-<p><code>&lt;&lt;&lt;xxx 字符串 xxx;</code>定界符</p>
+<p><code>&lt;&lt;&lt;xxx 字符串 xxx;</code>定界符<br>常量的使用<br>define(‘常量名称’,’常量值’);<br>常量不能更改,只能是bool,int,float,string<br>魔术常量,不区分大小写<br><strong>FILE</strong> <strong>LINE</strong><br>字符串运算符<br>$a.$b 把字符串拼接在一起<br>==值要相等<br>===不仅值要相等,类型也要相等<br>!=和&lt;&gt;一样 都是判断值相等不相等<br>可以把系统的命令放在里面执行;<br>涉及到跨平台<br>$a=<code>ipconfig</code>;<br>系统命令用<code>括起来</code><br>@用来屏蔽表达式可能发生的错误<br>echo @a<br>if{}<br>elseif{}</p>
 <h1 id="html跳转页面与php结合"><a href="#html跳转页面与php结合" class="headerlink" title="html跳转页面与php结合"></a>html跳转页面与php结合</h1><pre><code class="hljs undefined">&lt;meta <span class="hljs-attribute">http-equiv</span>=<span class="hljs-string">"refresh"</span> <span class="hljs-attribute">content</span>=<span class="hljs-string">"3;URL=&lt;?php echo <span class="hljs-variable">$_GET</span>['url']?&gt;"</span>/&gt;&lt;title&gt;&lt;/title&gt;</code></pre>
 
 <p>通过传参数url跳转页面<br>session开启和消除</p>

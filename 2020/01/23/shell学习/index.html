@@ -8,7 +8,7 @@
   <meta name="description" content>
   <meta name="author" content="disshu">
   <!-- Open Graph Data -->
-  <meta property="og:title" content="php序列化和反序列化">
+  <meta property="og:title" content="shell学习">
   <meta property="og:description" content>
   <meta property="og:site_name" content="disshu">
   <meta property="og:type" content="article">
@@ -43,7 +43,7 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         <div class="page-title with-background-image">
-          <p class="title">php序列化和反序列化</p>
+          <p class="title">shell学习</p>
           <p class="subtitle"></p>
         </div>
         <div class="site-menu with-background-image">
@@ -99,61 +99,16 @@
           
           <!-- Date -->
           <span class="date-time info">On
-            <span class="date">2019-12-16</span>
+            <span class="date">2020-01-22</span>
             <span class="time">04:11:52</span>
           </span>
-          
-          <!--  Categories  -->
-            <span class="categories info">Under 
-
-<a href="/disshu.github.io/categories/技术/">技术</a>
-</span>
           
         </div>
         <!-- Tags -->
         
-          <div class="post-tags text-muted">
-            Tags: 
-
-<a class="tag" href="/disshu.github.io/tags/后端安全/">#后端安全</a>
-
-
-          </div>
-        
         <!-- Post Main Content -->
         <div class="post-content">
-          <p>php序列化和反序列化</p>
-<a id="more"></a>
-<p>serialize<br>序列化是将变量或对象转换成字符串的过程。</p>
-<pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span>
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">man</span></span>&#123;
- <span class="hljs-keyword">public</span> $name;
- <span class="hljs-keyword">public</span> $age;
- <span class="hljs-keyword">public</span> $height;
- 
- <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">($name,$age,$height)</span></span>&#123;        <span class="hljs-comment">//_construct：创建对象时初始化</span>
-  <span class="hljs-keyword">$this</span>-&gt;name = $name;
-  <span class="hljs-keyword">$this</span>-&gt;age = $age;
-  <span class="hljs-keyword">$this</span>-&gt;height = $height;
- &#125;
- 
-&#125;
-
-$man=<span class="hljs-keyword">new</span> man(<span class="hljs-string">"Bob"</span>,<span class="hljs-number">5</span>,<span class="hljs-number">20</span>);
-var_dump(serialize($man));
-
-<span class="hljs-meta">?&gt;</span></span></code></pre>
-
-<p>反序列化用unserialize()<br>反序列化漏洞最重要的是利用魔术方法</p>
-<pre><code class="hljs undefined"><span class="hljs-selector-tag">_construct</span>()：创建对象时初始化
-<span class="hljs-selector-tag">_destruction</span>()：结束时销毁对象
-<span class="hljs-selector-tag">_toString</span>()：对象被当作字符串时使用
-<span class="hljs-selector-tag">_sleep</span>()：序列化对象之前调用
-<span class="hljs-selector-tag">_wakeup</span>()：反序列化之前调用
-<span class="hljs-selector-tag">_call</span>()：调用对象不存在时使用
-<span class="hljs-selector-tag">_get</span>()：调用私有属性时使用</code></pre>
-
-<p>绕过_toString()<br>在属性的数字多加一个,如果sercet是2想绕过必须是3,而且要绕过正则表达式6前面要有+<br><code>O:+6:&quot;sercet&quot;:2:{S:12:&quot;\00sercet\00file&quot;;s:12:&quot;the_next.php&quot;;}</code></p>
+          <p>意思是ping成功输出good 否则输出bad &amp;&gt;/dev/null意思是不显示ping的内容<br><code>ping -c1 x &amp;&gt;/dev/null &amp;&amp; echo &quot;good&quot; || echo &quot;bad&quot;</code><br>ctrl+a 跳到首字母<br>ctrl+e 跳到末字母<br>ctrl+k 删除之后的字母<br>ctrl+u 删除之前的字母</p>
 
         </div>
       </div>

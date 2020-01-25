@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2019-12-07</span>
-            <span class="time">06:20:23</span>
+            <span class="time">04:11:52</span>
           </span>
           
           <!--  Categories  -->
@@ -166,7 +166,8 @@ hexo s<span class="hljs-comment">//本地,配合前两步使用</span></code></p
 src=<span class="hljs-string">"javascript:"</span>
 <span class="hljs-section">[img]javascript:(内容)[/img]</span></code></pre>
 
-<p>跨站脚本攻击<br>首先要写恶意站点<br>写payloads可以把写现成的js放在自己域名下,用本地的php接受并发送到邮箱<br>各种js都行,获取cookie,键盘记录</p>
+<p>跨站脚本攻击<br>首先要写恶意站点<br>写payloads可以把写现成的js放在自己域名下,用本地的php接受并发送到邮箱<br>各种js都行,获取cookie,键盘记录<br><code>&lt;sc&lt;script&gt;ript&gt;&lt;/script&gt;</code><br><code>&lt;img src=0 onerror=alert(&quot;xss&quot;)&gt;</code><br>存储型 你的语句永远留在了这个网页上,无论谁访问都一样<br>DOM XSS<br>地址栏加#号后面的不会发送给服务器<br>beef hook kali自带 专对xss</p>
+<p>CONCAT_WS(CHAR(32,58,32),user(),database(),version()) 32空格 58分号 32空格<br>select null,load_file(‘/etc/passwd’)查看系统文件<br>破解简单的md5(kali)<br>john –format=raw-MD5 USER.txt –show(user.txt存放md5的)<br>绕过waf 可以用十六进制绕过<br>cat 文件名|xxd -ps|tr -d ‘\n’(转16进制)<br>一般连接数据库不要用root账户<br>sqlmap自带猜测字典 /usr/share/golismero/tools/sqlmap/txt<br>user like %a% 名字中带a的全都爆出来</p>
 
         </div>
       </div>

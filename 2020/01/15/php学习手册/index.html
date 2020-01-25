@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2020-01-14</span>
-            <span class="time">06:20:23</span>
+            <span class="time">04:11:52</span>
           </span>
           
         </div>
@@ -123,6 +123,24 @@ sgdsdjshsdsds
 www;</code></pre>
 
 <p><code>&lt;&lt;&lt;xxx 字符串 xxx;</code>定界符<br>常量的使用<br>define(‘常量名称’,’常量值’);<br>常量不能更改,只能是bool,int,float,string<br>魔术常量,不区分大小写<br><strong>FILE</strong> <strong>LINE</strong><br>字符串运算符<br>$a.$b 把字符串拼接在一起<br>==值要相等<br>===不仅值要相等,类型也要相等<br>!=和&lt;&gt;一样 都是判断值相等不相等<br>可以把系统的命令放在里面执行;<br>涉及到跨平台<br>$a=<code>ipconfig</code>;<br>系统命令用<code>括起来</code><br>@用来屏蔽表达式可能发生的错误<br>echo @a<br>if{}<br>elseif{}</p>
+<h1 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h1><pre><code class="hljs undefined"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">xxxx</span><span class="hljs-params">()</span></span>&#123;&#125;<span class="hljs-comment">//不用加分号</span></code></pre>
+
+<p>全局变量</p>
+<pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span>
+$i=<span class="hljs-number">10</span>;
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">test</span><span class="hljs-params">()</span>
+</span>&#123;
+	<span class="hljs-keyword">global</span> $i;
+	<span class="hljs-keyword">echo</span> $i;<span class="hljs-comment">//使用</span>
+&#125;
+<span class="hljs-meta">?&gt;</span></span></code></pre>
+
+<p>静态变量<br>static 当再次调用函数时静态变量依然存在<br>按值传递<br>function test($a)<br>按引用传递<br>function test(&amp;$a)<br>默认值传递一定要从右往左传<br>$a=’test’;<br>$a();//test()</p>
+<h1 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h1><p>array(变量);<br>array(<br>索引值=&gt;具体的值,<br>…..</p>
+<p>);<br>array<br>(<br>0=&gt;array()</p>
+<p>)<br>count(数组名)长度<br>foreach(数组名 as 键值=&gt;值名)<br>{<br>    echo xxxx;<br>}<br>foreach里面还能嵌套一个foreach<br>array_count_values(数组名);统计数组值所有出现的次数<br>array_key_exists(‘键值名’,数组)检测这个键值是否在数组中 返回bool or false<br>array_search(索引值,数组,key)检测索引值是否在数组中,key用来检测类型<br>in_array()和array_search()功能一样<br>assort($arr)对索引值进行排序 并改变原数组的顺序<br>array_reverse($arr)逆向输出<br>array_filter(数组名,”函数”)</p>
+<h1 id="字符串处理"><a href="#字符串处理" class="headerlink" title="字符串处理"></a>字符串处理</h1><p>trim()去除空格,第二个参数可以加字母 去除字符<br>ltrim()去除做空格<br>rtrim()去除右空格<br>strtoupper()大写<br>strtolower()小写<br>substr_count(字符串,查找的字符串)返回查找的次数<br>strpos()查找字符串第一次出现的位置<br>strstr()返回第一次出现的位置到末尾,第三个参数如果是true,会返回第一次出现的位置到首部<br>str_replace(字符,要替换的字符,字符串)可以输入数组<br>htmlspecialchars()显示源代码<br>strip_tags()去除标签<br>substr()截取字符串<br>explode(‘,’,$str)根据字符分割<br>str_split($str)分割字符串</p>
+<h1 id="正则表达式"><a href="#正则表达式" class="headerlink" title="正则表达式"></a>正则表达式</h1><p>preg_match_all($pattern,$str,$arr)//第一个是正则表达式,第二个是字符串,第三个是存放的数组<br>一般使用/做定界符<br>\d匹配0-9 \D匹配0-9以外的任意一个字符<br>\s匹配任意一个空白字符,换行符之类的 \S匹配任意一个除空白字符<br>\w匹配任意一个数字或字母或下划线<br>.匹配除了换行符的任意一个字符<br>星号 放在星号前面的字符可以出现0次,也可以出现1次,也可以出现多次.<br>+可以出现1次或者多次<br>?匹配0次或者1次<br>{n}表示前面的字符 {n,}大于等于n次<br>.* 贪婪匹配 尽可能多的去匹配字符<br>.* ?非贪婪匹配<br>^匹配开头<br>$匹配结尾<br>|多个模式匹配<br>[]匹配方括号里的任意一个字符<br>[^]匹配除了方括号的中的任意一个字符<br>()将括号中作为一个整体 与\1配合 代表第一个被圆括号匹配的内容<br>i 匹配大小写<br>m 匹配多行<br>windows的换行是\r\n linux是\n</p>
 <h1 id="html跳转页面与php结合"><a href="#html跳转页面与php结合" class="headerlink" title="html跳转页面与php结合"></a>html跳转页面与php结合</h1><pre><code class="hljs undefined">&lt;meta <span class="hljs-attribute">http-equiv</span>=<span class="hljs-string">"refresh"</span> <span class="hljs-attribute">content</span>=<span class="hljs-string">"3;URL=&lt;?php echo <span class="hljs-variable">$_GET</span>['url']?&gt;"</span>/&gt;&lt;title&gt;&lt;/title&gt;</code></pre>
 
 <p>通过传参数url跳转页面<br>session开启和消除</p>

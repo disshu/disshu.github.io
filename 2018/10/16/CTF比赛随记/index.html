@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2018-10-15</span>
-            <span class="time">06:20:23</span>
+            <span class="time">04:11:52</span>
           </span>
           
           <!--  Categories  -->
@@ -184,12 +184,17 @@ in_array 中的 <span class="hljs-variable">_page</span> 为 <span class="hljs-b
 ᴀdmin -&gt; Admin -&gt; admin</code></pre>
 
 <p>首先看到代码<br><code>nodeprep.prepare</code><br>在twisted中版本过低有unicode编码漏洞,所以我们可以注册ᴀdmin并且修改密码,拿到真正的admin</p>
-<h1 id="clac计算"><a href="#clac计算" class="headerlink" title="clac计算"></a>clac计算</h1><p>这是别人对PHP字符串解析漏洞的理解，<br>我们知道PHP将查询字符串（在URL或正文中）转换为内部$_GET或的关联数组$_POST。例如：/?foo=bar变成Array([foo] =&gt; “bar”)。值得注意的是，查询字符串在解析的过程中会将某些字符删除或用下划线代替。例如，/?%20news[id%00=42会转换为Array([news_id] =&gt; 42)。如果一个IDS/IPS或WAF中有一条规则是当news_id参数的值是一个非数字的值则拦截，那么我们就可以用以下语句绕过：</p>
+<h1 id="clac计算"><a href="#clac计算" class="headerlink" title="clac计算"></a>clac计算</h1><p>sho这是别人对PHP字符串解析漏洞的理解，<br>我们知道PHP将查询字符串（在URL或正文中）转换为内部$_GET或的关联数组$_POST。例如：/?foo=bar变成Array([foo] =&gt; “bar”)。值得注意的是，查询字符串在解析的过程中会将某些字符删除或用下划线代替。例如，/?%20news[id%00=42会转换为Array([news_id] =&gt; 42)。如果一个IDS/IPS或WAF中有一条规则是当news_id参数的值是一个非数字的值则拦截，那么我们就可以用以下语句绕过:</p>
 <pre><code class="hljs undefined">/news.php?%20news[id%00=<span class="hljs-number">42</span><span class="hljs-string">"+AND+1=0–
 
 上述PHP语句的参数%20news[id%00的值将存储到$_GET[“news_id”]中。</span></code></pre>
 
 <p>当我们给定一个参数时,num会有waf,所以我可以在num前面加个空格,解析时是一样的,然后可以在后面执行系统语句<br>当执行到当前目录时,有的会绕过所以我们可以用acsii码绕过<br>scandir(“/“),但是“/”被过滤了，所以我们用chr(“47”)绕过,发现flagg文件</p>
+<h1 id="burpsiute不断发包"><a href="#burpsiute不断发包" class="headerlink" title="burpsiute不断发包"></a>burpsiute不断发包</h1><p>这个一开始是我的知识盲区,其实就是普通的攻击模块不设payloads而已,具体步骤如下<br>首先我们需要把所有的payload清除<br><img src="https://img-blog.csdnimg.cn/2020012015304978.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="1"><br>然后设置攻击模式为null payloads<br>payload options设为continue indefinitely<br><img src="https://img-blog.csdnimg.cn/20200120153354950.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="2"><br>最后设置线程,这个是最重要的否则会造成dos<br>number of threads 设为1<br>throttle设为2500 也就是2.5s发一个<br><img src="https://img-blog.csdnimg.cn/20200120153524533.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="3"></p>
+<h1 id="user-ini-checkin"><a href="#user-ini-checkin" class="headerlink" title=".user.ini(checkin)"></a>.user.ini(checkin)</h1><p>这道题运用的是.user.ini这个和.hatacess是一个性质,都是为了将上传的图片马转换为php代码解析<br>还有一个小知识点绕过php的exif_imagetype()函数，这个很好绕过，添加图片文件头就可以了<br><code>GIF98a</code><br>如果.hatacess无效的话用如下<br>大致意思就是:我们指定一个文件（如a.jpg），那么该文件就会被包含在要执行的php文件中（如index.php),类似于在index.php中插入一句：require(./a.jpg);<br>而user.ini的应用环境如下<br>    服务器脚本语言为PHP<br>    服务器使用CGI／FastCGI模式<br>    上传目录下要有可执行的php文件<br>代码如下<br><code>GIF89a
+auto_prepend_file=a.jpg</code><br>对方服务器一定要有php代码才能执行<br>再将a.jpg上传<br>`GIF89a</p>
+<script language="php">system('cat /flag');</script>`
+<p>盲注脚本放到web工具里看返回时bool类型吗<br>绕过空格用() tab</p>
 
         </div>
       </div>

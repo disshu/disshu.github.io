@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2020-03-18</span>
-            <span class="time">07:02:39</span>
+            <span class="time">09:50:05</span>
           </span>
           
         </div>
@@ -118,7 +118,7 @@ sqlmap -u <span class="hljs-selector-attr">[“url”]</span> -D <span class="hl
 sqlmap -u <span class="hljs-selector-attr">[“url”]</span> -D <span class="hljs-selector-attr">[‘数据库名’]</span> -T<span class="hljs-selector-attr">[‘表名’]</span> --<span class="hljs-attribute">columns</span> #列出字段 
 sqlmap -u <span class="hljs-selector-attr">[“url”]</span> -D <span class="hljs-selector-attr">[‘数据库名’]</span> -T <span class="hljs-selector-attr">[‘表名’]</span> -C <span class="hljs-selector-attr">[‘字段名1,字段名2,…’]</span> --dump #获取字段内容</code></pre>
 
-<p>3.如何扫描出cms的信息<br>4.csrf如何防御<br>检测Referer头的方法是可靠的。<br>验证token<br>扫描cms<br>1,指纹识别，就是网站标识识别，代表有whatweb，御剑等<br>2,网站框架识别，多瞅多观察，cms不冷门一般很好识别<br>3,后台，图片，等路径<br>4,版权5,<br>好好扫扫这个站有没有version,txt一类的玩意出现在根目录注：现在很多站二次开发只取部分程序，所以不是很好分辨，还要多试的</p>
+<p>3.如何扫描出cms的信息<br>4.csrf如何防御<br>检测Referer头的方法是可靠的。<br>验证token<br>扫描cms<br>1,指纹识别，就是网站标识识别，代表有whatweb，御剑等<br>2,网站框架识别，多瞅多观察，cms不冷门一般很好识别<br>3,后台，图片，等路径<br>4,版权5,<br>好好扫扫这个站有没有version,txt一类的玩意出现在根目录注：现在很多站二次开发只取部分程序，所以不是很好分辨，还要多试的<br> SSRF(服务器请求伪造)<br> 形成的原因大都是由于服务端提供了从其他服务器应用获取数据的功能且没有对目标地址做过滤与限制。<br> 访问内网<br>url到页面请求<br>1、输入网址<br>2、DNS解析<br>3、建立tcp连接<br>4、客户端发送HTPP请求<br>5、服务器处理请求　<br>6、服务器响应请求<br>7、浏览器展示HTML<br>8、浏览器发送请求获取其他在HTML中的资源。<br>XXE产生原因<br>当包含对外部实体的引用的XML输入被弱配置XML解析器处理时，就会发生这种攻击。这种攻击通过构造恶意内容，可导致读取任意文件、执行系统命令、探测内网端口、攻击内网网站等危害。<br>csrf<br>CSRF攻击利用网站对于用户网页浏览器的信任，挟持用户当前已登陆的Web应用程序，去执行并非用户本意的操作。<br>httponly获取cookie<br>H5环境下可以利用cors<br>一些服务器报错页<br>cookie过长 溢出<br>常见CMS漏洞<br>443 http<br>445 共享目录</p>
 
         </div>
       </div>

